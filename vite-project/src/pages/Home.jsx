@@ -1,36 +1,30 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
 
 function Home() {
-  const [value, setValue] = useState(new Date());
+    const [dateRange, setDateRange] = useState([new Date(), new Date()]);
 
-  return (
-    <>
-      <header>
-        <h1>Novi-Naut in Space</h1>
-      </header>
+    const handleNext = async () => {
+        const payload = {
+            departure_date: dateRange[0].toISOString().split('T')[0],
+            return_date: dateRange[1].toISOString().split('T')[0]
+        };
 
-      <main>
-        <section>
-          <article>
-            <Calendar
-              onChange={setValue}
-              value={value}
-            />
-          </article>
-        </section>
+        await fetch("http://localhost:5000/api/save-dates", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+        alert("Dates saved!");
+    };
 
-        <section>
-          <button>Next</button>
-          <button>Back</button>
-        </section>
-      </main>
-
-      <footer>
-        <h1>PixelPopping@Productions</h1>
-      </footer>
-    </>
-  );
+    return (
+        <main>
+            <Calendar onChange={setDateRange} value={dateRange} selectRange={true} />
+            <button onClick={handleNext}>Next</button>
+        </main>
+    );
 }
 
 export default Home;
