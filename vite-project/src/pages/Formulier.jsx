@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import './Formulier.css';
 
 const SignUpForm = () => {
     const [options, setOptions] = useState({ astronauts: [], rockets: [], landpads: [], launches: [] });
