@@ -1,34 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React from 'react';
 import { useForm } from "react-hook-form";
 
-const SignUpForm = () => {
-    const [options, setOptions] = useState({ astronauts: [], rockets: [], landpads: [], launches: [] });
-    const { register, handleSubmit, setValue } = useForm();
+const Formulier = ({ onSubmit, options, loading, errorMessage }) => {
+    const { register, handleSubmit, setValue, formState: { errors } } = useForm();
 
-    useEffect(() => {
-        fetch("http://localhost:5000/api/mission-options")
-            .then(res => res.json())
-            .then(data => setOptions(data))
-            .catch(err => console.error(err));
-    }, []);
-
-    const onSubmit = async (data) => {
-        const res = await fetch("http://localhost:5000/api/launch", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data)
-        });
-        const result = await res.json();
-        alert(result.message);
-    };
-
-    // Functie voor de 'Random Mission' (Python optie 4)
     const handleRandomMission = () => {
-        const randomRocket = options.rockets[Math.floor(Math.random() * options.rockets.length)];
-        const randomCaptain = options.astronauts[Math.floor(Math.random() * options.astronauts.length)];
-        if (randomRocket) setValue("rocket", randomRocket.name);
-        if (randomCaptain) setValue("captain", randomCaptain.name);
-        setValue("city", "Mars");
+        if (options.rockets.length > 0 && options.astronauts.length > 0) {
+            const randomRocket = options.rockets[Math.floor(Math.random() * options.rockets.length)];
+            const randomCaptain = options.astronauts[Math.floor(Math.random() * options.astronauts.length)];
+            
+            setValue("rocket", randomRocket.name);
+            setValue("captain", randomCaptain.name);
+            setValue("city", "Mars");
+        }
     };
 
     return (
@@ -37,21 +21,21 @@ const SignUpForm = () => {
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="text-container">
                         <h2>Novi-Naut Mission Control</h2>
+                        {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
                     </div>
 
                     <div className="form-input-outer">
                         <section className="inner-form">
-                            <select {...register("captain")}>
+                            <select {...register("captain", { required: true })}>
                                 <option value="">Select Captain</option>
                                 {options.astronauts.map(a => <option key={a.id} value={a.name}>{a.name}</option>)}
                             </select>
 
-                            <select {...register("rocket")}>
+                            <select {...register("rocket", { required: true })}>
                                 <option value="">Select Rocket</option>
                                 {options.rockets.map(r => <option key={r.id} value={r.name}>{r.name}</option>)}
                             </select>
 
-                            {/* Mars Options (Python optie 7) */}
                             <label>Mars Strategy:</label>
                             <select {...register("marsAction")}>
                                 <option value="stay">Op Mars blijven</option>
@@ -62,14 +46,15 @@ const SignUpForm = () => {
                             <input type="text" {...register("city")} placeholder="Destination City" />
 
                             <div className="submit-container" style={{ display: 'flex', gap: '10px', width: 'auto' }}>
-                                <button type="submit" className="submit">Register Mission</button>
-                                
-                                {/* Extra knoppen uit je menu */}
+                                <button type="submit" className="submit" disabled={loading}>
+                                    {loading ? "Bezig..." : "Register Mission"}
+                                </button>
+
                                 <button type="button" onClick={handleRandomMission} className="submit" style={{ background: 'gray' }}>
                                     Random Mission
                                 </button>
                                 
-                                <button type="button" onClick={() => alert("Printing mission details to Python terminal...")} className="submit" style={{ background: 'blue' }}>
+                                <button type="button" onClick={() => window.alert("Status verzonden naar terminal.")} className="submit" style={{ background: 'blue' }}>
                                     Show Mission
                                 </button>
                             </div>
@@ -81,7 +66,8 @@ const SignUpForm = () => {
     );
 };
 
-export default SignUpForm;
+export default Formulier;
+
 
 
 
