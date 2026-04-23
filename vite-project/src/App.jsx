@@ -2,7 +2,7 @@ import { Routes, Route } from 'react-router-dom';
 import  Navigation  from './navigation/Navigation';
 import Home from './pages/Home';
 import Contact from './pages/Contact';
-import MissionPage from './pages/MissionPage';
+import Mission from './pages/Mission';
 
 function App() {
   return (
@@ -11,7 +11,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/missionPage" element={<MissionPage/>} />
+        <Route path="/mission" element={<Mission/>} />
       </Routes>
     </>
   );
