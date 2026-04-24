@@ -1,0 +1,12 @@
+[
+    {
+        "captain": "Samantha Cristoforetti",
+        "crewMember1": "Akihiko Hoshide",
+        "crewMember2": "Michael S. Hopkins",
+        "rocket": "Falcon Heavy",
+        "launchPad": "RazakSat",
+        "landingPad": "Just Read The Instructions",
+        "marsAction": "refuel",
+        "city": "Mars Base"
+    }
+]

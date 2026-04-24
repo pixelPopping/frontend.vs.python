@@ -1,64 +1,105 @@
+import React, { useEffect } from 'react';
 import { useForm } from "react-hook-form";
 
-const SelectField = ({ name, register, options, placeholder }) => (
-    <select {...register(name)}>
-        <option value="">{placeholder}</option>
-        {options?.map((item) => (
-            <option key={item.id} value={item.id}>{item.name || item.full_name}</option>
-        ))}
-    </select>
-);
+const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
+    const { register, handleSubmit, setValue, reset } = useForm();
 
-const MissionForm = ({ onSubmit, options, loading }) => {
-    const { register, handleSubmit, setValue } = useForm();
+    useEffect(() => {
+        if (isSuccess) reset();
+    }, [isSuccess, reset]);
 
-    const handleRandomMission = () => {
-        if (options?.rockets?.length > 0 && options?.astronauts?.length > 0) {
-            const rRocket = options.rockets[Math.floor(Math.random() * options.rockets.length)];
-            const rCaptain = options.astronauts[Math.floor(Math.random() * options.astronauts.length)];
-            const rLaunch = options.launchpads[Math.floor(Math.random() * options.launchpads.length)];
-            
-            setValue("rocket", rRocket.name);
-            setValue("captain", rCaptain.name);
-            setValue("launchpad", rLaunch.id);
-            setValue("city", "Mars");
+    const handleRandom = () => {
+        if (options.rockets.length > 0 && options.astronauts.length > 2) {
+            const randomR = options.rockets[Math.floor(Math.random() * options.rockets.length)];
+            const shuffledCrew = [...options.astronauts].sort(() => 0.5 - Math.random());
+            const randomLaunch = options.launches[Math.floor(Math.random() * options.launches.length)];
+            const randomLand = options.landpads[Math.floor(Math.random() * options.landpads.length)];
+            const actions = ["stay", "refuel", "return"];
+
+            setValue("rocket", randomR.name);
+            setValue("captain", shuffledCrew[0].name);
+            setValue("crewMember1", shuffledCrew[1].name);
+            setValue("crewMember2", shuffledCrew[2].name);
+            setValue("launchPad", randomLaunch.name);
+            setValue("landingPad", randomLand.full_name);
+            setValue("marsAction", actions[Math.floor(Math.random() * actions.length)]);
+            setValue("city", "Mars Base");
         }
     };
 
-    if (loading) return <p>Loading...</p>;
-
     return (
-        <main className="main-outer-form">
-            <div className="outer-form">
-                <form onSubmit={handleSubmit(onSubmit)}>
-                    <div className="text-container"><h2>Novi-Naut Mission Control</h2></div>
-                    <div className="form-input-outer">
-                        <section className="inner-form">
-                            <SelectField name="captain" register={register} options={options?.astronauts} placeholder="Select Captain" />
-                            <SelectField name="rocket" register={register} options={options?.rockets} placeholder="Select Rocket" />
-                            <SelectField name="launchpad" register={register} options={options?.launchpads} placeholder="Select Launch Pad" />
-                            <SelectField name="landpad_id" register={register} options={options?.landpads} placeholder="Select Landing Pad" />
-                            
-                            <label>Mars Strategy:</label>
-                            <select {...register("marsAction")}>
+        <div className="outer-form">
+            <form onSubmit={handleSubmit(onSubmit)}>
+                <div className="text-container">
+                    <h2>Mission Control</h2>
+                </div>
+                <div className="form-input-outer">
+                    <section className="inner-form">
+                        <label>Captain:
+                            <select {...register("captain", { required: true })}>
+                                <option value="">Select</option>
+                                {options.astronauts.map(a => <option key={a.id} value={a.name}>{a.name}</option>)}
+                            </select>
+                        </label>
+
+                        <label>Crew 1:
+                            <select {...register("crewMember1", { required: true })}>
+                                <option value="">Select</option>
+                                {options.astronauts.map(a => <option key={a.id} value={a.name}>{a.name}</option>)}
+                            </select>
+                        </label>
+
+                        <label>Crew 2:
+                            <select {...register("crewMember2", { required: true })}>
+                                <option value="">Select</option>
+                                {options.astronauts.map(a => <option key={a.id} value={a.name}>{a.name}</option>)}
+                            </select>
+                        </label>
+
+                        <label>Rocket:
+                            <select {...register("rocket", { required: true })}>
+                                <option value="">Select</option>
+                                {options.rockets.map(r => <option key={r.id} value={r.name}>{r.name}</option>)}
+                            </select>
+                        </label>
+
+                        <label>Launch Pad:
+                            <select {...register("launchPad", { required: true })}>
+                                <option value="">Select</option>
+                                {options.launches.map(l => <option key={l.id} value={l.name}>{l.name}</option>)}
+                            </select>
+                        </label>
+
+                        <label>Landing Pad:
+                            <select {...register("landingPad", { required: true })}>
+                                <option value="">Select</option>
+                                {options.landpads.map(lp => <option key={lp.id} value={lp.full_name}>{lp.full_name}</option>)}
+                            </select>
+                        </label>
+
+                        <label>Mars Strategy:
+                            <select {...register("marsAction", { required: true })}>
                                 <option value="stay">Op Mars blijven</option>
                                 <option value="refuel">Tanken</option>
-                                <option value="return">Teruggaan naar Novi Space Hub</option>
+                                <option value="return">Teruggaan naar Hub</option>
                             </select>
-                            
-                            <input type="text" {...register("city")} placeholder="Destination City" />
-                            
-                            <div className="submit-container" style={{ display: 'flex', gap: '10px' }}>
-                                <button type="submit" className="submit">Register Mission</button>
-                                <button type="button" onClick={handleRandomMission} className="submit" style={{ background: 'gray' }}>Random Mission</button>
-                            </div>
-                        </section>
-                    </div>
-                </form>
-            </div>
-        </main>
+                        </label>
+
+                        <input type="text" {...register("city")} placeholder="City" />
+
+                        <div className="submit-container" style={{ display: 'flex', gap: '10px', width: '100%' }}>
+                            <button type="submit" className="submit" disabled={loading}>Launch</button>
+                            <button type="button" onClick={handleRandom} className="submit" style={{ background: '#555' }}>Random</button>
+                        </div>
+                    </section>
+                </div>
+            </form>
+        </div>
     );
 };
 
 export default MissionForm;
+
+
+
 
