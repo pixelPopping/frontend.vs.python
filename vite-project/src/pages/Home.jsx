@@ -1,39 +1,39 @@
 import React, { useState } from 'react';
-import Calendar from '../components/Calender';
+import { useNavigate } from 'react-router-dom';
+import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 
 function Home() {
     const [dateRange, setDateRange] = useState([new Date(), new Date()]);
+    const navigate = useNavigate();
 
-    const handleNext = async () => {
-        
-        const payload = {
-            departure_date: dateRange[0].toISOString().split('T')[0],
-            return_date: dateRange[1].toISOString().split('T')[0]
-        };
+    const handleNext = () => {
+        // Formatteer datums naar leesbare tekst
+        const start = dateRange[0].toLocaleDateString('nl-NL');
+        const end = dateRange[1].toLocaleDateString('nl-NL');
 
-        try {
-            await fetch("http://localhost:5000/api/save-dates", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
-            });
-            alert("Datums opgeslagen!");
-        } catch (error) {
-            console.error("Fout bij opslaan:", error);
-        }
+        // Navigeer naar de planner en geef de datums mee
+        navigate('/mission', { 
+            state: { departure: start, returnDate: end } 
+        });
     };
 
     return (
-        <main>
-            <Calendar 
-                onChange={setDateRange} 
-                value={dateRange} 
-                selectRange={true} 
-            />
-            <button onClick={handleNext} style={{ marginTop: '10px' }}>
-                Volgende
-            </button>
+        <main className="main-outer-form">
+            <div className="outer-form" style={{ padding: '40px', alignItems: 'center' }}>
+                <div className="text-container">
+                    <h1>Plan je reis</h1>
+                    <p>Selecteer je vertrek- en terugkomstdatum</p>
+                </div>
+                <Calendar 
+                    onChange={setDateRange} 
+                    value={dateRange} 
+                    selectRange={true} 
+                />
+                <div className="submit-container" style={{ marginTop: '20px' }}>
+                    <button onClick={handleNext} className="submit">Volgende</button>
+                </div>
+            </div>
         </main>
     );
 }
