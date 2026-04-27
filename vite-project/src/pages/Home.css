@@ -1,0 +1,129 @@
+@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@200..900&display=swap');
+
+.header-container{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: center;
+}
+
+header h1{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 100px;
+}
+
+header .unbounded-title {
+  font-family: "Unbounded", sans-serif;
+  font-weight: 700;
+  font-size: clamp(2rem, 10vw, 80px);
+}
+
+.main-outer-form{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: center;
+}
+
+.inner-form{
+    display: flex;
+    flex-direction: column;
+}
+
+.text-container{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 100px;
+    margin-bottom: 100px;
+}
+
+.text-container p, h2{
+ font-size: clamp(2rem, 10vw, 40px);
+}
+.outer-calender{
+   display: flex;
+   flex-direction: row;
+   width: 100%;
+   justify-content: center;
+}
+
+.inner-calendar{
+   display: flex;
+   flex-direction: column;
+   width: 100%;
+   align-items: center;
+   gap: 2rem;
+}
+
+.calendar-wrapper {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: center;
+}
+
+.react-calendar{
+    width: 600px;
+    padding: 20px;
+}
+
+.react-calendar__navigation button {
+  font-size: 1.4rem;
+  padding: 10px;
+}
+
+.react-calendar__month-view__weekdays {
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.submit-section{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.react-calendar__tile {
+  width: 70px;
+  height: 70px;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.react-calendar__tile:hover {
+  background-color: #e6e6e6;
+  border-radius: 8px;
+}
+
+.react-calendar__tile--active,
+.react-calendar__tile--rangeStart,
+.react-calendar__tile--rangeEnd {
+  background: #007bff;
+  color: white;
+  border-radius: 8px;
+}
+
+.button-container{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: center;
+}
+
+.submit-section{
+    display: flex;
+    flex-direction: row;
+    width: 100px;
+}
+
+.submit {
+    width: 100%;
+    padding: 20px;
+    flex-grow: 0;
+    flex-shrink: 1;
+}
