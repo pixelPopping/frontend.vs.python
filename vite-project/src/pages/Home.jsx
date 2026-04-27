@@ -44,12 +44,13 @@ function Home() {
                                     selectRange={true} 
                                 />
                             </article>
+
                             <div className="button-container">
-                            <section className="submit-section">
-                                <button onClick={handleNext} className="submit">
-                                    Volgende
-                                </button>
-                            </section>
+                                <section className="submit-section">
+                                    <button onClick={handleNext} className="submit">
+                                        Volgende
+                                    </button>
+                                </section>
                             </div>
 
                         </section>
@@ -66,4 +67,3 @@ function Home() {
 }
 
 export default Home;
-

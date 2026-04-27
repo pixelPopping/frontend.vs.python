@@ -17,7 +17,7 @@ header h1{
 header .unbounded-title {
   font-family: "Unbounded", sans-serif;
   font-weight: 700;
-  font-size: clamp(2rem, 10vw, 80px);
+  font-size: 50px;
 }
 
 .main-outer-form{
@@ -40,9 +40,6 @@ header .unbounded-title {
     margin-bottom: 100px;
 }
 
-.text-container p, h2{
- font-size: clamp(2rem, 10vw, 40px);
-}
 .outer-calender{
    display: flex;
    flex-direction: row;
@@ -51,11 +48,11 @@ header .unbounded-title {
 }
 
 .inner-calendar{
-   display: flex;
-   flex-direction: column;
-   width: 100%;
-   align-items: center;
+   display: grid;
+   grid-template-columns: 1fr;
+   place-items: center;
    gap: 2rem;
+   width: 100%;
 }
 
 .calendar-wrapper {
@@ -106,24 +103,4 @@ header .unbounded-title {
   background: #007bff;
   color: white;
   border-radius: 8px;
-}
-
-.button-container{
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    justify-content: center;
-}
-
-.submit-section{
-    display: flex;
-    flex-direction: row;
-    width: 100px;
-}
-
-.submit {
-    width: 100%;
-    padding: 20px;
-    flex-grow: 0;
-    flex-shrink: 1;
 }
