@@ -1,5 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@200..900&display=swap');
 
+.backgroundimg {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: url('/src/assets/Images/193414-rick-sanchez-1920x1080.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: -1;
+}
+
 .header-container{
     display: flex;
     flex-direction: row;
@@ -77,10 +89,15 @@ header .unbounded-title {
   text-align: center;
 }
 
-.submit-section{
-    display: flex;
-    justify-content: center;
+.button-container{
+  display: flex;
+  flex-direction: row;
+  width: 100px;
+}
+
+.submit{
     width: 100%;
+    padding: 20px;
 }
 
 .react-calendar__tile {
@@ -103,4 +120,11 @@ header .unbounded-title {
   background: #007bff;
   color: white;
   border-radius: 8px;
+}
+
+.inner-form,
+.header-container,
+footer {
+  position: relative;
+  z-index: 1;
 }

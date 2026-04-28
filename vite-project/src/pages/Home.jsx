@@ -20,6 +20,7 @@ function Home() {
 
     return (
         <>
+        <div className="backgroundimg" aria-hidden="true"></div>
             <div className="header-container">
                 <header>
                     <h1 className="unbounded-title">Novi-Naut in Space</h1>
@@ -46,11 +47,9 @@ function Home() {
                             </article>
 
                             <div className="button-container">
-                                <section className="submit-section">
                                     <button onClick={handleNext} className="submit">
                                         Volgende
                                     </button>
-                                </section>
                             </div>
 
                         </section>

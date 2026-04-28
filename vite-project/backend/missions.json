@@ -1,14 +1,1 @@
-[
-    {
-        "captain": "Kayla Barron",
-        "crewMember1": "Nicole Aunapu Mann",
-        "crewMember2": "Josh A. Cassada",
-        "rocket": "Falcon 9",
-        "launchPad": "Falcon 9 Test Flight",
-        "landingPad": "Just Read The Instructions",
-        "marsAction": "refuel",
-        "city": "Mars Base",
-        "departure": "1-4-2026",
-        "returnDate": "30-4-2026"
-    }
-]
+[]
