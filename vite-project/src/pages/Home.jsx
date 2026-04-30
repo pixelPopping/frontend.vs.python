@@ -47,7 +47,7 @@ function Home() {
                             </article>
 
                             <div className="button-container">
-                                    <button onClick={handleNext} className="submit">
+                                    <button onClick={handleNext} className="submit-next">
                                         Volgende
                                     </button>
                             </div>

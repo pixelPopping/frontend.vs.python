@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useForm } from "react-hook-form";
 import handleRandom from '../Helpers/handleRandom';
+import './MissionForm.css'
 
 const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
 
@@ -14,7 +15,6 @@ const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
         if (isSuccess) reset();
     }, [isSuccess, reset]);
 
-    
     useEffect(() => {
         if (!destination) return;
 
@@ -39,9 +39,8 @@ const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
                 </div>
 
                 <div className="form-input-outer">
-                    <section className="inner-form">
-
-                        <label>Captain:
+                    <section className="inner-form-mission">
+                        <label className='placeholder'>Captain:
                             <select {...register("captain", { required: true })}>
                                 <option value="">Select</option>
                                 {options.astronauts.map(a => (
@@ -49,8 +48,7 @@ const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
                                 ))}
                             </select>
                         </label>
-
-                        <label>Crew 1:
+                        <label className='placeholder'>Crew 1:
                             <select {...register("crewMember1", { required: true })}>
                                 <option value="">Select</option>
                                 {options.astronauts.map(a => (
@@ -58,8 +56,7 @@ const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
                                 ))}
                             </select>
                         </label>
-
-                        <label>Crew 2:
+                        <label className='placeholder'>Crew 2:
                             <select {...register("crewMember2", { required: true })}>
                                 <option value="">Select</option>
                                 {options.astronauts.map(a => (
@@ -67,8 +64,7 @@ const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
                                 ))}
                             </select>
                         </label>
-
-                        <label>Rocket:
+                        <label className='placeholder'>Rocket:
                             <select {...register("rocket", { required: true })}>
                                 <option value="">Select</option>
                                 {options.rockets.map(r => (
@@ -76,8 +72,7 @@ const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
                                 ))}
                             </select>
                         </label>
-
-                        <label>Launch Pad:
+                        <label className='placeholder'>Launch Pad:
                             <select {...register("launchPad", { required: true })}>
                                 <option value="">Select</option>
                                 {options.launches.map(l => (
@@ -85,8 +80,7 @@ const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
                                 ))}
                             </select>
                         </label>
-
-                        <label>Landing Pad:
+                        <label className='placeholder'>Landing Pad:
                             <select {...register("landingPad", { required: true })}>
                                 <option value="">Select</option>
                                 {options.landpads.map(lp => (
@@ -94,19 +88,19 @@ const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
                                 ))}
                             </select>
                         </label>
-
-                        <label>Mars Strategy:
+                        <label className='placeholder'>Mars Strategy:
                             <select {...register("marsAction", { required: true })}>
                                 <option value="stay">Op Mars blijven</option>
                                 <option value="refuel">Tanken</option>
                                 <option value="return">Teruggaan naar Hub</option>
                             </select>
                         </label>
-
+                        <label className='placeholder'>Destination:
                         <input type="text" {...register("city")} placeholder="Destination City" />
-
-                        <div className="submit-container" style={{ display: 'flex', gap: '10px', width: '100%' }}>
-                            <button type="submit" className="submit" disabled={loading}>Launch</button>
+                        </label>
+                        <div className='button-outer'>
+                        <div className='inner-container-submit'>
+                            <button type="submit" className="submit-mission" disabled={loading}>Launch</button>
 
                             <button
                                 type="button"
@@ -116,6 +110,7 @@ const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
                             >
                                 Random
                             </button>
+                        </div>
                         </div>
 
                     </section>
