@@ -1,0 +1,31 @@
+.detail-outer-form{
+    display: flex;
+    flex-direction: column;
+    flex-basis: 100%;
+    justify-content: center;
+}
+
+
+.outer-form-detail{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+
+.detail-mission-outer{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.inner-form-mission-detail{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    flex-shrink: 0;
+    flex-basis: 800px;
+    gap: 40px;
+}
+

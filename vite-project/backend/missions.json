@@ -1,1 +1,26 @@
-[]
+[
+    {
+        "captain": "Nicole Aunapu Mann",
+        "crewMember1": "Hayley Arceneaux",
+        "crewMember2": "Anna Kikina",
+        "rocket": "Falcon 1",
+        "launchPad": "SES-8",
+        "landingPad": "Just Read The Instructions",
+        "marsAction": "refuel",
+        "city": "Mars Base",
+        "departure": "Niet opgegeven",
+        "returnDate": "Niet opgegeven"
+    },
+    {
+        "captain": "Sian Proctor",
+        "crewMember1": "Robert Hines",
+        "crewMember2": "Akihiko Hoshide",
+        "rocket": "Falcon Heavy",
+        "launchPad": "DSCOVR",
+        "landingPad": "Landing Zone 1",
+        "marsAction": "refuel",
+        "city": "Mars Base",
+        "departure": "Niet opgegeven",
+        "returnDate": "Niet opgegeven"
+    }
+]

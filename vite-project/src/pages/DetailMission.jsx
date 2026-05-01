@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import MissionDetailCard from '../components/MissionDetailCard';
+import './DetailMission.css';
 
 function DetailMission() {
     const [missions, setMissions] = useState([]);
@@ -35,8 +36,8 @@ function DetailMission() {
     };
 
     return (
-        <main className="main-outer-form">
-            <div className="outer-form">
+        <main className="detail-outer-form">
+            <div className="outer-form-detail">
                 <div className="text-container">
                     <h1>Mission History</h1>
                     <button 
@@ -47,8 +48,8 @@ function DetailMission() {
                         Terug naar Planner
                     </button>
                 </div>
-
-                <div className="inner-form">
+                <section className='detail-mission-outer'>
+                <div className='inner-form-mission-detail'>
                     {missions.length > 0 ? (
                         missions.map((m, index) => (
                             <MissionDetailCard
@@ -60,9 +61,10 @@ function DetailMission() {
                             />
                         ))
                     ) : (
-                        <p style={{textAlign: 'center'}}>Geen missies gevonden in de database.</p>
+                        <p>Geen missies gevonden in de database.</p>
                     )}
                 </div>
+                </section>
             </div>
         </main>
     );

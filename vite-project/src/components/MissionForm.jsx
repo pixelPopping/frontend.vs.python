@@ -106,7 +106,6 @@ const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
                                 type="button"
                                 onClick={() => handleRandom(options, setValue)}
                                 className="submit"
-                                style={{ background: '#555' }}
                             >
                                 Random
                             </button>

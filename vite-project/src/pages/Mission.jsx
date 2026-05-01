@@ -47,10 +47,14 @@ const Mission = () => {
                 options={options} 
                 isSuccess={!!missionResult} 
             />
-
-            <button className="submit" onClick={() => navigate('/detailmission')}>
+            
+            <section className='outer-submit-mission'>
+            <div className='view-and-submit-container'>
+            <button className="submit-missions" onClick={() => navigate('/detailmission')}>
                 View all Missions 
             </button>
+            </div>
+            </section>
 
             {loading && <p>Loading…</p>}
             {error && <p>There go something wrong fetching the data.</p>}

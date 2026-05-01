@@ -1,4 +1,5 @@
 import getStrategyFromCity from "../Helpers/getStrategyFromCity";
+import './DetailMissionCard.css'
 
 function DetailMissionCard({ label, text, index, onClick }) {
     return (
@@ -6,6 +7,7 @@ function DetailMissionCard({ label, text, index, onClick }) {
 
             <h3>{label} {index + 1}</h3>
 
+            <div className="card-text">
             <p><strong>Periode:</strong> {text.departure} t/m {text.returnDate}</p>
             <p><strong>Captain:</strong> {text.captain}</p>
             <p><strong>Crew:</strong> {text.crewMember1} & {text.crewMember2}</p>
@@ -15,7 +17,9 @@ function DetailMissionCard({ label, text, index, onClick }) {
 
             <p><strong>Destination:</strong> {text.city}</p>
             <p><strong>Strategy:</strong> {getStrategyFromCity(text.city)}</p>
+            </div>
 
+            <section className="delete-button-container">
             <button 
                 onClick={onClick} 
                 type="delete"
@@ -23,6 +27,7 @@ function DetailMissionCard({ label, text, index, onClick }) {
             >
                 Delete
             </button>
+            </section>
 
         </article>
     );

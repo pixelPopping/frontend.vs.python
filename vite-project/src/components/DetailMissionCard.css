@@ -1,0 +1,18 @@
+.mission-card{
+    display: flex;
+    flex-direction: column;
+    border: solid black 4px;
+    width: 300px;
+    flex-basis: 600px;
+    justify-content: space-between;
+    max-height: fit-content;
+}
+
+.card-text{
+    text-align: start;
+    padding: 15px;
+}
+
+.card-text p{
+    padding: 10px;
+}
