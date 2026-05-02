@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import MissionDetailCard from '../components/MissionDetailCard';
 import './DetailMission.css';
@@ -7,28 +7,32 @@ import './DetailMission.css';
 function DetailMission() {
     const [missions, setMissions] = useState([]);
     const navigate = useNavigate();
+    const { id } = useParams(); // <-- MISSIE ID UIT URL
 
     const fetchMissions = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/api/missions');
-            setMissions(response.data);
+            // Als er een ID is → haal 1 missie op
+            if (id) {
+                const response = await axios.get(`http://localhost:5000/api/missions/${id}`);
+                setMissions([response.data]); // in array zetten zodat map() werkt
+            } 
+            // Anders → haal alle missies op
+            else {
+                const response = await axios.get('http://localhost:5000/api/missions');
+                setMissions(response.data);
+            }
         } catch (error) {
             console.error("Fout bij ophalen missies:", error);
         }
     };
 
     useEffect(() => {
-        const source = axios.CancelToken.source();
-        axios.get('http://localhost:5000/api/missions', { cancelToken: source.token })
-            .then(res => setMissions(res.data))
-            .catch(err => { if (!axios.isCancel(err)) console.error(err); });
-        
-        return () => source.cancel("Component unmounted");
-    }, []);
+        fetchMissions();
+    }, [id]);
 
-    const handleDelete = async (index) => {
+    const handleDelete = async (missionId) => {
         try {
-            await axios.delete(`http://localhost:5000/api/missions/${index}`);
+            await axios.delete(`http://localhost:5000/api/missions/${missionId}`);
             fetchMissions();
         } catch (error) {
             console.error("Fout bij verwijderen:", error);
@@ -42,28 +46,34 @@ function DetailMission() {
                     <h1>Mission History</h1>
                     <button 
                         className="submit" 
-                        style={{width: 'auto', background: '#11D8E8', color: 'black'}} 
                         onClick={() => navigate('/mission')}
                     >
                         Terug naar Planner
                     </button>
+                    <button 
+                        className="submit" 
+                        onClick={() => navigate('/savedmissions')}
+                    >
+                        view alle saved missions
+                    </button>
                 </div>
+
                 <section className='detail-mission-outer'>
-                <div className='inner-form-mission-detail'>
-                    {missions.length > 0 ? (
-                        missions.map((m, index) => (
-                            <MissionDetailCard
-                                key={index}
-                                index={index}
-                                label={"Mission#"}
-                                text={m}              
-                                onClick={() => handleDelete(index)}  
-                            />
-                        ))
-                    ) : (
-                        <p>Geen missies gevonden in de database.</p>
-                    )}
-                </div>
+                    <div className='inner-form-mission-detail'>
+                        {missions.length > 0 ? (
+                            missions.map((m, index) => (
+                                <MissionDetailCard
+                                    key={index}
+                                    index={index}
+                                    label={"Mission#"}
+                                    text={m}
+                                    onClick={() => handleDelete(m.id)}
+                                />
+                            ))
+                        ) : (
+                            <p>Geen missies gevonden in de database.</p>
+                        )}
+                    </div>
                 </section>
             </div>
         </main>
@@ -71,3 +81,4 @@ function DetailMission() {
 }
 
 export default DetailMission;
+

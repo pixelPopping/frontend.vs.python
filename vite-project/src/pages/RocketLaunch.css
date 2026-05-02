@@ -1,0 +1,270 @@
+/* Algemene layout */
+.launch-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    height: 100vh;
+    background: black;
+}
+
+.unbounded {
+  font-family: "Unbounded", sans-serif;
+  font-weight: 700;
+  font-size: 50px;
+  text-align: center;
+  color: white;
+}
+
+/* ⭐ Animated star background */
+.starry-background {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+}
+
+.star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: white;
+    border-radius: 50%;
+    animation: twinkle 2s infinite ease-in-out;
+    opacity: 0.8;
+}
+
+@keyframes twinkle {
+    0% { opacity: 0.2; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.8); }
+    100% { opacity: 0.2; transform: scale(1); }
+}
+
+/* 🪐 Planeet */
+.planet {
+    position: absolute;
+    bottom: -200px;
+    right: -200px;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, #ffcc66, #cc6600);
+    border-radius: 50%;
+    animation: spinPlanet 40s linear infinite;
+    opacity: 0.4;
+    z-index: -2;
+}
+
+@keyframes spinPlanet {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* 🌠 Meteoren */
+.meteor {
+    position: absolute;
+    width: 4px;
+    height: 40px;
+    background: linear-gradient(white, transparent);
+    transform: rotate(45deg);
+    animation: meteorFall 1.5s linear infinite;
+    opacity: 0.8;
+}
+
+@keyframes meteorFall {
+    0% { transform: translate(0, 0) rotate(45deg); opacity: 1; }
+    100% { transform: translate(-300px, 300px) rotate(45deg); opacity: 0; }
+}
+
+/* 🔮 Wormhole */
+.wormhole {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    width: 200px;
+    height: 200px;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,255,255,0.4), rgba(0,0,0,0));
+    animation: pulseWormhole 2s infinite ease-in-out;
+    z-index: -1;
+}
+
+@keyframes pulseWormhole {
+    0% { transform: translateX(-50%) scale(1); opacity: 0.3; }
+    50% { transform: translateX(-50%) scale(1.3); opacity: 0.7; }
+    100% { transform: translateX(-50%) scale(1); opacity: 0.3; }
+}
+
+/* 🐋 Space whale */
+.space-whale {
+    position: absolute;
+    top: 30%;
+    left: -400px;
+    width: 300px;
+    opacity: 0.7;
+    animation: whaleSwim 18s linear infinite;
+}
+
+@keyframes whaleSwim {
+    0% { transform: translateX(0) translateY(0); }
+    50% { transform: translateX(160vw) translateY(-40px); }
+    100% { transform: translateX(0) translateY(0); }
+}
+
+/* 🛸 UFO’s */
+.ufo {
+    position: absolute;
+    width: 80px;
+    opacity: 0.9;
+    z-index: 5;
+}
+
+/* UFO 1 — snel */
+.ufo1 {
+    top: 20%;
+    left: -150px;
+    animation: ufoFly1 6s linear infinite;
+}
+
+@keyframes ufoFly1 {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(140vw); }
+}
+
+/* UFO 2 — langzaam */
+.ufo2 {
+    top: 60%;
+    left: -200px;
+    animation: ufoFly2 10s linear infinite;
+}
+
+@keyframes ufoFly2 {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(160vw); }
+}
+
+/* UFO 3 — zigzag */
+.ufo3 {
+    top: 40%;
+    left: -180px;
+    animation: ufoFly3 8s linear infinite;
+}
+
+@keyframes ufoFly3 {
+    0% { transform: translate(0, 0); }
+    25% { transform: translate(40vw, -20px); }
+    50% { transform: translate(80vw, 20px); }
+    75% { transform: translate(120vw, -10px); }
+    100% { transform: translate(160vw, 0); }
+}
+
+/* 🔫 Laser */
+.laser {
+    position: absolute;
+    width: 4px;
+    height: 200px;
+    background: red;
+    top: 50px;
+    left: 50px;
+    animation: laserBlast 0.4s linear infinite;
+    opacity: 0.7;
+}
+
+@keyframes laserBlast {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(300px); opacity: 0; }
+}
+
+/* --- Launch scene --- */
+.launch-scene {
+    position: relative;
+    width: 250px;
+    height: 400px;
+    margin-top: 40px;
+}
+
+/* 🗼 Launch tower */
+.launch-tower {
+    position: absolute;
+    left: -20px;
+    bottom: 0;
+    width: 50px;
+    height: 320px;
+    background: #444;
+    border-left: 6px solid #666;
+    border-right: 6px solid #666;
+    z-index: 0;
+}
+
+.launch-tower::before,
+.launch-tower::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 6px;
+    background: #777;
+}
+
+.launch-tower::before {
+    top: 60px;
+}
+
+.launch-tower::after {
+    top: 150px;
+}
+
+/* 🚀 Raket */
+.rocket-img {
+    width: 180px;
+    position: absolute;
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: transform 2.5s ease-out;
+    animation: shake 0.2s infinite alternate;
+    z-index: 3;
+
+    /* Fix voor lelijke witte rand: schaduw maskeert rand */
+    filter: drop-shadow(0 0 6px rgba(0,0,0,0.7));
+}
+
+/* Trillen tijdens countdown */
+@keyframes shake {
+    0% { transform: translateX(-50%) translateY(0); }
+    100% { transform: translateX(calc(-50% + 2px)) translateY(-2px); }
+}
+
+/* 🚀 Launch animatie */
+.rocket-img.launch {
+    animation: none;
+    transform: translate(-50%, -350px);
+}
+
+/* Rook (iets subtieler gemaakt) */
+.smoke {
+    position: absolute;
+    bottom: 20px;
+    width: 150px;
+    height: 50px;
+    background: radial-gradient(circle, rgba(255,255,255,0.3), rgba(180,180,180,0.05));
+    border-radius: 50%;
+    filter: blur(6px);
+    animation: smokeMove 1.5s infinite ease-out;
+    z-index: 1;
+}
+
+@keyframes smokeMove {
+    0% { transform: scale(1); opacity: 0.7; }
+    100% { transform: scale(1.5); opacity: 0; }
+}
+
+/* Platform */
+.platform {
+    width: 180px;
+    height: 25px;
+    background: #333;
+    border-radius: 5px;
+    position: absolute;
+    bottom: 0;
+    z-index: 0;
+}

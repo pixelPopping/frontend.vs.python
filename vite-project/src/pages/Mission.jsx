@@ -2,12 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import MissionForm from '../components/MissionForm';
-import MissionCard from '../components/MissionCard';
 import './Mission.css';
 
 const Mission = () => {
     const [options, setOptions] = useState({ astronauts: [], rockets: [], launches: [], landpads: [] });
-    const [missionResult, setMissionResult] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
 
@@ -30,8 +28,15 @@ const Mission = () => {
 
         try {
             setLoading(true);
+
             const response = await axios.post('http://localhost:5000/api/launch', fullPayload);
-            setMissionResult({ message: response.data.message, details: fullPayload });
+
+            // Backend moet { id: ... } teruggeven
+            const missionId = response.data.id;
+
+            // 🚀 JUISTE ROUTE
+            navigate(`/rocketlaunch/${missionId}`);
+
         } catch {
             setError(true);
         } finally {
@@ -41,36 +46,19 @@ const Mission = () => {
 
     return (
         <main className="mission-outer-form">
-
             <MissionForm 
                 onSubmit={handleFormSubmit} 
                 options={options} 
-                isSuccess={!!missionResult} 
+                isSuccess={false} 
             />
-            
-            <section className='outer-submit-mission'>
-            <div className='view-and-submit-container'>
-            <button className="submit-missions" onClick={() => navigate('/detailmission')}>
-                View all Missions 
-            </button>
-            </div>
-            </section>
 
             {loading && <p>Loading…</p>}
             {error && <p>There go something wrong fetching the data.</p>}
-
-            {missionResult && (
-                <section className="mission-display">
-                    <MissionCard 
-                        label="Mission Manifest"
-                        text={missionResult.details}
-                        onClick={() => setMissionResult(null)}
-                    />
-                </section>
-            )}
-
         </main>
     );
 };
 
 export default Mission;
+
+
+
