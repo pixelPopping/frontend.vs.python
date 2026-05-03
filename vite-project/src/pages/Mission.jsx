@@ -45,6 +45,7 @@ const Mission = () => {
     };
 
     return (
+        <div className='outer-mission'>
         <main className="mission-outer-form">
             <MissionForm 
                 onSubmit={handleFormSubmit} 
@@ -55,6 +56,7 @@ const Mission = () => {
             {loading && <p>Loading…</p>}
             {error && <p>There go something wrong fetching the data.</p>}
         </main>
+        </div>
     );
 };
 

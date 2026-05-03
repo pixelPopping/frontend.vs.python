@@ -1,0 +1,76 @@
+/* OUTER */
+.contact-outer-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* TITLE */
+.contact-title {
+    font-family: "Unbounded", sans-serif;
+    font-weight: 700;
+    font-size: 120px;
+    color: red;
+    -webkit-text-stroke: 5px #0B3D91;
+    margin: 0;
+}
+
+/* OUTER FORM WRAPPER */
+.contact-form-input-outer {
+    display: flex;
+    flex-direction: row;
+    flex-basis: 100%;
+}
+
+/* 🔥 INNER FORM = EXACT MISSION COPY */
+.contact-inner-form {
+    flex-basis: 100%;
+    width: 800px;
+    padding: 20px;              /* ✔ belangrijkste verschil dat jij wilde */
+    display: flex;
+    flex-direction: column;
+    gap: 20px;                  /* ✔ spacing tussen fields */
+}
+
+/* LABEL STRUCTURE (Mission placeholder copy) */
+.contact-placeholder {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 50px;
+    padding: 20px;
+}
+
+/* INPUTS */
+.contact-inner-form input {
+    width: 100%;
+    padding: 20px;
+    border: solid black 10px;
+}
+
+/* RADIO */
+.contact-radio-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* BUTTON AREA */
+.contact-button-outer {
+    display: flex;
+    justify-content: center;
+}
+
+.contact-inner-container-submit {
+    display: flex;
+    flex-direction: column-reverse;
+    row-gap: 20px;
+    width: 300px;
+}
+
+/* BUTTONS */
+.contact-submit,
+.contact-submit-secondary {
+    width: 100%;
+    padding: 20px;
+}

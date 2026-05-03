@@ -1,9 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Unbounded:wght@200..900&display=swap');
 
+.outer-mission {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 100px;
+}
+
+
 .mission-outer-form{
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding-bottom: 100px;
 }
 
 .outer-form{

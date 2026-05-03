@@ -13,9 +13,9 @@ function App() {
       <Navigation />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/mission" element={<Mission />} />
-        <Route path="/savedmissions" element={<SavedMissions />} />
+        <Route path="/Contact" element={<Contact />} />
+        <Route path="/Mission" element={<Mission />} />
+        <Route path="/Savedmissions" element={<SavedMissions />} />
         <Route path="/detailmission/:id" element={<DetailMission />} />
         <Route path="/rocketlaunch/:id" element={<RocketLaunch/>}/>
       </Routes>

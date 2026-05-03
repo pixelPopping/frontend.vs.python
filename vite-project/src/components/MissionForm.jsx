@@ -35,7 +35,9 @@ const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
         <div className="outer-form">
             <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="text-container">
-                    <h2>Mission Control</h2>
+                    <header>
+                    <h1 className="unbounded-title-mission">Mission Control</h1>
+                    </header>
                 </div>
 
                 <div className="form-input-outer">
