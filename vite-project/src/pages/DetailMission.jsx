@@ -4,77 +4,76 @@ import axios from 'axios';
 import MissionDetailCard from '../components/MissionDetailCard';
 import './DetailMission.css';
 
+const API = "http://localhost:5000";
+
 function DetailMission() {
+    const { id } = useParams();
     const [missions, setMissions] = useState([]);
     const navigate = useNavigate();
-    const { id } = useParams(); // <-- MISSIE ID UIT URL
 
-    const fetchMissions = async () => {
+    const fetchMission = async () => {
         try {
-            // Als er een ID is → haal 1 missie op
             if (id) {
-                const response = await axios.get(`http://localhost:5000/api/missions/${id}`);
-                setMissions([response.data]); // in array zetten zodat map() werkt
-            } 
-            // Anders → haal alle missies op
-            else {
-                const response = await axios.get('http://localhost:5000/api/missions');
-                setMissions(response.data);
+                const res = await axios.get(`${API}/api/missions/${id}`);
+                setMissions([res.data]);
+            } else {
+                const res = await axios.get(`${API}/api/missions`);
+                setMissions(res.data);
             }
-        } catch (error) {
-            console.error("Fout bij ophalen missies:", error);
+        } catch (err) {
+            console.error(err);
         }
     };
 
     useEffect(() => {
-        fetchMissions();
+        fetchMission();
     }, [id]);
 
-    const handleDelete = async (missionId) => {
+    const handleDelete = async (id) => {
         try {
-            await axios.delete(`http://localhost:5000/api/missions/${missionId}`);
-            fetchMissions();
-        } catch (error) {
-            console.error("Fout bij verwijderen:", error);
+            await axios.delete(`${API}/api/missions/${id}`);
+            fetchMission();
+        } catch (err) {
+            console.error(err);
         }
     };
 
     return (
         <main className="detail-outer-form">
             <div className="outer-form-detail">
+
                 <div className="text-container">
                     <h1>Mission History</h1>
-                    <button 
-                        className="submit" 
-                        onClick={() => navigate('/mission')}
-                    >
-                        Terug naar Planner
+
+                    <button onClick={() => navigate('/mission')}>
+                        Terug
                     </button>
-                    <button 
-                        className="submit" 
-                        onClick={() => navigate('/savedmissions')}
-                    >
-                        view alle saved missions
+
+                    <button onClick={() => navigate('/savedmissions')}>
+                        Saved Missions
                     </button>
                 </div>
 
-                <section className='detail-mission-outer'>
-                    <div className='inner-form-mission-detail'>
+                <section className="detail-mission-outer">
+                    <div className="inner-form-mission-detail">
+
                         {missions.length > 0 ? (
-                            missions.map((m, index) => (
+                            missions.map((m) => (
                                 <MissionDetailCard
-                                    key={index}
-                                    index={index}
-                                    label={"Mission#"}
+                                    key={m._id}
+                                    index={m._id}
+                                    label="Mission#"
                                     text={m}
-                                    onClick={() => handleDelete(m.id)}
+                                    onClick={() => handleDelete(m._id)}
                                 />
                             ))
                         ) : (
-                            <p>Geen missies gevonden in de database.</p>
+                            <p>Geen missies gevonden.</p>
                         )}
+
                     </div>
                 </section>
+
             </div>
         </main>
     );

@@ -4,23 +4,33 @@ import axios from 'axios';
 import MissionForm from '../components/MissionForm';
 import './Mission.css';
 
+const API = "http://localhost:5000";
+
 const Mission = () => {
-    const [options, setOptions] = useState({ astronauts: [], rockets: [], launches: [], landpads: [] });
+    const [options, setOptions] = useState({
+        astronauts: [],
+        rockets: [],
+        launches: [],
+        landpads: []
+    });
+
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
 
     const navigate = useNavigate();
     const location = useLocation();
-    const travelDates = location.state;
+    const travelDates = location.state || {};
 
     useEffect(() => {
-        axios.get('http://localhost:5000/api/mission-options')
+        setError(false);
+
+        axios.get(`${API}/api/mission-options`)
             .then(res => setOptions(res.data))
             .catch(() => setError(true));
     }, []);
 
     const handleFormSubmit = async (formData) => {
-        const fullPayload = {
+        const payload = {
             ...formData,
             departure: travelDates?.departure || "Niet opgegeven",
             returnDate: travelDates?.returnDate || "Niet opgegeven"
@@ -29,15 +39,11 @@ const Mission = () => {
         try {
             setLoading(true);
 
-            const response = await axios.post('http://localhost:5000/api/launch', fullPayload);
+            const res = await axios.post(`${API}/api/launch`, payload);
 
-            // Backend moet { id: ... } teruggeven
-            const missionId = response.data.id;
+            navigate(`/rocketlaunch/${res.data.id}`);
 
-            // 🚀 JUISTE ROUTE
-            navigate(`/rocketlaunch/${missionId}`);
-
-        } catch {
+        } catch (err) {
             setError(true);
         } finally {
             setLoading(false);
@@ -45,17 +51,19 @@ const Mission = () => {
     };
 
     return (
-        <div className='outer-mission'>
-        <main className="mission-outer-form">
-            <MissionForm 
-                onSubmit={handleFormSubmit} 
-                options={options} 
-                isSuccess={false} 
-            />
+        <div className="outer-mission">
+            <main className="mission-outer-form">
 
-            {loading && <p>Loading…</p>}
-            {error && <p>There go something wrong fetching the data.</p>}
-        </main>
+                <MissionForm
+                    onSubmit={handleFormSubmit}
+                    options={options}
+                    loading={loading}
+                />
+
+                {loading && <p>Loading...</p>}
+                {error && <p>error loading data</p>}
+
+            </main>
         </div>
     );
 };

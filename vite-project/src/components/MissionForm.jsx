@@ -1,47 +1,47 @@
 import React, { useEffect } from 'react';
 import { useForm } from "react-hook-form";
 import handleRandom from '../Helpers/handleRandom';
-import './MissionForm.css'
+import getStrategyFromCity from "../Helpers/getStrategyFromCity";
+import './MissionForm.css';
 
 const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
 
     const { register, handleSubmit, setValue, reset, watch } = useForm();
 
-    
     const destination = watch("city");
+    const missionAction = watch("missionAction");
 
-    
+    // reset na succes
     useEffect(() => {
         if (isSuccess) reset();
     }, [isSuccess, reset]);
 
+    // 🔥 helper als suggestie (NIET overschrijven!)
     useEffect(() => {
         if (!destination) return;
 
-        const city = destination.toLowerCase();
+        const suggestion = getStrategyFromCity(destination);
 
-        if (city.includes("mars")) {
-            setValue("marsAction", "refuel");
-        } else if (city.includes("olympus")) {
-            setValue("marsAction", "stay");
-        } else if (city.includes("phobos")) {
-            setValue("marsAction", "return");
-        } else {
-            setValue("marsAction", "stay"); // standaardstrategie
+        // alleen invullen als nog niks gekozen is
+        if (!missionAction) {
+            setValue("missionAction", suggestion);
         }
-    }, [destination, setValue]);
+
+    }, [destination, missionAction, setValue]);
 
     return (
         <div className="outer-form">
             <form onSubmit={handleSubmit(onSubmit)}>
+
                 <div className="text-container">
                     <header>
-                    <h1 className="unbounded-title-mission">Mission Control</h1>
+                        <h1 className="unbounded-title-mission">Mission Control</h1>
                     </header>
                 </div>
 
                 <div className="form-input-outer">
                     <section className="inner-form-mission">
+
                         <label className='placeholder'>Captain:
                             <select {...register("captain", { required: true })}>
                                 <option value="">Select</option>
@@ -50,6 +50,7 @@ const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
                                 ))}
                             </select>
                         </label>
+
                         <label className='placeholder'>Crew 1:
                             <select {...register("crewMember1", { required: true })}>
                                 <option value="">Select</option>
@@ -58,6 +59,7 @@ const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
                                 ))}
                             </select>
                         </label>
+
                         <label className='placeholder'>Crew 2:
                             <select {...register("crewMember2", { required: true })}>
                                 <option value="">Select</option>
@@ -66,6 +68,7 @@ const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
                                 ))}
                             </select>
                         </label>
+
                         <label className='placeholder'>Rocket:
                             <select {...register("rocket", { required: true })}>
                                 <option value="">Select</option>
@@ -74,6 +77,7 @@ const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
                                 ))}
                             </select>
                         </label>
+
                         <label className='placeholder'>Launch Pad:
                             <select {...register("launchPad", { required: true })}>
                                 <option value="">Select</option>
@@ -82,6 +86,7 @@ const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
                                 ))}
                             </select>
                         </label>
+
                         <label className='placeholder'>Landing Pad:
                             <select {...register("landingPad", { required: true })}>
                                 <option value="">Select</option>
@@ -90,38 +95,57 @@ const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
                                 ))}
                             </select>
                         </label>
-                        <label className='placeholder'>Mars Strategy:
-                            <select {...register("marsAction", { required: true })}>
-                                <option value="stay">Op Mars blijven</option>
+
+                        {/* 🔥 HERNOEMD + LOGISCH */}
+                        <label className='placeholder'>Mission Action:
+                            <select {...register("missionAction", { required: true })}>
+                                <option value="">Select action</option>
+                                <option value="stay">Blijven</option>
                                 <option value="refuel">Tanken</option>
-                                <option value="return">Teruggaan naar Hub</option>
+                                <option value="return">Terugkeren</option>
                             </select>
                         </label>
-                        <label className='placeholder'>Destination:
-                        <input type="text" {...register("city")} placeholder="Destination City" />
-                        </label>
-                        <div className='button-outer'>
-                        <div className='inner-container-submit'>
-                            <button type="submit" className="submit-mission" disabled={loading}>Launch</button>
 
-                            <button
-                                type="button"
-                                onClick={() => handleRandom(options, setValue)}
-                                className="submit"
-                            >
-                                Random
-                            </button>
-                        </div>
+                        <label className='placeholder'>Destination:
+                            <input 
+                                type="text" 
+                                {...register("city")} 
+                                placeholder="Destination City" 
+                            />
+                        </label>
+
+                        <div className='button-outer'>
+                            <div className='inner-container-submit'>
+
+                                <button 
+                                    type="submit" 
+                                    className="submit-mission" 
+                                    disabled={loading}
+                                >
+                                    Launch
+                                </button>
+
+                                <button
+                                    type="button"
+                                    onClick={() => handleRandom(options, setValue)}
+                                    className="submit"
+                                >
+                                    Random
+                                </button>
+
+                            </div>
                         </div>
 
                     </section>
                 </div>
+
             </form>
         </div>
     );
 };
 
 export default MissionForm;
+
 
 
 

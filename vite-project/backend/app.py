@@ -1,62 +1,64 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-import requests, json, os
+import requests
+from pymongo import MongoClient
+from bson import ObjectId
+from bson.errors import InvalidId
 
 app = Flask(__name__)
-CORS(app)
 
-DB_FILE = 'missions.json'
+# -----------------------------
+# CORS FIX (frontend Vite:5173)
+# -----------------------------
+CORS(app, resources={r"/api/*": {"origins": "http://localhost:5173"}})
 
+# -----------------------------
+# MONGODB CONNECTIE (FIX DIT)
+# -----------------------------
+client = MongoClient("mongodb+srv://sydneycook_db_user:3UA1EBZF3FbGDxWL@cluster0.pqlcmtp.mongodb.net/")
+db = client.space_app
+missions_collection = db.missions
+
+
+# -----------------------------
+# SPACE API
+# -----------------------------
 class SpaceAPI:
     def get_crew(self):
-        try: return requests.get("https://api.spacexdata.com/v4/crew").json()
-        except: return []
+        try:
+            return requests.get("https://api.spacexdata.com/v4/crew").json()
+        except:
+            return []
 
     def get_rockets(self):
-        try: return requests.get("https://api.spacexdata.com/v4/rockets").json()
-        except: return []
+        try:
+            return requests.get("https://api.spacexdata.com/v4/rockets").json()
+        except:
+            return []
 
     def get_launches(self):
-        try: return requests.get("https://api.spacexdata.com/v4/launches").json()
-        except: return []
+        try:
+            return requests.get("https://api.spacexdata.com/v4/launches").json()
+        except:
+            return []
 
     def get_landpads(self):
-        try: return requests.get("https://api.spacexdata.com/v4/landpads").json()
-        except: return []
+        try:
+            return requests.get("https://api.spacexdata.com/v4/landpads").json()
+        except:
+            return []
 
     def get_launchpads(self):
-        try: return requests.get("https://api.spacexdata.com/v4/launchpads").json()
-        except: return []
+        try:
+            return requests.get("https://api.spacexdata.com/v4/launchpads").json()
+        except:
+            return []
 
 api = SpaceAPI()
 
 
 # -----------------------------
-# Helper: laad database
-# -----------------------------
-def load_db():
-    if not os.path.exists(DB_FILE):
-        with open(DB_FILE, 'w') as f:
-            json.dump([], f)
-        return []
-
-    with open(DB_FILE, 'r') as f:
-        try:
-            return json.load(f)
-        except:
-            return []
-
-
-# -----------------------------
-# Helper: opslaan database
-# -----------------------------
-def save_db(missions):
-    with open(DB_FILE, 'w') as f:
-        json.dump(missions, f, indent=4)
-
-
-# -----------------------------
-# GET mission options
+# OPTIONS
 # -----------------------------
 @app.route('/api/mission-options', methods=['GET'])
 def get_options():
@@ -70,64 +72,79 @@ def get_options():
 
 
 # -----------------------------
-# POST: nieuwe missie opslaan
+# CREATE MISSION
 # -----------------------------
 @app.route('/api/launch', methods=['POST'])
 def launch():
-    data = request.json
+    try:
+        data = request.json
 
-    missions = load_db()
-    missions.append(data)
-    save_db(missions)
+        if not data:
+            return jsonify({"error": "No data received"}), 400
 
-    mission_id = len(missions) - 1  # index als ID
+        result = missions_collection.insert_one(data)
 
-    return jsonify({
-        "status": "success",
-        "id": mission_id,
-        "message": "Missie succesvol opgeslagen!"
-    })
+        return jsonify({
+            "status": "success",
+            "id": str(result.inserted_id),
+            "message": "Mission saved!"
+        })
+
+    except Exception as e:
+        print("ERROR /launch:", e)
+        return jsonify({"error": str(e)}), 500
 
 
 # -----------------------------
-# GET: alle missies
+# GET ALL MISSIONS
 # -----------------------------
 @app.route('/api/missions', methods=['GET'])
 def get_missions():
-    return jsonify(load_db())
+    missions = list(missions_collection.find())
+
+    for m in missions:
+        m["_id"] = str(m["_id"])
+
+    return jsonify(missions)
 
 
 # -----------------------------
-# GET: één missie op ID
+# GET SINGLE MISSION
 # -----------------------------
-@app.route('/api/missions/<int:mission_id>', methods=['GET'])
-def get_mission(mission_id):
-    missions = load_db()
+@app.route('/api/missions/<id>', methods=['GET'])
+def get_mission(id):
+    try:
+        mission = missions_collection.find_one({"_id": ObjectId(id)})
 
-    if 0 <= mission_id < len(missions):
-        return jsonify(missions[mission_id])
+        if not mission:
+            return jsonify({"error": "Mission not found"}), 404
 
-    return jsonify({"error": "Mission not found"}), 404
+        mission["_id"] = str(mission["_id"])
+        return jsonify(mission)
 
-
-# -----------------------------
-# DELETE: missie verwijderen
-# -----------------------------
-@app.route('/api/missions/<int:mission_id>', methods=['DELETE'])
-def delete_mission(mission_id):
-    missions = load_db()
-
-    if 0 <= mission_id < len(missions):
-        missions.pop(mission_id)
-        save_db(missions)
-        return jsonify({"status": "success"})
-
-    return jsonify({"status": "error"}), 404
+    except InvalidId:
+        return jsonify({"error": "Invalid ID"}), 400
 
 
 # -----------------------------
-# Start server
+# DELETE MISSION
+# -----------------------------
+@app.route('/api/missions/<id>', methods=['DELETE'])
+def delete_mission(id):
+    try:
+        result = missions_collection.delete_one({"_id": ObjectId(id)})
+
+        if result.deleted_count == 0:
+            return jsonify({"error": "Mission not found"}), 404
+
+        return jsonify({"status": "deleted"})
+
+    except InvalidId:
+        return jsonify({"error": "Invalid ID"}), 400
+
+
+# -----------------------------
+# START SERVER
 # -----------------------------
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
-

@@ -1,96 +1,109 @@
 🚀 Novi‑Naut Mission Control Dashboard
-Een Full‑Stack Mission Control applicatie gebouwd met React (Vite) en Python (Flask).
-Met dit dashboard kunnen gebruikers ruimtemissies plannen, configureren en opslaan met live data uit de SpaceX API.
+Full‑Stack Space Mission Planner — React (Vite) • Flask • MongoDB • SpaceX API
 
-🛠️ Installatie & Setup
-1. Project Initialisatie & Git
-bash
-git init
-npm create vite@latest frontend -- --template react
-cd frontend
-# Verwijder App.css, index.css inhoud en standaard assets in /src
-2. Dependencies Installeren
-Frontend (React):
+Het Novi‑Naut Mission Control Dashboard is een interactieve full‑stack applicatie waarmee gebruikers ruimtemissies kunnen plannen, configureren en opslaan. De frontend haalt live SpaceX‑data op via een eigen Flask‑API‑gateway. Missies worden persistent opgeslagen in MongoDB.
 
-bash
-npm install react-router-dom@6 react-hook-form@7 axios react-calendar
-Backend (Python):
+✨ Features
+🛰️ Mission Planner
+Datumselectie via interactieve kalender
 
-bash
-pip install flask flask-cors requests
-3. Project Structuur
+Crew‑selectie op basis van live SpaceX‑data
+
+Rocket‑selectie met technische details
+
+Launchpad & landpad keuze
+
+Automatisch gegenereerd Mission Manifest
+
+📒 Mission Logbook
+Overzicht van alle opgeslagen missies
+
+Missies verwijderen op basis van ID
+
+Automatische refresh na wijzigingen
+
+🔌 Backend API‑Gateway
+Rockets
+
+Crew
+
+Launchpads
+
+Landpads
+
+Missies opslaan / ophalen / verwijderen
+
+🧱 Tech Stack
+Frontend
+React (Vite)
+
+React Router
+
+React Hook Form
+
+Axios
+
+React Calendar
+
+Backend
+Python (Flask)
+
+Flask‑CORS
+
+Requests (SpaceX API)
+
+MongoDB (Atlas)
+
+PyMongo
+
+python‑dotenv
+
+📂 Projectstructuur
 Code
 /frontend
   /src
     /assets
     /components
     /pages
+
 /backend
   app.py
-  missions.json
-🚀 Project Starten
-Backend starten
+  .env
+🛠️ Installatie & Setup
+1. Repo initialiseren
+bash
+git init
+2. Frontend installeren
+bash
+npm create vite@latest frontend -- --template react
+cd frontend
+npm install react-router-dom react-hook-form axios react-calendar
+3. Backend installeren
 bash
 cd backend
-python app.py
-Backend draait op: http://localhost:5000
-
-Frontend starten
-bash
-cd frontend
-npm run dev
-Frontend draait op: http://localhost:5173
-
-📖 Dashboard Functionaliteit
-1. De Reisplanner (Frontend)
-Datumbepaling via interactieve kalender
-
-Crew & Rocket selectie op basis van live SpaceX API data
-
-Mission Manifest wordt samengesteld uit alle ingevoerde gegevens
-
-2. Het Logboek (DetailMission)
-Toont alle opgeslagen missies uit de backend
-
-Mogelijkheid om missies te verwijderen
-
-Automatische refresh van de lijst
-
-🛰️ Backend Architectuur (Flask)
-De backend vormt de motor van de applicatie. Het is een lichte maar krachtige Flask‑API die drie hoofdtaken uitvoert:
-
-1. API‑Gateway naar SpaceX
-De backend haalt live data op uit de officiële SpaceX API en levert deze in een uniform formaat aan de frontend.
-Dit zorgt ervoor dat de frontend nooit afhankelijk is van ruwe externe API‑responses.
-
-Data die wordt opgehaald:
-
-Rockets
-
-Crews
-
-Launchpads
-
-Landpads
-
-2. Persistent Opslaan van Missies (JSON Database)
-Elke missie die via de frontend wordt aangemaakt, wordt opgeslagen in:
+pip install flask flask-cors requests pymongo python-dotenv
+4. MongoDB configureren
+Maak een .env in /backend:
 
 Code
-backend/missions.json
-De backend:
+MONGO_URI=mongodb+srv://<user>:<pass>@<cluster-url>/?retryWrites=true&w=majority
+DB_NAME=mission_control
+🧠 Backend Architectuur (Flask + MongoDB)
+🔹 SpaceX API‑Gateway
+De backend haalt live data op uit de officiële SpaceX API en levert deze in een uniform formaat aan de frontend.
 
-leest het JSON‑bestand bij elke request
+🔹 Persistent Opslaan van Missies
+Missies worden opgeslagen in MongoDB:
 
-voegt nieuwe missies toe met een automatisch ID
+Automatische ObjectId
 
-bewaart alle data permanent
+Geen file‑locking
 
-verwijdert missies op basis van ID
+Makkelijk filteren & sorteren
 
-Dit maakt de backend ideaal voor prototyping, onderwijs en kleine projecten.
+Cloud‑based (Atlas)
 
-3. REST‑API Endpoints
+🔹 REST‑API Endpoints
 POST /api/launch
 Slaat een nieuwe missie op.
 
@@ -99,49 +112,41 @@ Response:
 json
 {
   "status": "success",
-  "id": 3
+  "id": "6650c1..."
 }
 GET /api/missions
-Retourneert alle opgeslagen missies.
+Retourneert alle missies.
 
 DELETE /api/missions/<id>
-Verwijdert een missie op basis van ID.
+Verwijdert een missie op basis van MongoDB ObjectId.
 
-4. CORS & Veiligheid
-Met flask-cors staat de backend veilige communicatie toe tussen:
-
-Frontend: http://localhost:5173
-
-Backend: http://localhost:5000
-
-Alle endpoints zijn alleen binnen deze trusted omgeving toegankelijk.
-
-5. Waarom deze Backend‑opzet werkt
-Simpel & schaalbaar
-
-Geen dataverlies
-
-Frontend‑vriendelijke data
-
-Veilig door CORS‑configuratie
-
-Makkelijk uitbreidbaar naar echte databases
-
-📂 Git Workflow
-Nieuwe repo maken op GitHub
-
-Koppelen:
-
+🚀 Project starten
+Backend
 bash
-git remote add origin [URL]
-Werken in feature branch:
+cd backend
+python app.py
+Backend draait op: http://localhost:5000
 
+Frontend
+bash
+cd frontend
+npm run dev
+Frontend draait op: http://localhost:5173
+
+🔐 CORS & Veiligheid
+De backend staat alleen requests toe vanaf:
+
+http://localhost:5173
+
+http://localhost:5000
+
+🌱 Git Workflow
 bash
 git checkout -b feature/mission-control
-Pushen:
-
-bash
+git add .
+git commit -m "Add mission control feature"
 git push origin feature/mission-control
-Pull Request openen naar main
+Open daarna een Pull Request naar main.
 
-Ontwikkeld door: PixelPopping@Productions
+👨‍🚀 Ontwikkeld door
+PixelPopping Productions
