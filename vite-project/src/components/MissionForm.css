@@ -1,0 +1,78 @@
+@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@200..900&display=swap');
+
+
+ header .unbounded-title-mission  {
+  font-family: "Unbounded", sans-serif;
+  font-weight: 700;
+  font-size: 120px;
+  color: red;
+  -webkit-text-stroke: 5px #0B3D91;
+  margin: 0;
+}
+
+
+.text-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+
+.form-input-outer{
+    display: flex;
+    flex-direction: row;
+    flex-basis: 100%;
+}
+
+.inner-form-mission {
+    flex-basis: 100%;
+    width: 800px;
+}
+
+
+option{
+    width: 100px;
+    padding: 20px;
+}
+
+select{
+    width: 100%;
+    padding: 20px;
+    border: solid black 10px;
+}
+
+input{
+    width: 100%;
+    padding: 20px;
+    border: solid black 10px;
+}
+
+.placeholder{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 50px;
+    padding: 20px;
+}
+
+.button-outer{
+    display: flex;
+    flex-direction: row;
+    flex-basis: 100%;
+    justify-content: center;
+}
+.inner-container-submit{
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: center;
+    row-gap: 20px;
+    width: 300px;
+
+}
+
+.submit-mission,
+.submit {
+    width: 100%;
+    padding: 20px;
+    flex-grow: 1;
+}
