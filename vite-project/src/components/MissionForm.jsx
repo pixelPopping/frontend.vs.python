@@ -31,15 +31,14 @@ const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
     return (
         <div className="outer-form">
             <form onSubmit={handleSubmit(onSubmit)}>
-
+             <div className='container-position'>
+                <div className='outer'>
+                <div className='inner-container-submit'>
                 <div className="text-container">
                     <header>
                         <h1 className="unbounded-title-mission">Mission Control</h1>
                     </header>
                 </div>
-                <div className='container-position'>
-                <div className='outer'>
-                <div className='inner-container-submit'>
                 <section className="button-section">
                     <button 
                         type="submit" 
