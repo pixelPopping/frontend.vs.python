@@ -1,13 +1,36 @@
 @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@200..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Pixelify+Sans:wght@400..700&family=Unbounded:wght@200..900&display=swap');
 
 
  header .unbounded-title-mission  {
   font-family: "Unbounded", sans-serif;
   font-weight: 700;
-  font-size: 120px;
+  font-size: clamp(2rem, 10vw, 120px);
   color: red;
   -webkit-text-stroke: 5px #0B3D91;
   margin: 0;
+}
+
+
+.text{
+    display: flex;
+    flex-direction: column;
+    row-gap: 50px;
+}
+
+label{
+    text-align: start;
+
+}
+
+.text label{
+    display: flex;
+    flex-direction: row;
+    gap: 100px;
+    font-size: clamp(2rem, 10vw, 20px);
+    font-family: "Unbounded", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
 }
 
 
@@ -25,8 +48,10 @@
 }
 
 .inner-form-mission {
-    flex-basis: 100%;
-    width: 800px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
 }
 
 
@@ -47,26 +72,37 @@ input{
     border: solid black 10px;
 }
 
-.placeholder{
+
+.container-position{
     display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 50px;
-    padding: 20px;
+    flex-direction: column;
+    width: 100%;
+    padding-bottom: 20px;
 }
 
-.button-outer{
+.outer{
     display: flex;
     flex-direction: row;
-    flex-basis: 100%;
+    width: 100%;
     justify-content: center;
+    padding-top: 20px;
 }
+
+
 .inner-container-submit{
     display: flex;
-    flex-direction: column-reverse;
+    flex-direction: column;
     justify-content: center;
-    row-gap: 20px;
-    width: 300px;
+    width: 800px;
+    margin: 50px;
+    margin-top: 0;
+}
+
+.button-section{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    gap: 100px;
 
 }
 
@@ -74,5 +110,5 @@ input{
 .submit {
     width: 100%;
     padding: 20px;
-    flex-grow: 1;
+    flex-grow: 1; 
 }
