@@ -11,12 +11,10 @@ const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
     const destination = watch("city");
     const missionAction = watch("missionAction");
 
-    // reset na succes
     useEffect(() => {
         if (isSuccess) reset();
     }, [isSuccess, reset]);
 
-    // helper als suggestie (NIET overschrijven!)
     useEffect(() => {
         if (!destination) return;
 
@@ -31,18 +29,17 @@ const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
     return (
         <div className="outer-form">
             <form onSubmit={handleSubmit(onSubmit)}>
-             <div className='container-position'>
-                <div className='outer'>
-                <div className='inner-container-submit'>
+
                 <div className="text-container">
                     <header>
                         <h1 className="unbounded-title-mission">Mission Control</h1>
                     </header>
                 </div>
-                <section className="button-section">
-                    <button 
-                        type="submit" 
-                        className="submit-mission" 
+
+                <div className="button-section">
+                    <button
+                        type="submit"
+                        className="submit-mission"
                         disabled={loading}
                     >
                         Launch
@@ -55,15 +52,14 @@ const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
                     >
                         Random
                     </button>
-                </section>
                 </div>
-                </div>
-                </div>
+
                 <div className="form-input-outer">
                     <section className="inner-form-mission">
-                        <article className='text'>
+                        <article className="text">
 
-                            <label className='placeholder'>Captain:
+                            <label className="placeholder">
+                                Captain:
                                 <select {...register("captain", { required: true })}>
                                     <option value="">Select</option>
                                     {options?.astronauts?.map(a => (
@@ -72,7 +68,8 @@ const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
                                 </select>
                             </label>
 
-                            <label className='placeholder'>Crew1:
+                            <label className="placeholder">
+                                Crew1:
                                 <select {...register("crewMember1", { required: true })}>
                                     <option value="">Select</option>
                                     {options?.astronauts?.map(a => (
@@ -81,7 +78,8 @@ const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
                                 </select>
                             </label>
 
-                            <label className='placeholder'>Crew2:
+                            <label className="placeholder">
+                                Crew2:
                                 <select {...register("crewMember2", { required: true })}>
                                     <option value="">Select</option>
                                     {options?.astronauts?.map(a => (
@@ -90,7 +88,8 @@ const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
                                 </select>
                             </label>
 
-                            <label className='placeholder'>Rocket:
+                            <label className="placeholder">
+                                Rocket:
                                 <select {...register("rocket", { required: true })}>
                                     <option value="">Select</option>
                                     {options?.rockets?.map(r => (
@@ -99,7 +98,8 @@ const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
                                 </select>
                             </label>
 
-                            <label className='placeholder'>Launch Pad:
+                            <label className="placeholder">
+                                Launch Pad:
                                 <select {...register("launchPad", { required: true })}>
                                     <option value="">Select</option>
                                     {options?.launches?.map(l => (
@@ -108,7 +108,8 @@ const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
                                 </select>
                             </label>
 
-                            <label className='placeholder'>Landing Pad:
+                            <label className="placeholder">
+                                Landing Pad:
                                 <select {...register("landingPad", { required: true })}>
                                     <option value="">Select</option>
                                     {options?.landpads?.map(lp => (
@@ -117,7 +118,8 @@ const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
                                 </select>
                             </label>
 
-                            <label className='placeholder'>Mission Action:
+                            <label className="placeholder">
+                                Mission Action:
                                 <select {...register("missionAction", { required: true })}>
                                     <option value="">Select action</option>
                                     <option value="stay">Blijven</option>
@@ -126,11 +128,12 @@ const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
                                 </select>
                             </label>
 
-                            <label className='placeholder'>Destination:
-                                <input 
-                                    type="text" 
-                                    {...register("city")} 
-                                    placeholder="Destination City" 
+                            <label className="placeholder">
+                                Destination:
+                                <input
+                                    type="text"
+                                    {...register("city")}
+                                    placeholder="Destination City"
                                 />
                             </label>
 
@@ -144,3 +147,4 @@ const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
 };
 
 export default MissionForm;
+

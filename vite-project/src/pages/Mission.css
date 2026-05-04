@@ -4,49 +4,70 @@
     display: flex;
     flex-direction: column;
     padding-bottom: 100px;
-}
-
-
-.mission-outer-form{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-bottom: 100px;
-}
-
-.outer-form{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-width: 1200px;
-}
-
-.view-and-submit-container{
-    display: flex;
-    flex-direction: row;
-    width: 300px;
-    margin-top: 20px;
-}
-
-.outer-submit-mission{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-}
-
-.submit-missions{
     width: 100%;
-    padding: 20px;
-    flex-grow: 1;
-    flex-shrink: 0;
+}
+
+.mission-outer-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.outer-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin: 40px 0;
 }
 
 .unbounded {
-  font-family: "Unbounded", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 700;
-  font-style: normal;
-  font-size: 50px;
-  text-align: center;
+    font-family: "Unbounded", sans-serif;
+    font-weight: 700;
+    font-size: 50px;
+    text-align: center;
 }
 
+.button-section {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin: 20px 0;
+    width: 100%;
+}
+
+.submit-mission {
+    padding: 15px 30px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.submit {
+    padding: 15px 30px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.form-input-outer {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.inner-form-mission {
+    width: 100%;
+    width: 800px;
+}
+
+.text {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.placeholder {
+    display: flex;
+    flex-direction: column;
+    font-weight: 500;
+}

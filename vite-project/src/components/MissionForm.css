@@ -1,26 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@200..900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Pixelify+Sans:wght@400..700&family=Unbounded:wght@200..900&display=swap');
 
-
- header .unbounded-title-mission  {
+header .unbounded-title-mission  {
   font-family: "Unbounded", sans-serif;
   font-weight: 700;
   font-size: clamp(2rem, 10vw, 120px);
   color: red;
   -webkit-text-stroke: 5px #0B3D91;
   margin: 0;
+  padding: 20px;
 }
 
-
-.text{
-    display: flex;
-    flex-direction: column;
-    row-gap: 50px;
-}
 
 label{
     text-align: start;
-
 }
 
 .text label{
@@ -33,27 +26,25 @@ label{
     font-style: normal;
 }
 
-
 .text-container {
     display: flex;
     flex-direction: column;
     width: 100%;
 }
 
-
 .form-input-outer{
     display: flex;
     flex-direction: row;
-    flex-basis: 100%;
+    padding: 40px;
+    width: 800px;
+    width: 100%;
 }
 
 .inner-form-mission {
     display: flex;
     flex-direction: column;
-    width: 100%;
-
+    width: 100vw;
 }
-
 
 option{
     width: 100px;
@@ -69,15 +60,13 @@ select{
 input{
     width: 100%;
     padding: 20px;
-    border: solid black 10px;
-}
 
+}
 
 .container-position{
     display: flex;
     flex-direction: column;
     width: 100%;
-    padding-bottom: 20px;
 }
 
 .outer{
@@ -85,30 +74,21 @@ input{
     flex-direction: row;
     width: 100%;
     justify-content: center;
-    padding-top: 20px;
-}
-
-
-.inner-container-submit{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 800px;
-    margin: 50px;
-    margin-top: 0;
 }
 
 .button-section{
     display: flex;
     flex-direction: row;
+    justify-content: center;
+    gap: 40px;
     width: 100%;
-    gap: 100px;
-
+    margin: 20px 0;
 }
 
 .submit-mission,
 .submit {
-    width: 100%;
+    width: 200px;
     padding: 20px;
-    flex-grow: 1; 
+    flex-grow: 0;
+    cursor: pointer;
 }
