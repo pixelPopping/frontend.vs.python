@@ -148,5 +148,17 @@ git commit -m "Add mission control feature"
 git push origin feature/mission-control
 Open daarna een Pull Request naar main.
 
+Structuur
+
+LOGIN (JWT)
+  ↓
+AuthContext (role)
+  ↓
+SavedMission (UI filtering)
+  ↓
+Flask API (security check)
+  ↓
+MongoDB (filtered data)
+
 👨‍🚀 Ontwikkeld door
 PixelPopping Productions

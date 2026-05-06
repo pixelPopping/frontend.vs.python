@@ -1,18 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import './Home.css';
 import '../App.css';
 
+import { AuthContext } from '../context/AuthContext';
+
 function Home() {
   const [dateRange, setDateRange] = useState([new Date(), new Date()]);
   const navigate = useNavigate();
+
+  const { isAuth, user } = useContext(AuthContext);
 
   const handleNext = () => {
     const start = dateRange[0].toLocaleDateString('nl-NL');
     const end = dateRange[1].toLocaleDateString('nl-NL');
 
+    // 🔐 If not logged in → send to login
+    if (!isAuth) {
+      navigate('/signin');
+      return;
+    }
+
+    // 👨‍✈️ Captain → captain dashboard flow
+    if (user?.role === "captain") {
+      navigate('/captain', {
+        state: { departure: start, returnDate: end }
+      });
+      return;
+    }
+
+    // 👨‍🚀 Crew → crew dashboard flow
+    if (user?.role === "crew") {
+      navigate('/crew', {
+        state: { departure: start, returnDate: end }
+      });
+      return;
+    }
+
+    // 🚀 fallback → mission planner
     navigate('/mission', {
       state: { departure: start, returnDate: end }
     });
@@ -75,4 +102,3 @@ function Home() {
 }
 
 export default Home;
-

@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import MissionDetailCard from '../components/MissionDetailCard';
+import { AuthContext } from '../context/AuthContext';
 import './DetailMission.css';
 
 const API = "http://localhost:5000";
@@ -10,10 +11,20 @@ function SavedMission() {
     const [missions, setMissions] = useState([]);
     const navigate = useNavigate();
 
+    const { user } = useContext(AuthContext);
+
+    const token = localStorage.getItem("token");
+
     const fetchMissions = async () => {
         try {
-            const res = await axios.get(`${API}/api/missions`);
+            const res = await axios.get(`${API}/api/missions`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
             setMissions(res.data);
+
         } catch (err) {
             console.error("Fout bij ophalen missies:", err);
         }
@@ -25,12 +36,20 @@ function SavedMission() {
 
     const handleDelete = async (id) => {
         try {
-            await axios.delete(`${API}/api/missions/${id}`);
+            await axios.delete(`${API}/api/missions/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
             fetchMissions();
+
         } catch (err) {
             console.error("Delete fout:", err);
         }
     };
+
+    const isCaptain = user?.role === "captain";
 
     return (
         <main className="detail-outer-form">
@@ -43,7 +62,7 @@ function SavedMission() {
                         className="submit"
                         onClick={() => navigate('/mission')}
                     >
-                        Terug naar Planner
+                        Back to Planner
                     </button>
                 </div>
 
@@ -57,11 +76,13 @@ function SavedMission() {
                                     index={m._id}
                                     label="Mission#"
                                     text={m}
-                                    onClick={() => handleDelete(m._id)}
+                                    
+                                    // 👇 delete alleen voor captain
+                                    onClick={isCaptain ? () => handleDelete(m._id) : null}
                                 />
                             ))
                         ) : (
-                            <p>Geen missies gevonden.</p>
+                            <p>No missions found.</p>
                         )}
 
                     </div>

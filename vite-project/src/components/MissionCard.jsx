@@ -1,18 +1,26 @@
-function MissionCard({ id, label, onClick, text }) {
+function MissionCard({ id, label, text, isCaptain, onDelete, onEdit }) {
     return (
-        <article className="mission-card">
+        <div className="mission-card">
 
-            <h3>🚀 {label}</h3>
-            <p><strong>Periode:</strong> {text.departure} tot {text.returnDate}</p>
-            <p><strong>Captain:</strong> {text.captain}</p>
-            <p><strong>Crew:</strong> {text.crewMember1} & {text.crewMember2}</p>
-            <p><strong>Rocket:</strong> {text.rocket}</p>
-            <p><strong>Destination:</strong> {text.city}</p>
-            <p><strong>Strategy:</strong> {text.marsAction}</p>
+            <h3>{label}</h3>
 
-            <button onClick={onClick} className="submit">Ok</button>
+            <p>{text.departure} → {text.returnDate}</p>
+            <p>Rocket: {text.rocket}</p>
+            <p>Destination: {text.city}</p>
 
-        </article>
+            <p>Crew:</p>
+            {text.crew?.map((c) => (
+                <p key={c}>👨‍🚀 {c}</p>
+            ))}
+
+            {isCaptain && (
+                <div>
+                    <button onClick={() => onEdit?.(id)}>Edit</button>
+                    <button onClick={() => onDelete?.(id)}>Delete</button>
+                </div>
+            )}
+
+        </div>
     );
 }
 
