@@ -42,7 +42,6 @@ function CrewManager({ missionId, crew }) {
                 </div>
             ))}
 
-            {/* demo add */}
             <button onClick={() => addCrew("USER_ID_HERE")}>
                 + Add Crew
             </button>
