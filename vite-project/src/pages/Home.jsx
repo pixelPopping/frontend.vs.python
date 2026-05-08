@@ -17,13 +17,13 @@ function Home() {
     const start = dateRange[0].toLocaleDateString('nl-NL');
     const end = dateRange[1].toLocaleDateString('nl-NL');
 
-    // 🔐 If not logged in → send to login
+    
     if (!isAuth) {
       navigate('/signin');
       return;
     }
 
-    // 👨‍✈️ Captain → captain dashboard flow
+    
     if (user?.role === "captain") {
       navigate('/captain', {
         state: { departure: start, returnDate: end }
@@ -31,7 +31,7 @@ function Home() {
       return;
     }
 
-    // 👨‍🚀 Crew → crew dashboard flow
+    
     if (user?.role === "crew") {
       navigate('/crew', {
         state: { departure: start, returnDate: end }
@@ -39,7 +39,7 @@ function Home() {
       return;
     }
 
-    // 🚀 fallback → mission planner
+    
     navigate('/mission', {
       state: { departure: start, returnDate: end }
     });
@@ -47,10 +47,10 @@ function Home() {
 
   return (
     <>
-      {/* Background */}
+     
       <div className="backgroundimg" aria-hidden="true"></div>
 
-      {/* HEADER */}
+      
       <div className="header-container">
         <div className="novilogo"></div>
 
@@ -59,7 +59,7 @@ function Home() {
         </header>
       </div>
 
-      {/* MAIN */}
+     
       <div className="outer-layout">
         <main className="main-outer-form">
           <div className="inner-form">
@@ -93,7 +93,7 @@ function Home() {
         </main>
       </div>
 
-      {/* FOOTER */}
+      
       <footer>
         <h2>PixelPopping@Productions</h2>
       </footer>

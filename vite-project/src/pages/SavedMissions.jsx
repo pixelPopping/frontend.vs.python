@@ -1,96 +1,62 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+// src/pages/SavedMissions.jsx
+
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import MissionDetailCard from '../components/MissionDetailCard';
-import { AuthContext } from '../context/AuthContext';
-import './DetailMission.css';
+import DetailMissionCard from '../components/MissionDetailCard';
 
 const API = "http://localhost:5000";
 
-function SavedMission() {
+function SavedMissions() {
+
     const [missions, setMissions] = useState([]);
-    const navigate = useNavigate();
-
-    const { user } = useContext(AuthContext);
-
-    const token = localStorage.getItem("token");
-
-    const fetchMissions = async () => {
-        try {
-            const res = await axios.get(`${API}/api/missions`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-
-            setMissions(res.data);
-
-        } catch (err) {
-            console.error("Fout bij ophalen missies:", err);
-        }
-    };
 
     useEffect(() => {
-        fetchMissions();
-    }, []);
 
-    const handleDelete = async (id) => {
-        try {
-            await axios.delete(`${API}/api/missions/${id}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
+        const token = localStorage.getItem("token");
 
-            fetchMissions();
+        async function fetchMissions() {
 
-        } catch (err) {
-            console.error("Delete fout:", err);
+            try {
+
+                const res = await axios.get(
+                    `${API}/api/missions`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
+                );
+
+                setMissions(res.data);
+
+            } catch (err) {
+
+                console.error(err);
+            }
         }
-    };
 
-    const isCaptain = user?.role === "captain";
+        fetchMissions();
+
+    }, []);
 
     return (
         <main className="detail-outer-form">
-            <div className="outer-form-detail">
 
-                <div className="text-container">
-                    <h1>Mission History</h1>
+            <h1>Saved Missions</h1>
 
-                    <button
-                        className="submit"
-                        onClick={() => navigate('/mission')}
-                    >
-                        Back to Planner
-                    </button>
-                </div>
+            {missions.map((mission, index) => (
 
-                <section className="detail-mission-outer">
-                    <div className="inner-form-mission-detail">
+                <DetailMissionCard
+                    key={mission._id}
+                    label="Mission"
+                    text={mission}
+                    index={index}
+                />
 
-                        {missions.length > 0 ? (
-                            missions.map((m) => (
-                                <MissionDetailCard
-                                    key={m._id}
-                                    index={m._id}
-                                    label="Mission#"
-                                    text={m}
-                                    
-                                    // 👇 delete alleen voor captain
-                                    onClick={isCaptain ? () => handleDelete(m._id) : null}
-                                />
-                            ))
-                        ) : (
-                            <p>No missions found.</p>
-                        )}
+            ))}
 
-                    </div>
-                </section>
-
-            </div>
         </main>
     );
 }
 
-export default SavedMission;
+export default SavedMissions;

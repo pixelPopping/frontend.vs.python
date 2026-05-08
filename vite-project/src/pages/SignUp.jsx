@@ -1,58 +1,52 @@
-import { useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import RegisterFields from "../components/RegisterFields.jsx";
+import { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import RegisterFields from '../components/RegisterFields';
+
+const API = 'http://localhost:5000';
 
 function SignUp() {
+
     const navigate = useNavigate();
 
     const [loading, setLoading] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
+    const [errorMessage, setErrorMessage] = useState('');
 
-    const handleFormSubmit = async (data) => {
+    async function handleSubmit(data) {
+
         setLoading(true);
-        setErrorMessage("");
+        setErrorMessage('');
 
         try {
-            const response = await axios.post(
-                "http://localhost:5000/api/register",
-                {
-                    email: data.email,
-                    password: data.password,
-                    inviteCode: data.inviteCode, // 👈 belangrijk voor jouw auth systeem
-                },
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                }
-            );
 
-            console.log("User created:", response.data);
+            await axios.post(`${API}/api/register`, {
+                firstname: data.firstname,
+                lastname: data.lastname,
+                city: data.city,
+                phone: data.phone,
+                email: data.email,
+                password: data.password,
+                inviteCode: data.inviteCode,
+            });
 
-            navigate("/signin");
+            navigate('/signin');
+
         } catch (error) {
-            setErrorMessage(
-                error.response?.data?.error ||
-                "Registratie mislukt. Probeer opnieuw."
-            );
+            console.error(error);
+            setErrorMessage('Registration failed');
         } finally {
             setLoading(false);
         }
-    };
+    }
 
     return (
-        <main className="signup-page">
-            <header>
-                <h1>Register</h1>
-                <p>Create your account</p>
-            </header>
-
-            {errorMessage && <p className="error">{errorMessage}</p>}
+        <main>
+            <h1>Register</h1>
 
             <RegisterFields
-                onSubmit={handleFormSubmit}
+                onSubmit={handleSubmit}
                 loading={loading}
+                errorMessage={errorMessage}
             />
         </main>
     );

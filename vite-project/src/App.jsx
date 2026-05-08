@@ -1,69 +1,53 @@
-import { Routes, Route, Navigate } from "react-router-dom";
-import { useContext } from "react";
+import { Routes, Route } from 'react-router-dom';
 
-import Navigation from "./navigation/Navigation";
+import Navigation from './navigation/Navigation';
 
-import Home from "./pages/Home";
-import Contact from "./pages/Contact";
-import Mission from "./pages/Mission";
-import DetailMission from "./pages/DetailMission";
-import RocketLaunch from "./pages/RocketLaunch";
-import SavedMissions from "./pages/SavedMissions";
+import Home from './pages/Home';
+import Contact from './pages/Contact';
+import Mission from './pages/Mission';
+import SavedMissions from './pages/SavedMissions';
+import RocketLaunch from './pages/RocketLaunch';
 
-import SignIn from "./pages/SignUp";
-import SignUp from "./pages/SignUp";
+import SignIn from './pages/SignIn';
+import SignUp from './pages/SignUp';
 
-import CaptainDashboard from "./pages/CaptainDashboard";
-import CrewDashboard from "./pages/CrewDashboard";
+import ProfilePage from './pages/ProfilePage';
 
-import { AuthContext } from "./context/AuthContext";
+import CaptainDashboard from './pages/CaptainDashboard';
+import CrewDashboard from './pages/CrewDashboard';
 
-/* 🔐 PROTECTED ROUTE */
-function ProtectedRoute({ children }) {
-    const { isAuth } = useContext(AuthContext);
-
-    if (!isAuth) {
-        return <Navigate to="/signin" replace />;
-    }
-
-    return children;
-}
-
-/* 👨‍✈️ ROLE ROUTE */
-function RoleRoute({ children, role }) {
-    const { isAuth, user } = useContext(AuthContext);
-
-    if (!isAuth) {
-        return <Navigate to="/signin" replace />;
-    }
-
-    if (user?.roles !== role && user?.role !== role) {
-        return <Navigate to="/" replace />;
-    }
-
-    return children;
-}
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
+
     return (
         <>
+
             <Navigation />
 
             <Routes>
 
-                {/* 🌍 PUBLIC ROUTES */}
                 <Route path="/" element={<Home />} />
+
                 <Route path="/contact" element={<Contact />} />
 
-                {/* 🔐 AUTH ROUTES */}
                 <Route path="/signin" element={<SignIn />} />
+
                 <Route path="/signup" element={<SignUp />} />
 
-                {/* 🚀 PROTECTED ROUTES */}
+                <Route
+                    path="/profilepage"
+                    element={
+                        <ProtectedRoute>
+                            <ProfilePage />
+                        </ProtectedRoute>
+                    }
+                />
+
                 <Route
                     path="/mission"
                     element={
-                        <ProtectedRoute>
+                        <ProtectedRoute role="captain">
                             <Mission />
                         </ProtectedRoute>
                     }
@@ -79,10 +63,19 @@ function App() {
                 />
 
                 <Route
-                    path="/detailmission/:id"
+                    path="/captain-dashboard"
                     element={
-                        <ProtectedRoute>
-                            <DetailMission />
+                        <ProtectedRoute role="captain">
+                            <CaptainDashboard />
+                        </ProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/crew-dashboard"
+                    element={
+                        <ProtectedRoute role="crew">
+                            <CrewDashboard />
                         </ProtectedRoute>
                     }
                 />
@@ -96,27 +89,8 @@ function App() {
                     }
                 />
 
-                {/* 👨‍✈️ CAPTAIN ONLY */}
-                <Route
-                    path="/captain"
-                    element={
-                        <RoleRoute role="captain">
-                            <CaptainDashboard />
-                        </RoleRoute>
-                    }
-                />
-
-                {/* 👨‍🚀 CREW ONLY */}
-                <Route
-                    path="/crew"
-                    element={
-                        <RoleRoute role="crew">
-                            <CrewDashboard />
-                        </RoleRoute>
-                    }
-                />
-
             </Routes>
+
         </>
     );
 }

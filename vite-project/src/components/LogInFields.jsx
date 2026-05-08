@@ -1,58 +1,47 @@
-import { useForm } from "react-hook-form";
 
+import { useForm } from 'react-hook-form';
 
-const LoginFields = ({ onSubmit, loading }) => {
+function LoginFields({ onSubmit, loading, errorMessage }) {
+
     const {
         handleSubmit,
-        formState: { errors },
         register,
+        formState: { errors },
     } = useForm();
 
     return (
-        <main className="outer-signin">
-            <section className="inner-signin">
-                <form className="form" onSubmit={handleSubmit(onSubmit)}>
-                    <label htmlFor="email-field">
-                        Email:
-                        <input
-                            type="text"
-                            id="email-field"
-                            {...register("email", {
-                                required: "Email is verplicht",
-                                validate: (value) =>
-                                    value.includes("@") || 'Email moet een "@" bevatten',
-                            })}
-                        />
-                        {errors.email && (
-                            <p className="error">{errors.email.message}</p>
-                        )}
-                    </label>
+        <form onSubmit={handleSubmit(onSubmit)}>
 
-                    <label htmlFor="password-field">
-                        Password:
-                        <input
-                            type="password"
-                            id="password-field"
-                            {...register("password", {
-                                required: "Password is obliged",
-                                minLength: {
-                                    value: 8,
-                                    message: "Minimaal 8 characters long",
-                                },
-                            })}
-                        />
-                        {errors.password && (
-                            <p className="error">{errors.password.message}</p>
-                        )}
-                    </label>
+            <label>
+                Email
+                <input
+                    type="email"
+                    {...register('email', {
+                        required: 'Email required',
+                    })}
+                />
+                {errors.email && <p>{errors.email.message}</p>}
+            </label>
 
-                    <button type="submit" disabled={loading}>
-                        {loading ? "Just one Moment..." : "Log In"}
-                    </button>
-                </form>
-            </section>
-        </main>
+            <label>
+                Password
+                <input
+                    type="password"
+                    {...register('password', {
+                        required: 'Password required',
+                    })}
+                />
+                {errors.password && <p>{errors.password.message}</p>}
+            </label>
+
+            <button type="submit" disabled={loading}>
+                {loading ? 'Loading...' : 'Login'}
+            </button>
+
+            {errorMessage && <p>{errorMessage}</p>}
+
+        </form>
     );
-};
+}
 
 export default LoginFields;

@@ -1,68 +1,87 @@
-import { useContext, useEffect, useState } from "react";
+// src/pages/CaptainDashboard.jsx
+
+import { useEffect, useState } from "react";
 import axios from "axios";
-import { AuthContext } from "../context/AuthContext";
 import MissionCard from "../components/MissionCard";
-import CrewManager from "../components/CrewManager";
+import "./CaptainDashboard.css";
 
 const API = "http://localhost:5000";
 
 function CaptainDashboard() {
-    const { user } = useContext(AuthContext);
+
     const [missions, setMissions] = useState([]);
+    const [error, setError] = useState("");
 
     const token = localStorage.getItem("token");
 
-    const fetchMissions = async () => {
-        const res = await axios.get(`${API}/api/missions`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                userId: user.id,
-                role: user.role,
-            },
-        });
+    async function fetchMissions() {
 
-        setMissions(res.data);
-    };
+        try {
+
+            const res = await axios.get(
+                `${API}/api/missions`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+
+            setMissions(res.data);
+
+        } catch (err) {
+            setError("Could not load missions");
+        }
+    }
 
     useEffect(() => {
         fetchMissions();
     }, []);
 
-    const deleteMission = async (id) => {
-        await axios.delete(`${API}/api/missions/${id}`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
+    async function deleteMission(id) {
 
-        fetchMissions();
-    };
+        try {
+
+            await axios.delete(
+                `${API}/api/missions/${id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+
+            fetchMissions();
+
+        } catch (err) {
+            console.error(err);
+        }
+    }
 
     return (
-        <div>
-            <h1>👨‍✈️ Captain Dashboard</h1>
+        <main className="dashboard-page">
 
-            {missions.map((m) => (
-                <div key={m._id}>
+            <h1>Captain Dashboard</h1>
+
+            {error && <p>{error}</p>}
+
+            <section className="dashboard-grid">
+
+                {missions.map((mission) => (
 
                     <MissionCard
-                        id={m._id}
+                        key={mission._id}
+                        id={mission._id}
                         label="Mission"
-                        text={m}
-                        isCaptain={true}
-                        onDelete={deleteMission}
-                        onEdit={(id) => console.log(id)}
+                        text={mission}
+                        onClick={() => deleteMission(mission._id)}
                     />
 
-                    {/* 👇 CREW MANAGEMENT */}
-                    <CrewManager
-                        missionId={m._id}
-                        crew={m.crew}
-                    />
+                ))}
 
-                </div>
-            ))}
-        </div>
+            </section>
+
+        </main>
     );
 }
 

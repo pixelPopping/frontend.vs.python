@@ -1,65 +1,47 @@
-import { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { AuthContext } from "../context/AuthContext.jsx";
-import LoginFields from "../components/LogInFields.jsx";
+import { useContext, useState } from 'react';
+import axios from 'axios';
+import { AuthContext } from '../context/AuthContext';
+import LogInFields from '../components/RegisterFields';
 
+const API = 'http://localhost:5000';
 
-function LogIn() {
-    const navigate = useNavigate();
+function SignIn() {
     const { login } = useContext(AuthContext);
 
-    const [errorMessage, setErrorMessage] = useState("");
     const [loading, setLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
-    const handleFormSubmit = async (data) => {
+    async function handleSubmit(data) {
         setLoading(true);
-        setErrorMessage("");
+        setErrorMessage('');
 
         try {
-            const response = await axios.post(
-                "http://localhost:5000/api/login",
-                {
-                    email: data.email,
-                    password: data.password,
-                },
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                }
-            );
+            const response = await axios.post(`${API}/api/login`, {
+                email: data.email,
+                password: data.password,
+            });
 
-            const token = response.data.token;
-
-            // 🔐 laat AuthContext alles regelen
-            login(token);
-
-            navigate("/");
+            login(response.data.token);
 
         } catch (error) {
-            setErrorMessage(
-                error.response?.data?.error || "Login failed. Try again."
-            );
+            console.error(error);
+            setErrorMessage('Invalid credentials');
         } finally {
             setLoading(false);
         }
-    };
+    }
 
     return (
-        <main className="signin-page">
-            <header>
-                <h1 className="crapshop">CrapShop</h1>
-                <h2 className="crapshop">Login</h2>
-            </header>
+        <main>
+            <h1>Login</h1>
 
-            {errorMessage && <p className="error">{errorMessage}</p>}
-
-            {loading && <p>Logging in...</p>}
-
-            <LoginFields onSubmit={handleFormSubmit} loading={loading} />
+            <LogInFields
+                onSubmit={handleSubmit}
+                loading={loading}
+                errorMessage={errorMessage}
+            />
         </main>
     );
 }
 
-export default LogIn;
+export default SignIn;

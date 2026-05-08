@@ -1,90 +1,99 @@
-import React from "react";
-import { useForm } from "react-hook-form";
+import { useForm } from 'react-hook-form';
 
-const RegisterFields = ({ onSubmit, loading, errorMessage }) => {
+function RegisterFields({ onSubmit, loading, errorMessage }) {
+
     const {
         handleSubmit,
-        formState: { errors },
         register,
+        formState: { errors },
     } = useForm();
 
     return (
-        <main className="main-outer-form">
-            <div className="outer-form">
+        <form onSubmit={handleSubmit(onSubmit)}>
 
-                <form onSubmit={handleSubmit(onSubmit)}>
+            <label>
+                Firstname
+                <input
+                    type="text"
+                    {...register('firstname', {
+                        required: 'Firstname required',
+                    })}
+                />
+            </label>
 
-                    <div className="text-container">
-                        <h2>Create account</h2>
-                        <p>Register to access the system</p>
-                    </div>
+            <label>
+                Lastname
+                <input
+                    type="text"
+                    {...register('lastname', {
+                        required: 'Lastname required',
+                    })}
+                />
+            </label>
 
-                    <section className="inner-form">
+            <label>
+                City
+                <input
+                    type="text"
+                    {...register('city', {
+                        required: 'City required',
+                    })}
+                />
+            </label>
 
-                        {/* EMAIL */}
-                        <label>
-                            Email:
-                            <input
-                                type="email"
-                                {...register("email", {
-                                    required: "Email is required",
-                                    validate: (v) =>
-                                        v.includes("@") || "Invalid email",
-                                })}
-                            />
-                            {errors.email && (
-                                <p className="error">{errors.email.message}</p>
-                            )}
-                        </label>
+            <label>
+                Phone
+                <input
+                    type="text"
+                    {...register('phone', {
+                        required: 'Phone required',
+                    })}
+                />
+            </label>
 
-                        {/* PASSWORD */}
-                        <label>
-                            Password:
-                            <input
-                                type="password"
-                                {...register("password", {
-                                    required: "Password is required",
-                                    minLength: {
-                                        value: 8,
-                                        message: "Minimum 8 characters",
-                                    },
-                                })}
-                            />
-                            {errors.password && (
-                                <p className="error">{errors.password.message}</p>
-                            )}
-                        </label>
+            <label>
+                Email
+                <input
+                    type="email"
+                    {...register('email', {
+                        required: 'Email required',
+                    })}
+                />
+            </label>
 
-                        {/* INVITE CODE */}
-                        <label>
-                            Invite code:
-                            <input
-                                type="text"
-                                placeholder="CAPTAIN123 / CREW123"
-                                {...register("inviteCode", {
-                                    required: "Invite code is required",
-                                })}
-                            />
-                            {errors.inviteCode && (
-                                <p className="error">{errors.inviteCode.message}</p>
-                            )}
-                        </label>
+            <label>
+                Password
+                <input
+                    type="password"
+                    {...register('password', {
+                        required: 'Password required',
+                        minLength: {
+                            value: 8,
+                            message: 'Minimum 8 characters',
+                        }
+                    })}
+                />
+            </label>
 
-                        {/* SUBMIT */}
-                        <button type="submit" disabled={loading}>
-                            {loading ? "Creating account..." : "Register"}
-                        </button>
+            <label>
+                Invite Code
+                <input
+                    type="text"
+                    placeholder="CAPTAIN123 or CREW123"
+                    {...register('inviteCode', {
+                        required: 'Invite code required',
+                    })}
+                />
+            </label>
 
-                        {/* ERROR */}
-                        {errorMessage && (
-                            <p className="error">{errorMessage}</p>
-                        )}
+            <button type="submit" disabled={loading}>
+                {loading ? 'Loading...' : 'Register'}
+            </button>
 
-                    </section>
-                </form>
-            </div>
-        </main>
+            {errorMessage && <p>{errorMessage}</p>}
+
+        </form>
     );
-};
+}
 
 export default RegisterFields;

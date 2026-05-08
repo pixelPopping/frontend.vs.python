@@ -1,82 +1,36 @@
-import { NavLink, useNavigate } from "react-router-dom";
-import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
+import { NavLink } from 'react-router-dom';
+import { useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
 
 function Navigation() {
+
     const { isAuth, user, logout } = useContext(AuthContext);
-    const navigate = useNavigate();
 
     return (
-        <div className="Navigation">
+        <nav className="navbar">
 
-            <nav className="navbar">
+            <NavLink to="/">Home</NavLink>
 
-                <ul className="unordered-list">
+            {isAuth && user?.role === 'captain' && (
+                <NavLink to="/captain">Captain Dashboard</NavLink>
+            )}
 
-                    <li>
-                        <NavLink to="/" className={({ isActive }) =>
-                            isActive ? "active-link" : "default-link"
-                        }>
-                            Home Page
-                        </NavLink>
-                    </li>
+            {isAuth && user?.role === 'crew' && (
+                <NavLink to="/crew">Crew Dashboard</NavLink>
+            )}
 
-                    <li>
-                        <NavLink to="/mission" className={({ isActive }) =>
-                            isActive ? "active-link" : "default-link"
-                        }>
-                            Mission
-                        </NavLink>
-                    </li>
+            {!isAuth && (
+                <>
+                    <NavLink to="/signin">Login</NavLink>
+                    <NavLink to="/signup">Register</NavLink>
+                </>
+            )}
 
-                    <li>
-                        <NavLink to="/savedMissions" className={({ isActive }) =>
-                            isActive ? "active-link" : "default-link"
-                        }>
-                            Saved Mission
-                        </NavLink>
-                    </li>
+            {isAuth && (
+                <button onClick={logout}>Logout</button>
+            )}
 
-                    <li>
-                        <NavLink to="/contact" className={({ isActive }) =>
-                            isActive ? "active-link" : "default-link"
-                        }>
-                            Contact
-                        </NavLink>
-                    </li>
-
-                </ul>
-
-                {/* 🔐 AUTH SECTION */}
-                <div className="auth-buttons">
-
-                    {!isAuth ? (
-                        <>
-                            <button onClick={() => navigate("/signin")}>
-                                Login
-                            </button>
-
-                            <button onClick={() => navigate("/signup")}>
-                                Register
-                            </button>
-                        </>
-                    ) : (
-                        <>
-                            <span className="user-info">
-                                👨‍🚀 {user?.email}
-                            </span>
-
-                            <button onClick={logout}>
-                                Logout
-                            </button>
-                        </>
-                    )}
-
-                </div>
-
-            </nav>
-
-        </div>
+        </nav>
     );
 }
 

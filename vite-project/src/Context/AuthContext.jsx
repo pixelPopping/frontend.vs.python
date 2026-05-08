@@ -13,33 +13,36 @@ function AuthContextProvider({ children }) {
         status: 'pending',
     });
 
-    // 🔄 Check token bij refresh
     useEffect(() => {
         const token = localStorage.getItem('token');
 
-        if (token) {
-            try {
-                const decoded = jwtDecode(token);
+        if (!token) {
+            setAuthState({
+                isAuth: false,
+                user: null,
+                status: 'done',
+            });
+            return;
+        }
 
-                // ⏰ check expiration
-                if (decoded.exp * 1000 < Date.now()) {
-                    logOut();
-                    return;
-                }
+        try {
+            const decoded = jwtDecode(token);
 
-                setAuthState({
-                    isAuth: true,
-                    user: {
-                        id: decoded.userId,
-                        role: decoded.role,
-                    },
-                    status: 'done',
-                });
-            } catch (error) {
-                console.error("Invalid token:", error);
-                logOut();
-            }
-        } else {
+            setAuthState({
+                isAuth: true,
+                user: {
+                    id: decoded.userId,
+                    email: decoded.email,
+                    role: decoded.role,
+                },
+                status: 'done',
+            });
+
+        } catch (error) {
+            console.error(error);
+
+            localStorage.removeItem('token');
+
             setAuthState({
                 isAuth: false,
                 user: null,
@@ -48,30 +51,29 @@ function AuthContextProvider({ children }) {
         }
     }, []);
 
-    // 🔐 LOGIN
-    function logIn(token) {
-        try {
-            localStorage.setItem('token', token);
+    function login(token) {
+        localStorage.setItem('token', token);
 
-            const decoded = jwtDecode(token);
+        const decoded = jwtDecode(token);
 
-            setAuthState({
-                isAuth: true,
-                user: {
-                    id: decoded.userId,
-                    role: decoded.role,
-                },
-                status: 'done',
-            });
+        setAuthState({
+            isAuth: true,
+            user: {
+                id: decoded.userId,
+                email: decoded.email,
+                role: decoded.role,
+            },
+            status: 'done',
+        });
 
-            navigate('/dashboard'); // pas aan naar jouw route
-        } catch (error) {
-            console.error("Login failed:", error);
+        if (decoded.role === 'captain') {
+            navigate('/captain');
+        } else {
+            navigate('/crew');
         }
     }
 
-    // 🚪 LOGOUT
-    function logOut() {
+    function logout() {
         localStorage.removeItem('token');
 
         setAuthState({
@@ -80,19 +82,18 @@ function AuthContextProvider({ children }) {
             status: 'done',
         });
 
-        navigate('/');
+        navigate('/signin');
     }
 
-    const contextData = {
+    const data = {
         isAuth: authState.isAuth,
         user: authState.user,
-        role: authState.user?.role,
-        login: logIn,
-        logout: logOut,
+        login,
+        logout,
     };
 
     return (
-        <AuthContext.Provider value={contextData}>
+        <AuthContext.Provider value={data}>
             {authState.status === 'pending'
                 ? <p>Loading...</p>
                 : children}
