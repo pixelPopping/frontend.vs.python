@@ -22,7 +22,6 @@ function App() {
 
     return (
         <>
-
             <Navigation />
 
             <Routes>
@@ -62,6 +61,7 @@ function App() {
                     }
                 />
 
+                {/* ⭐ Mooie, nette, gebruikelijke routes */}
                 <Route
                     path="/captain-dashboard"
                     element={
@@ -90,7 +90,6 @@ function App() {
                 />
 
             </Routes>
-
         </>
     );
 }

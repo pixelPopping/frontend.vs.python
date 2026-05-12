@@ -1,15 +1,31 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from "react-hook-form";
 import handleRandom from '../Helpers/handleRandom';
 import getStrategyFromCity from "../Helpers/getStrategyFromCity";
+import axios from "axios";
 import './MissionForm.css';
+
+const API = "http://localhost:5000";
 
 const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
 
     const { register, handleSubmit, setValue, reset, watch } = useForm();
 
+    const [crewMembers, setCrewMembers] = useState([]);
+
     const destination = watch("city");
     const missionAction = watch("missionAction");
+
+    const token = localStorage.getItem("token");
+
+    // Haal crewleden op
+    useEffect(() => {
+        axios.get(`${API}/api/users?role=crew`, {
+            headers: { Authorization: `Bearer ${token}` }
+        })
+        .then(res => setCrewMembers(res.data))
+        .catch(err => console.error(err));
+    }, []);
 
     useEffect(() => {
         if (isSuccess) reset();
@@ -88,6 +104,19 @@ const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
                                 </select>
                             </label>
 
+                            {/* Crew assignment uit database */}
+                            <label className="placeholder">
+                                Assign to Crew Member:
+                                <select {...register("assignedTo")}>
+                                    <option value="">No assignment</option>
+                                    {crewMembers.map(c => (
+                                        <option key={c.id} value={c.id}>
+                                            {c.firstname} {c.lastname}
+                                        </option>
+                                    ))}
+                                </select>
+                            </label>
+
                             <label className="placeholder">
                                 Rocket:
                                 <select {...register("rocket", { required: true })}>
@@ -147,4 +176,3 @@ const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
 };
 
 export default MissionForm;
-

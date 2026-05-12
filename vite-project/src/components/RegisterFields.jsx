@@ -11,87 +11,36 @@ function RegisterFields({ onSubmit, loading, errorMessage }) {
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
 
-            <label>
-                Firstname
-                <input
-                    type="text"
-                    {...register('firstname', {
-                        required: 'Firstname required',
-                    })}
-                />
-            </label>
+            <input placeholder="Firstname" {...register("firstname", { required: true })} />
+            {errors.firstname && <p>Required</p>}
 
-            <label>
-                Lastname
-                <input
-                    type="text"
-                    {...register('lastname', {
-                        required: 'Lastname required',
-                    })}
-                />
-            </label>
+            <input placeholder="Lastname" {...register("lastname", { required: true })} />
+            {errors.lastname && <p>Required</p>}
 
-            <label>
-                City
-                <input
-                    type="text"
-                    {...register('city', {
-                        required: 'City required',
-                    })}
-                />
-            </label>
+            <input placeholder="City" {...register("city", { required: true })} />
+            {errors.city && <p>Required</p>}
 
-            <label>
-                Phone
-                <input
-                    type="text"
-                    {...register('phone', {
-                        required: 'Phone required',
-                    })}
-                />
-            </label>
+            <input placeholder="Phone" {...register("phone", { required: true })} />
+            {errors.phone && <p>Required</p>}
 
-            <label>
-                Email
-                <input
-                    type="email"
-                    {...register('email', {
-                        required: 'Email required',
-                    })}
-                />
-            </label>
+            <input placeholder="Email" {...register("email", { required: true })} />
+            {errors.email && <p>Required</p>}
 
-            <label>
-                Password
-                <input
-                    type="password"
-                    {...register('password', {
-                        required: 'Password required',
-                        minLength: {
-                            value: 8,
-                            message: 'Minimum 8 characters',
-                        }
-                    })}
-                />
-            </label>
+            <input
+                type="password"
+                placeholder="Password"
+                {...register("password", { required: true, minLength: 8 })}
+            />
+            {errors.password && <p>Min 8 chars</p>}
 
-            <label>
-                Invite Code
-                <input
-                    type="text"
-                    placeholder="CAPTAIN123 or CREW123"
-                    {...register('inviteCode', {
-                        required: 'Invite code required',
-                    })}
-                />
-            </label>
+            <input placeholder="Invite Code" {...register("inviteCode", { required: true })} />
+            {errors.inviteCode && <p>Required</p>}
 
-            <button type="submit" disabled={loading}>
-                {loading ? 'Loading...' : 'Register'}
+            <button disabled={loading}>
+                {loading ? "Loading..." : "Login"}
             </button>
 
-            {errorMessage && <p>{errorMessage}</p>}
-
+            {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
         </form>
     );
 }

@@ -1,47 +1,30 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
-import { AuthContext } from "../context/AuthContext";
-import MissionCard from "../components/MissionCard";
+import Mission from "../components/Mission";
 
 const API = "http://localhost:5000";
 
-function CrewDashboard() {
-    const { user } = useContext(AuthContext);
+export default function CrewDashboard() {
     const [missions, setMissions] = useState([]);
-
     const token = localStorage.getItem("token");
 
-    const fetchMissions = async () => {
-        const res = await axios.get(`${API}/api/missions`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                userId: user.id,
-                role: user.role,
-            },
-        });
-
-        setMissions(res.data);
-    };
-
     useEffect(() => {
-        fetchMissions();
+        axios.get(`${API}/api/missions`, {
+            headers: { Authorization: `Bearer ${token}` }
+        })
+        .then(res => setMissions(res.data));
     }, []);
 
     return (
         <div>
-            <h1>👨‍🚀 Crew Dashboard</h1>
+            <h1>Your Missions</h1>
 
-            {missions.map((m) => (
-                <MissionCard
-                    key={m._id}
-                    id={m._id}
-                    label="Mission"
-                    text={m}
-                    isCaptain={false}
-                />
-            ))}
+            <div className="mission-list">
+                {missions.map(m => (
+                    <Mission key={m.id} mission={m} isCaptain={false} />
+                ))}
+            </div>
         </div>
     );
 }
 
-export default CrewDashboard;

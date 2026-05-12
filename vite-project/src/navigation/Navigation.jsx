@@ -12,11 +12,11 @@ function Navigation() {
             <NavLink to="/">Home</NavLink>
 
             {isAuth && user?.role === 'captain' && (
-                <NavLink to="/captain">Captain Dashboard</NavLink>
+                <NavLink to="/captaindashboard">Captain Dashboard</NavLink>
             )}
 
             {isAuth && user?.role === 'crew' && (
-                <NavLink to="/crew">Crew Dashboard</NavLink>
+                <NavLink to="/crewdashboard">Crew Dashboard</NavLink>
             )}
 
             {!isAuth && (

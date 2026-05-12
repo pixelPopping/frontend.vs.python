@@ -14,43 +14,53 @@ function Home() {
   const { isAuth, user } = useContext(AuthContext);
 
   const handleNext = () => {
+
+    // -----------------------------------
+    // SAFETY CHECK (no crash)
+    // -----------------------------------
+    if (!dateRange?.[0] || !dateRange?.[1]) return;
+
     const start = dateRange[0].toLocaleDateString('nl-NL');
     const end = dateRange[1].toLocaleDateString('nl-NL');
 
-    
+    // -----------------------------------
+    // NOT AUTHENTICATED → SAVE STATE
+    // -----------------------------------
     if (!isAuth) {
+      localStorage.setItem(
+        'pendingMission',
+        JSON.stringify({
+          departure: start,
+          returnDate: end
+        })
+      );
+
       navigate('/signin');
       return;
     }
 
-    
-    if (user?.role === "captain") {
-      navigate('/captain', {
-        state: { departure: start, returnDate: end }
-      });
-      return;
-    }
+    // -----------------------------------
+    // ROLE BASED ROUTING
+    // -----------------------------------
+    const routes = {
+      captain: '/captain',
+      crew: '/crew'
+    };
 
-    
-    if (user?.role === "crew") {
-      navigate('/crew', {
-        state: { departure: start, returnDate: end }
-      });
-      return;
-    }
-
-    
-    navigate('/mission', {
-      state: { departure: start, returnDate: end }
+    navigate(routes[user?.role] || '/mission', {
+      state: {
+        departure: start,
+        returnDate: end
+      }
     });
   };
 
   return (
     <>
-     
+      {/* BACKGROUND */}
       <div className="backgroundimg" aria-hidden="true"></div>
 
-      
+      {/* HEADER */}
       <div className="header-container">
         <div className="novilogo"></div>
 
@@ -59,7 +69,7 @@ function Home() {
         </header>
       </div>
 
-     
+      {/* MAIN */}
       <div className="outer-layout">
         <main className="main-outer-form">
           <div className="inner-form">
@@ -81,7 +91,10 @@ function Home() {
                 </article>
 
                 <div className="button-container">
-                  <button onClick={handleNext} className="submit-next">
+                  <button
+                    onClick={handleNext}
+                    className="submit-next"
+                  >
                     Volgende
                   </button>
                 </div>
@@ -93,7 +106,7 @@ function Home() {
         </main>
       </div>
 
-      
+      {/* FOOTER */}
       <footer>
         <h2>PixelPopping@Productions</h2>
       </footer>

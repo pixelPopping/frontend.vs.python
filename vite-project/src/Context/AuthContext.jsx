@@ -1,104 +1,46 @@
-import React, { createContext, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode';
+import { createContext, useState, useEffect } from "react";
+import axios from "axios";
 
-export const AuthContext = createContext({});
+export const AuthContext = createContext();
 
-function AuthContextProvider({ children }) {
-    const navigate = useNavigate();
+const API = "http://localhost:5000";
 
-    const [authState, setAuthState] = useState({
-        isAuth: false,
-        user: null,
-        status: 'pending',
-    });
+export default function AuthContextProvider({ children }) {
+    const [isAuth, setIsAuth] = useState(false);
+    const [user, setUser] = useState(null);
 
+    // check token on refresh
     useEffect(() => {
-        const token = localStorage.getItem('token');
-
-        if (!token) {
-            setAuthState({
-                isAuth: false,
-                user: null,
-                status: 'done',
-            });
-            return;
-        }
-
-        try {
-            const decoded = jwtDecode(token);
-
-            setAuthState({
-                isAuth: true,
-                user: {
-                    id: decoded.userId,
-                    email: decoded.email,
-                    role: decoded.role,
-                },
-                status: 'done',
-            });
-
-        } catch (error) {
-            console.error(error);
-
-            localStorage.removeItem('token');
-
-            setAuthState({
-                isAuth: false,
-                user: null,
-                status: 'done',
+        const token = localStorage.getItem("token");
+        if (token) {
+            axios.get(`${API}/api/me`, {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            .then(res => {
+                setUser(res.data);
+                setIsAuth(true);
+            })
+            .catch(() => {
+                localStorage.removeItem("token");
             });
         }
     }, []);
 
-    function login(token) {
-        localStorage.setItem('token', token);
-
-        const decoded = jwtDecode(token);
-
-        setAuthState({
-            isAuth: true,
-            user: {
-                id: decoded.userId,
-                email: decoded.email,
-                role: decoded.role,
-            },
-            status: 'done',
-        });
-
-        if (decoded.role === 'captain') {
-            navigate('/captain');
-        } else {
-            navigate('/crew');
-        }
+    function login(userData, token) {
+        localStorage.setItem("token", token);
+        setUser(userData);
+        setIsAuth(true);
     }
 
     function logout() {
-        localStorage.removeItem('token');
-
-        setAuthState({
-            isAuth: false,
-            user: null,
-            status: 'done',
-        });
-
-        navigate('/signin');
+        localStorage.removeItem("token");
+        setUser(null);
+        setIsAuth(false);
     }
 
-    const data = {
-        isAuth: authState.isAuth,
-        user: authState.user,
-        login,
-        logout,
-    };
-
     return (
-        <AuthContext.Provider value={data}>
-            {authState.status === 'pending'
-                ? <p>Loading...</p>
-                : children}
+        <AuthContext.Provider value={{ isAuth, user, login, logout }}>
+            {children}
         </AuthContext.Provider>
     );
 }
-
-export default AuthContextProvider;

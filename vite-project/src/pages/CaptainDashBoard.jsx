@@ -1,88 +1,57 @@
-// src/pages/CaptainDashboard.jsx
-
 import { useEffect, useState } from "react";
 import axios from "axios";
-import MissionCard from "../components/MissionCard";
-import "./CaptainDashboard.css";
+import Mission from "../components/Mission";
+import MissionForm from "../components/MissionForm";
 
 const API = "http://localhost:5000";
 
-function CaptainDashboard() {
-
+export default function CaptainDashboard() {
     const [missions, setMissions] = useState([]);
-    const [error, setError] = useState("");
-
+    const [options, setOptions] = useState(null);
     const token = localStorage.getItem("token");
 
-    async function fetchMissions() {
-
-        try {
-
-            const res = await axios.get(
-                `${API}/api/missions`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
-
-            setMissions(res.data);
-
-        } catch (err) {
-            setError("Could not load missions");
-        }
-    }
+    const fetchMissions = () => {
+        axios.get(`${API}/api/missions`, {
+            headers: { Authorization: `Bearer ${token}` }
+        })
+        .then(res => setMissions(res.data));
+    };
 
     useEffect(() => {
         fetchMissions();
+
+        axios.get(`${API}/api/mission-options`)
+            .then(res => setOptions(res.data));
     }, []);
 
-    async function deleteMission(id) {
+    const handleCreateMission = async (data) => {
+        const res = await axios.post(`${API}/api/missions`, data, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
 
-        try {
-
-            await axios.delete(
-                `${API}/api/missions/${id}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
+        if (data.assignedTo) {
+            await axios.post(
+                `${API}/api/missions/${res.data.id}/assign`,
+                { crewId: data.assignedTo },
+                { headers: { Authorization: `Bearer ${token}` } }
             );
-
-            fetchMissions();
-
-        } catch (err) {
-            console.error(err);
         }
-    }
+
+        fetchMissions();
+    };
 
     return (
-        <main className="dashboard-page">
+        <div>
+            <MissionForm
+                onSubmit={handleCreateMission}
+                options={options}
+            />
 
-            <h1>Captain Dashboard</h1>
-
-            {error && <p>{error}</p>}
-
-            <section className="dashboard-grid">
-
-                {missions.map((mission) => (
-
-                    <MissionCard
-                        key={mission._id}
-                        id={mission._id}
-                        label="Mission"
-                        text={mission}
-                        onClick={() => deleteMission(mission._id)}
-                    />
-
+            <div className="mission-list">
+                {missions.map(m => (
+                    <Mission key={m.id} mission={m} isCaptain={true} />
                 ))}
-
-            </section>
-
-        </main>
+            </div>
+        </div>
     );
 }
-
-export default CaptainDashboard;
