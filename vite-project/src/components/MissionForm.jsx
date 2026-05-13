@@ -1,3 +1,5 @@
+// MissionForm.jsx
+
 import React, { useEffect, useState } from 'react';
 import { useForm } from "react-hook-form";
 import handleRandom from '../Helpers/handleRandom';
@@ -9,7 +11,13 @@ const API = "http://localhost:5000";
 
 const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
 
-    const { register, handleSubmit, setValue, reset, watch } = useForm();
+    const {
+        register,
+        handleSubmit,
+        setValue,
+        reset,
+        watch
+    } = useForm();
 
     const [crewMembers, setCrewMembers] = useState([]);
 
@@ -18,20 +26,37 @@ const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
 
     const token = localStorage.getItem("token");
 
-    // Haal crewleden op
+    // GET CREW USERS
+
     useEffect(() => {
-        axios.get(`${API}/api/users?role=crew`, {
-            headers: { Authorization: `Bearer ${token}` }
-        })
+
+        axios.get(
+            `${API}/api/users?role=crew`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        )
         .then(res => setCrewMembers(res.data))
         .catch(err => console.error(err));
+
     }, []);
 
-    useEffect(() => {
-        if (isSuccess) reset();
-    }, [isSuccess, reset]);
+    // RESET
 
     useEffect(() => {
+
+        if (isSuccess) {
+            reset();
+        }
+
+    }, [isSuccess, reset]);
+
+    // AUTO ACTION
+
+    useEffect(() => {
+
         if (!destination) return;
 
         const suggestion = getStrategyFromCity(destination);
@@ -43,134 +68,265 @@ const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
     }, [destination, missionAction, setValue]);
 
     return (
+
         <div className="outer-form">
+
             <form onSubmit={handleSubmit(onSubmit)}>
 
                 <div className="text-container">
+
                     <header>
-                        <h1 className="unbounded-title-mission">Mission Control</h1>
+
+                        <h1 className="unbounded-title-mission">
+                            Mission Control
+                        </h1>
+
                     </header>
+
                 </div>
 
+                {/* BUTTONS */}
+
                 <div className="button-section">
+
                     <button
                         type="submit"
                         className="submit-mission"
                         disabled={loading}
                     >
-                        Launch
+                        🚀 Launch Mission
                     </button>
 
                     <button
                         type="button"
                         onClick={() => handleRandom(options, setValue)}
-                        className="submit"
+                        className="random-mission"
                     >
-                        Random
+                        🎲 Random Mission
                     </button>
+
                 </div>
 
+                {/* FORM */}
+
                 <div className="form-input-outer">
+
                     <section className="inner-form-mission">
+
                         <article className="text">
 
+                            {/* CAPTAIN */}
+
                             <label className="placeholder">
+
                                 Captain:
-                                <select {...register("captain", { required: true })}>
-                                    <option value="">Select</option>
+
+                                <select {...register("captain")}>
+
+                                    <option value="">
+                                        Select Captain
+                                    </option>
+
                                     {options?.astronauts?.map(a => (
-                                        <option key={a.id} value={a.name}>{a.name}</option>
+
+                                        <option
+                                            key={a.id}
+                                            value={a.name}
+                                        >
+                                            {a.name}
+                                        </option>
+
                                     ))}
+
                                 </select>
+
                             </label>
 
-                            <label className="placeholder">
-                                Crew1:
-                                <select {...register("crewMember1", { required: true })}>
-                                    <option value="">Select</option>
-                                    {options?.astronauts?.map(a => (
-                                        <option key={a.id} value={a.name}>{a.name}</option>
-                                    ))}
-                                </select>
-                            </label>
+                            {/* CREW 1 */}
 
                             <label className="placeholder">
-                                Crew2:
-                                <select {...register("crewMember2", { required: true })}>
-                                    <option value="">Select</option>
-                                    {options?.astronauts?.map(a => (
-                                        <option key={a.id} value={a.name}>{a.name}</option>
-                                    ))}
-                                </select>
-                            </label>
 
-                            {/* Crew assignment uit database */}
-                            <label className="placeholder">
-                                Assign to Crew Member:
-                                <select {...register("assignedTo")}>
-                                    <option value="">No assignment</option>
+                                Assign Crew Member 1:
+
+                                <select {...register("crewMember1")}>
+
+                                    <option value="">
+                                        Select Crew Member
+                                    </option>
+
                                     {crewMembers.map(c => (
-                                        <option key={c.id} value={c.id}>
+
+                                        <option
+                                            key={c.id}
+                                            value={c.id}
+                                        >
                                             {c.firstname} {c.lastname}
                                         </option>
+
                                     ))}
+
                                 </select>
+
                             </label>
 
+                            {/* CREW 2 */}
+
                             <label className="placeholder">
+
+                                Assign Crew Member 2:
+
+                                <select {...register("crewMember2")}>
+
+                                    <option value="">
+                                        Select Crew Member
+                                    </option>
+
+                                    {crewMembers.map(c => (
+
+                                        <option
+                                            key={c.id}
+                                            value={c.id}
+                                        >
+                                            {c.firstname} {c.lastname}
+                                        </option>
+
+                                    ))}
+
+                                </select>
+
+                            </label>
+
+                            {/* ROCKET */}
+
+                            <label className="placeholder">
+
                                 Rocket:
-                                <select {...register("rocket", { required: true })}>
-                                    <option value="">Select</option>
+
+                                <select {...register("rocket")}>
+
+                                    <option value="">
+                                        Select Rocket
+                                    </option>
+
                                     {options?.rockets?.map(r => (
-                                        <option key={r.id} value={r.name}>{r.name}</option>
+
+                                        <option
+                                            key={r.id}
+                                            value={r.name}
+                                        >
+                                            {r.name}
+                                        </option>
+
                                     ))}
+
                                 </select>
+
                             </label>
 
+                            {/* LAUNCHPAD */}
+
                             <label className="placeholder">
+
                                 Launch Pad:
-                                <select {...register("launchPad", { required: true })}>
-                                    <option value="">Select</option>
-                                    {options?.launches?.map(l => (
-                                        <option key={l.id} value={l.name}>{l.name}</option>
+
+                                <select {...register("launchpad")}>
+
+                                    <option value="">
+                                        Select Launch Pad
+                                    </option>
+
+                                    {options?.launchpads?.map(lp => (
+
+                                        <option
+                                            key={lp.id}
+                                            value={lp.full_name}
+                                        >
+                                            {lp.full_name}
+                                        </option>
+
                                     ))}
+
                                 </select>
+
                             </label>
 
+                            {/* LANDPAD */}
+
                             <label className="placeholder">
+
                                 Landing Pad:
-                                <select {...register("landingPad", { required: true })}>
-                                    <option value="">Select</option>
+
+                                <select {...register("landpad")}>
+
+                                    <option value="">
+                                        Select Landing Pad
+                                    </option>
+
                                     {options?.landpads?.map(lp => (
-                                        <option key={lp.id} value={lp.full_name}>{lp.full_name}</option>
+
+                                        <option
+                                            key={lp.id}
+                                            value={lp.full_name}
+                                        >
+                                            {lp.full_name}
+                                        </option>
+
                                     ))}
+
                                 </select>
+
                             </label>
 
+                            {/* ACTION */}
+
                             <label className="placeholder">
+
                                 Mission Action:
-                                <select {...register("missionAction", { required: true })}>
-                                    <option value="">Select action</option>
-                                    <option value="stay">Blijven</option>
-                                    <option value="refuel">Tanken</option>
-                                    <option value="return">Terugkeren</option>
+
+                                <select {...register("missionAction")}>
+
+                                    <option value="">
+                                        Select Action
+                                    </option>
+
+                                    <option value="stay">
+                                        Stay
+                                    </option>
+
+                                    <option value="refuel">
+                                        Refuel
+                                    </option>
+
+                                    <option value="return">
+                                        Return
+                                    </option>
+
                                 </select>
+
                             </label>
 
+                            {/* DESTINATION */}
+
                             <label className="placeholder">
+
                                 Destination:
+
                                 <input
                                     type="text"
                                     {...register("city")}
                                     placeholder="Destination City"
                                 />
+
                             </label>
 
                         </article>
+
                     </section>
+
                 </div>
 
             </form>
+
         </div>
     );
 };
