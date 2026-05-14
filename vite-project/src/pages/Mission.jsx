@@ -1,74 +1,102 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import axios from 'axios';
-import MissionForm from '../components/MissionForm';
-import './Mission.css';
+// Mission.jsx
+
+import axios from "axios";
 
 const API = "http://localhost:5000";
 
-const Mission = () => {
-    const [options, setOptions] = useState({
-        astronauts: [],
-        rockets: [],
-        launches: [],
-        landpads: []
-    });
+export default function Mission({ mission, isCaptain }) {
 
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(false);
-
-    const navigate = useNavigate();
-    const location = useLocation();
-    const travelDates = location.state || {};
-
-    useEffect(() => {
-        setError(false);
-
-        axios.get(`${API}/api/mission-options`)
-            .then(res => setOptions(res.data))
-            .catch(() => setError(true));
-    }, []);
-
-    const handleFormSubmit = async (formData) => {
-        const payload = {
-            ...formData,
-            departure: travelDates?.departure || "Niet opgegeven",
-            returnDate: travelDates?.returnDate || "Niet opgegeven"
-        };
+    const deleteMission = async () => {
 
         try {
-            setLoading(true);
 
-            const res = await axios.post(`${API}/api/launch`, payload);
+            const token = localStorage.getItem("token");
 
-            navigate(`/rocketlaunch/${res.data.id}`);
+            await axios.delete(
+                `${API}/api/missions/${mission._id}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+
+            window.location.reload();
 
         } catch (err) {
-            setError(true);
-        } finally {
-            setLoading(false);
+
+            console.error(err);
+
         }
     };
 
     return (
-        <div className="outer-mission">
-            <main className="mission-outer-form">
 
-                <MissionForm
-                    onSubmit={handleFormSubmit}
-                    options={options}
-                    loading={loading}
-                />
+        <div className="mission-card">
 
-                {loading && <p>Loading...</p>}
-                {error && <p>error loading data</p>}
+            <h3>{mission.title}</h3>
 
-            </main>
+            <p>{mission.description}</p>
+
+            <p>
+                <strong>Launch:</strong> {mission.launchDate}
+            </p>
+
+            <p>
+                <strong>Rocket:</strong> {mission.rocket}
+            </p>
+
+            <p>
+                <strong>Launch Pad:</strong> {mission.launchpad}
+            </p>
+
+            <p>
+                <strong>Landing Pad:</strong> {mission.landpad}
+            </p>
+
+            {/* CREW */}
+
+            <div>
+
+                <strong>Assigned Crew:</strong>
+
+                {mission.crew?.length > 0 ? (
+
+                    <ul>
+
+                        {mission.crew.map((memberId) => (
+
+                            <li key={memberId}>
+                                👨‍🚀 {memberId}
+                            </li>
+
+                        ))}
+
+                    </ul>
+
+                ) : (
+
+                    <p>
+                        No crew assigned
+                    </p>
+
+                )}
+
+            </div>
+
+            {/* DELETE BUTTON */}
+
+            {isCaptain && (
+
+                <button
+                    className="delete-btn"
+                    onClick={deleteMission}
+                >
+                    ❌ Delete Mission
+                </button>
+
+            )}
+
         </div>
     );
-};
-
-export default Mission;
-
-
-
+}

@@ -1,18 +1,37 @@
-import { NavLink } from "react-router-dom";
+import { NavLink } from 'react-router-dom';
+import { useContext } from 'react';
+import { AuthContext } from '../context/AuthContext';
 
-function Navigation () {
+function Navigation() {
+
+    const { isAuth, user, logout } = useContext(AuthContext);
+
     return (
-        <div className="Navigation">
-            <nav className="navbar">
-                <ul className="unordered-list">
-                    <li><NavLink to="/" className={({isActive}) => isActive === true ? 'active-link' : 'default-link'}>Home Page</NavLink></li>
-                    <li><NavLink to="/mission" className={({isActive}) => isActive === true ? 'active-link' : 'default-link'}>Mission</NavLink></li>
-                    <li><NavLink to="/savedMissions" className={({isActive}) => isActive === true ? 'active-link' : 'default-link'}>Saved Mission</NavLink></li>
-                    <li><NavLink to="/contact" className={({isActive}) => isActive === true ? 'active-link' : 'default-link'}>Contact</NavLink></li>
-                </ul>
-            </nav>
-        </div>
-    )
+        <nav className="navbar">
+
+            <NavLink to="/">Home</NavLink>
+
+            {isAuth && user?.role === 'captain' && (
+                <NavLink to="/captain-dashboard">Captain Dashboard</NavLink>
+            )}
+
+            {isAuth && user?.role === 'crew' && (
+                <NavLink to="/crew-dashboard">Crew Dashboard</NavLink>
+            )}
+
+            {!isAuth && (
+                <>
+                    <NavLink to="/signin">Login</NavLink>
+                    <NavLink to="/signup">Register</NavLink>
+                </>
+            )}
+
+            {isAuth && (
+                <button onClick={logout}>Logout</button>
+            )}
+
+        </nav>
+    );
 }
 
 export default Navigation;

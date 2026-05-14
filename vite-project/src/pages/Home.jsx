@@ -1,26 +1,63 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import './Home.css';
 import '../App.css';
 
+import { AuthContext } from '../context/AuthContext';
+
 function Home() {
   const [dateRange, setDateRange] = useState([new Date(), new Date()]);
   const navigate = useNavigate();
 
+  const { isAuth, user } = useContext(AuthContext);
+
   const handleNext = () => {
+
+    // -----------------------------------
+    // SAFETY CHECK (no crash)
+    // -----------------------------------
+    if (!dateRange?.[0] || !dateRange?.[1]) return;
+
     const start = dateRange[0].toLocaleDateString('nl-NL');
     const end = dateRange[1].toLocaleDateString('nl-NL');
 
-    navigate('/mission', {
-      state: { departure: start, returnDate: end }
+    // -----------------------------------
+    // NOT AUTHENTICATED → SAVE STATE
+    // -----------------------------------
+    if (!isAuth) {
+      localStorage.setItem(
+        'pendingMission',
+        JSON.stringify({
+          departure: start,
+          returnDate: end
+        })
+      );
+
+      navigate('/signin');
+      return;
+    }
+
+    // -----------------------------------
+    // ROLE BASED ROUTING
+    // -----------------------------------
+    const routes = {
+      captain: '/captain',
+      crew: '/crew'
+    };
+
+    navigate(routes[user?.role] || '/mission', {
+      state: {
+        departure: start,
+        returnDate: end
+      }
     });
   };
 
   return (
     <>
-      {/* Background */}
+      {/* BACKGROUND */}
       <div className="backgroundimg" aria-hidden="true"></div>
 
       {/* HEADER */}
@@ -54,7 +91,10 @@ function Home() {
                 </article>
 
                 <div className="button-container">
-                  <button onClick={handleNext} className="submit-next">
+                  <button
+                    onClick={handleNext}
+                    className="submit-next"
+                  >
                     Volgende
                   </button>
                 </div>
@@ -75,4 +115,3 @@ function Home() {
 }
 
 export default Home;
-

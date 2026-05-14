@@ -1,19 +1,54 @@
-function MissionCard({ id, label, onClick, text }) {
+import CrewManager from "./CrewManager";
+
+export default function MissionCard({ mission, users = [], isCaptain }) {
+
+    // Vind toegewezen crewlid (assignedTo)
+    const assignedCrew = users.find(u => u.id === mission.assignedTo);
+
+    // Vind alle crewleden in de missie (mission.crew = array van userId's)
+    const crewList = mission.crew?.map(id => {
+        return users.find(u => u.id === id) || { id, firstname: "Unknown", lastname: "" };
+    });
+
     return (
-        <article className="mission-card">
+        <div className="mission-card">
+            <header className="mission-header">
+                <h2>{mission.title}</h2>
+                <p className="mission-date">🚀 {mission.launchDate}</p>
+            </header>
 
-            <h3>🚀 {label}</h3>
-            <p><strong>Periode:</strong> {text.departure} tot {text.returnDate}</p>
-            <p><strong>Captain:</strong> {text.captain}</p>
-            <p><strong>Crew:</strong> {text.crewMember1} & {text.crewMember2}</p>
-            <p><strong>Rocket:</strong> {text.rocket}</p>
-            <p><strong>Destination:</strong> {text.city}</p>
-            <p><strong>Strategy:</strong> {text.marsAction}</p>
+            <p className="mission-description">{mission.description}</p>
 
-            <button onClick={onClick} className="submit">Ok</button>
+            {/* AssignedTo */}
+            <div className="mission-section">
+                <strong>Assigned To:</strong>{" "}
+                {assignedCrew
+                    ? `${assignedCrew.firstname} ${assignedCrew.lastname}`
+                    : <em>No one assigned</em>}
+            </div>
 
-        </article>
+            {/* Crew list */}
+            <div className="mission-section">
+                <strong>Crew:</strong>
+                {crewList && crewList.length > 0 ? (
+                    <ul className="crew-list">
+                        {crewList.map(c => (
+                            <li key={c.id}>
+                                👨‍🚀 {c.firstname} {c.lastname}
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p><em>No crew added yet</em></p>
+                )}
+            </div>
+
+            {/* Captain controls */}
+            {isCaptain && (
+                <div className="mission-section">
+                    <CrewManager missionId={mission.id} crew={mission.crew} />
+                </div>
+            )}
+        </div>
     );
 }
-
-export default MissionCard;
