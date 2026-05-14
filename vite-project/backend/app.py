@@ -27,7 +27,7 @@ SECRET_KEY = os.getenv("SECRET_KEY", "test123")
 
 app = Flask(__name__)
 
-# ✅ FIXED CORS (ONLY VITE + OPTIONS OK)
+# CORS
 CORS(
     app,
     resources={r"/*": {"origins": ["http://localhost:5173"]}},
@@ -35,10 +35,6 @@ CORS(
     methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     supports_credentials=True
 )
-
-# -----------------------------------
-# GLOBAL OPTIONS FIX (IMPORTANT)
-# -----------------------------------
 
 @app.before_request
 def handle_options():
@@ -215,7 +211,7 @@ def get_users():
     ])
 
 # -----------------------------------
-# MISSIONS OPTIONS (SPACEX)
+# MISSION OPTIONS (SPACEX)
 # -----------------------------------
 
 class SpaceAPI:
@@ -277,6 +273,38 @@ def create_mission():
         "message": "Mission created",
         "id": str(result.inserted_id)
     })
+
+# -----------------------------------
+# ACCEPT MISSION  ✅ ADDED
+# -----------------------------------
+
+@app.route("/api/missions/<mission_id>/accept", methods=["PUT"])
+@token_required
+def accept_mission(mission_id):
+
+    try:
+        mission = missions_collection.find_one({"_id": ObjectId(mission_id)})
+
+        if not mission:
+            return jsonify({"error": "Mission not found"}), 404
+
+        missions_collection.update_one(
+            {"_id": ObjectId(mission_id)},
+            {"$set": {"status": "accepted"}}
+        )
+
+        mission["status"] = "accepted"
+
+        return jsonify({
+            "message": "Mission accepted",
+            "mission": serialize(mission)
+        })
+
+    except InvalidId:
+        return jsonify({"error": "Invalid mission ID"}), 400
+
+    except Exception as e:
+        return jsonify({"error": "Server error", "details": str(e)}), 500
 
 # -----------------------------------
 # CREW ASSIGN
