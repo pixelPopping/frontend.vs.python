@@ -1,78 +1,111 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
-const API = "http://localhost:5000";
+import CrewCard from "../components/CrewCard";
 
-export default function CrewDashboard() {
+const API = "http://127.0.0.1:5000";
+
+ function CrewDashboard() {
 
     const [missions, setMissions] = useState([]);
-    const token = localStorage.getItem("token");
+
     const navigate = useNavigate();
 
-    // -----------------------------------
-    // LOAD MISSIONS
-    // -----------------------------------
-
     useEffect(() => {
-        axios.get(`${API}/api/missions`, {
-            headers: {
-                Authorization: `Bearer ${token}`
+
+        async function loadMissions() {
+
+            try {
+
+                const token =
+                    localStorage.getItem("token");
+
+                const response = await axios.get(
+                    `${API}/api/missions`,
+                    {
+                        headers: {
+                            Authorization:
+                                `Bearer ${token}`
+                        }
+                    }
+                );
+
+                setMissions(response.data);
+
+            } catch (error) {
+
+                console.error(
+                    error.response?.data ||
+                    error.message
+                );
             }
-        })
-        .then(res => setMissions(res.data));
+        }
+
+        loadMissions();
+
     }, []);
 
-    // -----------------------------------
-    // ACCEPT MISSION
-    // -----------------------------------
+    async function acceptMission(id) {
 
-    const acceptMission = async (id) => {
+        try {
 
-        await axios.put(
-            `${API}/api/missions/${id}/accept`,
-            {},
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`
+            const token =
+                localStorage.getItem("token");
+
+            await axios.put(
+                `${API}/api/missions/${id}/accept`,
+                {},
+                {
+                    headers: {
+                        Authorization:
+                            `Bearer ${token}`
+                    }
                 }
-            }
-        );
+            );
 
-        // 🚀 start rocket animation
-        navigate(`/rocketlaunch/${id}`);
-    };
+            setMissions((prev) =>
+                prev.map((mission) =>
+                    mission._id === id
+                        ? {
+                            ...mission,
+                            status: "accepted"
+                        }
+                        : mission
+                )
+            );
 
-    // -----------------------------------
-    // UI
-    // -----------------------------------
+            navigate(`/rocketlaunch/${id}`);
+
+        } catch (error) {
+
+            console.error(
+                error.response?.data ||
+                error.message
+            );
+        }
+    }
 
     return (
-        <div className="dashboard">
 
-            <h1>Your Missions</h1>
+        <main>
 
-            {missions.map(m => (
-                <div key={m._id} className="mission-card">
+            <h1>
+                Crew Dashboard
+            </h1>
 
-                    <h3>{m.title}</h3>
-                    <p>{m.description}</p>
+            {missions.map((mission) => (
 
-                    <p>Status: {m.status}</p>
+                <CrewCard
+                    key={mission._id}
+                    mission={mission}
+                    onAccept={acceptMission}
+                />
 
-                    {m.status !== "accepted" && (
-                        <button onClick={() => acceptMission(m._id)}>
-                            Accept Mission 🚀
-                        </button>
-                    )}
-
-                    {m.status === "accepted" && (
-                        <p>🚀 Mission in progress</p>
-                    )}
-
-                </div>
             ))}
 
-        </div>
+        </main>
     );
 }
+
+export default CrewDashboard;

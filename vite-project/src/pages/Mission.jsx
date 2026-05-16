@@ -1,102 +1,46 @@
-// Mission.jsx
-
+import { useEffect, useState } from "react";
 import axios from "axios";
+import MissionDetailCard from "../components/MissionDetailCard";
+import './Mission.css';
 
 const API = "http://localhost:5000";
 
-export default function Mission({ mission, isCaptain }) {
+export default function Mission() {
+    const [missions, setMissions] = useState([]);
+    const [users, setUsers] = useState([]);
+    const [isCaptain, setIsCaptain] = useState(false);
 
-    const deleteMission = async () => {
+    useEffect(() => {
+        const token = localStorage.getItem("token");
 
-        try {
+        axios.get(`${API}/api/missions`, {
+            headers: { Authorization: `Bearer ${token}` }
+        })
+        .then(res => setMissions(res.data));
 
-            const token = localStorage.getItem("token");
+        axios.get(`${API}/api/users`, {
+            headers: { Authorization: `Bearer ${token}` }
+        })
+        .then(res => setUsers(res.data));
 
-            await axios.delete(
-                `${API}/api/missions/${mission._id}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
-
-            window.location.reload();
-
-        } catch (err) {
-
-            console.error(err);
-
-        }
-    };
+        const role = localStorage.getItem("role");
+        setIsCaptain(role === "captain");
+    }, []);
 
     return (
+        <main className="mission-page">
+            <h1 className="unbounded">Missions</h1>
 
-        <div className="mission-card">
-
-            <h3>{mission.title}</h3>
-
-            <p>{mission.description}</p>
-
-            <p>
-                <strong>Launch:</strong> {mission.launchDate}
-            </p>
-
-            <p>
-                <strong>Rocket:</strong> {mission.rocket}
-            </p>
-
-            <p>
-                <strong>Launch Pad:</strong> {mission.launchpad}
-            </p>
-
-            <p>
-                <strong>Landing Pad:</strong> {mission.landpad}
-            </p>
-
-            {/* CREW */}
-
-            <div>
-
-                <strong>Assigned Crew:</strong>
-
-                {mission.crew?.length > 0 ? (
-
-                    <ul>
-
-                        {mission.crew.map((memberId) => (
-
-                            <li key={memberId}>
-                                👨‍🚀 {memberId}
-                            </li>
-
-                        ))}
-
-                    </ul>
-
-                ) : (
-
-                    <p>
-                        No crew assigned
-                    </p>
-
-                )}
-
-            </div>
-
-            {/* DELETE BUTTON */}
-
-            {isCaptain && (
-
-                <button
-                    className="delete-btn"
-                    onClick={deleteMission}
-                >
-                    ❌ Delete Mission
-                </button>
-
-            )}
-
-        </div>
+            <section className="mission-list">
+                {missions.map(m => (
+                    <MissionDetailCard
+                        key={m._id}
+                        mission={m}
+                        users={users}
+                        isCaptain={isCaptain}
+                    />
+                ))}
+            </section>
+        </main>
     );
 }

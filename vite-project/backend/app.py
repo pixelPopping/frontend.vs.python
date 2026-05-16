@@ -18,7 +18,7 @@ import os
 
 load_dotenv()
 
-MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/")
+MONGO_URI = os.getenv("MONGO_URI", "mongodb://127.0.0.1:27017/")
 SECRET_KEY = os.getenv("SECRET_KEY", "test123")
 
 # -----------------------------------
@@ -27,19 +27,16 @@ SECRET_KEY = os.getenv("SECRET_KEY", "test123")
 
 app = Flask(__name__)
 
-# CORS
 CORS(
     app,
-    resources={r"/*": {"origins": ["http://localhost:5173"]}},
+    origins=[
+        "http://127.0.0.1:5173",
+        "http://localhost:5173"
+    ],
+    supports_credentials=True,
     allow_headers=["Content-Type", "Authorization"],
-    methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    supports_credentials=True
+    methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"]
 )
-
-@app.before_request
-def handle_options():
-    if request.method == "OPTIONS":
-        return jsonify({"status": "ok"}), 200
 
 # -----------------------------------
 # MONGO
@@ -50,14 +47,20 @@ user_collection = None
 missions_collection = None
 
 try:
-    client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
+    client = MongoClient(
+        MONGO_URI,
+        serverSelectionTimeoutMS=5000
+    )
+
     client.server_info()
 
     db = client["space_app"]
+
     user_collection = db["users"]
     missions_collection = db["missions"]
 
     mongo_ok = True
+
     print("✅ MongoDB connected")
 
 except Exception as e:
@@ -79,24 +82,43 @@ def serialize(obj):
 # -----------------------------------
 
 def token_required(f):
+
     @wraps(f)
     def wrapper(*args, **kwargs):
 
         auth = request.headers.get("Authorization")
 
         if not auth:
-            return jsonify({"error": "Token missing"}), 401
+            return jsonify({
+                "error": "Token missing"
+            }), 401
 
         try:
             token = auth.split(" ")[1]
-            decoded = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+
+            decoded = jwt.decode(
+                token,
+                SECRET_KEY,
+                algorithms=["HS256"]
+            )
+
             request.user = decoded
 
         except jwt.ExpiredSignatureError:
-            return jsonify({"error": "Token expired"}), 401
+            return jsonify({
+                "error": "Token expired"
+            }), 401
 
         except jwt.InvalidTokenError:
-            return jsonify({"error": "Invalid token"}), 401
+            return jsonify({
+                "error": "Invalid token"
+            }), 401
+
+        except Exception as e:
+            return jsonify({
+                "error": "Auth error",
+                "details": str(e)
+            }), 401
 
         return f(*args, **kwargs)
 
@@ -108,7 +130,9 @@ def token_required(f):
 
 @app.route("/test", methods=["GET"])
 def test():
-    return jsonify({"message": "Backend werkt 🚀"})
+    return jsonify({
+        "message": "Backend werkt 🚀"
+    })
 
 # -----------------------------------
 # REGISTER
@@ -119,22 +143,46 @@ def register():
 
     data = request.get_json() or {}
 
-    required = ["firstname", "lastname", "city", "phone", "email", "password", "inviteCode"]
+    required = [
+        "firstname",
+        "lastname",
+        "city",
+        "phone",
+        "email",
+        "password",
+        "inviteCode"
+    ]
 
-    missing = [f for f in required if not is_valid(data.get(f))]
+    missing = [
+        field for field in required
+        if not is_valid(data.get(field))
+    ]
 
     if missing:
-        return jsonify({"error": "Missing fields", "fields": missing}), 400
+        return jsonify({
+            "error": "Missing fields",
+            "fields": missing
+        }), 400
 
-    if user_collection.find_one({"email": data["email"]}):
-        return jsonify({"error": "User already exists"}), 400
+    existing_user = user_collection.find_one({
+        "email": data["email"]
+    })
+
+    if existing_user:
+        return jsonify({
+            "error": "User already exists"
+        }), 400
 
     if data["inviteCode"] == "CAPTAIN123":
         role = "captain"
+
     elif data["inviteCode"] == "CREW123":
         role = "crew"
+
     else:
-        return jsonify({"error": "Invalid invite code"}), 400
+        return jsonify({
+            "error": "Invalid invite code"
+        }), 400
 
     user = {
         "firstname": data["firstname"],
@@ -158,15 +206,32 @@ def register():
 # LOGIN
 # -----------------------------------
 
-@app.route("/api/login", methods=["POST", "OPTIONS"])
+@app.route("/api/login", methods=["POST"])
 def login():
 
     data = request.get_json() or {}
 
-    user = user_collection.find_one({"email": data["email"]})
+    email = data.get("email")
+    password = data.get("password")
 
-    if not user or not check_password_hash(user["password"], data["password"]):
-        return jsonify({"error": "Invalid credentials"}), 401
+    if not email or not password:
+        return jsonify({
+            "error": "Email and password required"
+        }), 400
+
+    user = user_collection.find_one({
+        "email": email
+    })
+
+    if not user:
+        return jsonify({
+            "error": "Invalid credentials"
+        }), 401
+
+    if not check_password_hash(user["password"], password):
+        return jsonify({
+            "error": "Invalid credentials"
+        }), 401
 
     token = jwt.encode({
         "userId": str(user["_id"]),
@@ -185,6 +250,39 @@ def login():
     })
 
 # -----------------------------------
+# CURRENT USER
+# -----------------------------------
+
+@app.route("/api/me", methods=["GET"])
+@token_required
+def get_me():
+
+    user_id = request.user["userId"]
+
+    try:
+        user = user_collection.find_one({
+            "_id": ObjectId(user_id)
+        })
+
+    except InvalidId:
+        return jsonify({
+            "error": "Invalid user ID"
+        }), 400
+
+    if not user:
+        return jsonify({
+            "error": "User not found"
+        }), 404
+
+    return jsonify({
+        "id": str(user["_id"]),
+        "firstname": user["firstname"],
+        "lastname": user["lastname"],
+        "email": user["email"],
+        "role": user["role"]
+    })
+
+# -----------------------------------
 # USERS
 # -----------------------------------
 
@@ -193,6 +291,7 @@ def login():
 def get_users():
 
     role = request.args.get("role")
+
     query = {}
 
     if role:
@@ -202,23 +301,28 @@ def get_users():
 
     return jsonify([
         {
-            "id": str(u["_id"]),
-            "firstname": u["firstname"],
-            "lastname": u["lastname"],
-            "role": u["role"]
+            "id": str(user["_id"]),
+            "firstname": user["firstname"],
+            "lastname": user["lastname"],
+            "role": user["role"]
         }
-        for u in users
+        for user in users
     ])
 
 # -----------------------------------
-# MISSION OPTIONS (SPACEX)
+# SPACEX DATA
 # -----------------------------------
 
 class SpaceAPI:
+
     def get(self, url):
+
         try:
-            return requests.get(url, timeout=5).json()
-        except:
+            response = requests.get(url, timeout=5)
+            return response.json()
+
+        except Exception as e:
+            print("API ERROR:", e)
             return []
 
 api = SpaceAPI()
@@ -235,7 +339,7 @@ def mission_options():
     })
 
 # -----------------------------------
-# MISSIONS
+# GET MISSIONS
 # -----------------------------------
 
 @app.route("/api/missions", methods=["GET"])
@@ -244,13 +348,20 @@ def get_missions():
 
     if request.user["role"] == "captain":
         missions = list(missions_collection.find())
+
     else:
         missions = list(missions_collection.find({
             "crew": request.user["userId"]
         }))
 
-    return jsonify([serialize(m) for m in missions])
+    return jsonify([
+        serialize(mission)
+        for mission in missions
+    ])
 
+# -----------------------------------
+# CREATE MISSION
+# -----------------------------------
 
 @app.route("/api/missions", methods=["POST"])
 @token_required
@@ -259,10 +370,11 @@ def create_mission():
     data = request.get_json() or {}
 
     mission = {
-        "title": data["title"],
-        "description": data["description"],
-        "launchDate": data["launchDate"],
+        "title": data.get("title"),
+        "description": data.get("description"),
+        "launchDate": data.get("launchDate"),
         "crew": data.get("crew", []),
+        "status": "pending",
         "createdBy": request.user["userId"],
         "createdAt": datetime.datetime.utcnow()
     }
@@ -275,7 +387,29 @@ def create_mission():
     })
 
 # -----------------------------------
-# ACCEPT MISSION  ✅ ADDED
+# DELETE MISSION
+# -----------------------------------
+
+@app.route("/api/missions/<mission_id>", methods=["DELETE"])
+@token_required
+def delete_mission(mission_id):
+
+    try:
+        missions_collection.delete_one({
+            "_id": ObjectId(mission_id)
+        })
+
+        return jsonify({
+            "message": "Mission deleted"
+        })
+
+    except InvalidId:
+        return jsonify({
+            "error": "Invalid mission ID"
+        }), 400
+
+# -----------------------------------
+# ACCEPT MISSION
 # -----------------------------------
 
 @app.route("/api/missions/<mission_id>/accept", methods=["PUT"])
@@ -283,10 +417,14 @@ def create_mission():
 def accept_mission(mission_id):
 
     try:
-        mission = missions_collection.find_one({"_id": ObjectId(mission_id)})
+        mission = missions_collection.find_one({
+            "_id": ObjectId(mission_id)
+        })
 
         if not mission:
-            return jsonify({"error": "Mission not found"}), 404
+            return jsonify({
+                "error": "Mission not found"
+            }), 404
 
         missions_collection.update_one(
             {"_id": ObjectId(mission_id)},
@@ -301,61 +439,100 @@ def accept_mission(mission_id):
         })
 
     except InvalidId:
-        return jsonify({"error": "Invalid mission ID"}), 400
-
-    except Exception as e:
-        return jsonify({"error": "Server error", "details": str(e)}), 500
+        return jsonify({
+            "error": "Invalid mission ID"
+        }), 400
 
 # -----------------------------------
-# CREW ASSIGN
+# ADD CREW MEMBER
 # -----------------------------------
 
 @app.route("/api/missions/<mission_id>/crew", methods=["PUT"])
 @token_required
 def add_crew_member(mission_id):
 
-    data = request.get_json() or {}
-    user_id = data.get("userId")
+    try:
+        data = request.get_json() or {}
 
-    mission = missions_collection.find_one({"_id": ObjectId(mission_id)})
+        user_id = data.get("userId")
 
-    crew = mission.get("crew", [])
+        mission = missions_collection.find_one({
+            "_id": ObjectId(mission_id)
+        })
 
-    if user_id not in crew:
-        crew.append(user_id)
+        if not mission:
+            return jsonify({
+                "error": "Mission not found"
+            }), 404
 
-    missions_collection.update_one(
-        {"_id": ObjectId(mission_id)},
-        {"$set": {"crew": crew}}
-    )
+        crew = mission.get("crew", [])
 
-    return jsonify({"crew": crew})
+        if user_id not in crew:
+            crew.append(user_id)
+
+        missions_collection.update_one(
+            {"_id": ObjectId(mission_id)},
+            {"$set": {"crew": crew}}
+        )
+
+        return jsonify({
+            "crew": crew
+        })
+
+    except InvalidId:
+        return jsonify({
+            "error": "Invalid mission ID"
+        }), 400
 
 # -----------------------------------
-# REMOVE CREW
+# REMOVE CREW MEMBER
 # -----------------------------------
 
 @app.route("/api/missions/<mission_id>/crew", methods=["DELETE"])
 @token_required
 def remove_crew_member(mission_id):
 
-    data = request.get_json() or {}
-    user_id = data.get("userId")
+    try:
+        data = request.get_json() or {}
 
-    mission = missions_collection.find_one({"_id": ObjectId(mission_id)})
+        user_id = data.get("userId")
 
-    crew = [c for c in mission.get("crew", []) if c != user_id]
+        mission = missions_collection.find_one({
+            "_id": ObjectId(mission_id)
+        })
 
-    missions_collection.update_one(
-        {"_id": ObjectId(mission_id)},
-        {"$set": {"crew": crew}}
-    )
+        if not mission:
+            return jsonify({
+                "error": "Mission not found"
+            }), 404
 
-    return jsonify({"crew": crew})
+        crew = [
+            member
+            for member in mission.get("crew", [])
+            if member != user_id
+        ]
+
+        missions_collection.update_one(
+            {"_id": ObjectId(mission_id)},
+            {"$set": {"crew": crew}}
+        )
+
+        return jsonify({
+            "crew": crew
+        })
+
+    except InvalidId:
+        return jsonify({
+            "error": "Invalid mission ID"
+        }), 400
 
 # -----------------------------------
 # START SERVER
 # -----------------------------------
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    app.run(
+        debug=True,
+        host="127.0.0.1",
+        port=5000
+    )
