@@ -1,0 +1,21 @@
+.crewCard{
+    display: flex;
+    flex-direction: column;
+    border: solid black 4px;
+    width: 100%;
+    max-width: 800px;
+    justify-content: space-between;
+    height: fit-content;
+}
+
+.crew-card-detail{
+   display: flex;
+   flex-direction: column;
+}
+
+.crew-text{
+    white-space: pre-line;
+    line-height: 1.8;
+    text-align: start;
+    padding: 20px
+}
