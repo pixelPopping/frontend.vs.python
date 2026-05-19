@@ -1,7 +1,7 @@
 import getStrategyFromCity from "../Helpers/getStrategyFromCity";
-import "./DetailMissionCard.css";
+import "./MissionDetailCard.css";
 
-function DetailMissionCard({
+function MissionDetailCard({
     label,
     text,
     index,
@@ -43,4 +43,4 @@ function DetailMissionCard({
     );
 }
 
-export default DetailMissionCard;
+export default MissionDetailCard;

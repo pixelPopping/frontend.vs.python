@@ -1,11 +1,35 @@
 @import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Unbounded:wght@200..900&display=swap');
 
+.dashboard{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%; 
+}
+
+
+.mission-page{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.mission-list{
+    display: flex;
+    flex-direction: row;
+    width: 1200px;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    row-gap: 20px;
+}
+
 .outer-mission {
     display: flex;
     flex-direction: column;
     padding-bottom: 100px;
     width: 100%;
 }
+
 
 .mission-outer-form {
     display: flex;
@@ -50,14 +74,15 @@
 }
 
 .form-input-outer {
-    width: 100%;
     display: flex;
     justify-content: center;
+    width: 100%;
 }
 
 .inner-form-mission {
-    width: 100%;
-    width: 800px;
+    flex-basis: 100%;
+    max-width: 800px;
+    align-items: center;
 }
 
 .text {

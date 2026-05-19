@@ -1,15 +1,43 @@
 // MissionForm.jsx
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import handleRandom from '../Helpers/handleRandom';
-import getStrategyFromCity from "../Helpers/getStrategyFromCity";
 import axios from "axios";
-import './MissionForm.css';
 
-const API = "http://localhost:5000";
+import handleRandom from "../Helpers/handleRandom";
+import getStrategyFromCity from "../Helpers/getStrategyFromCity";
 
-const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
+import "./MissionForm.css";
+
+// Gebruik overal 127.0.0.1
+const API = "http://127.0.0.1:5000";
+
+// Axios instance
+const api = axios.create({
+    baseURL: API,
+    headers: {
+        "Content-Type": "application/json"
+    }
+});
+
+// Token automatisch toevoegen
+api.interceptors.request.use((config) => {
+
+    const token = localStorage.getItem("token");
+
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    return config;
+});
+
+const MissionForm = ({
+    onSubmit,
+    options,
+    loading,
+    isSuccess
+}) => {
 
     const {
         register,
@@ -21,57 +49,144 @@ const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
 
     const [crewMembers, setCrewMembers] = useState([]);
 
+    // WATCHERS
+
     const destination = watch("city");
     const missionAction = watch("missionAction");
 
-    const token = localStorage.getItem("token");
-
-    // GET CREW USERS
+    // -----------------------------------
+    // LOAD CREW MEMBERS
+    // -----------------------------------
 
     useEffect(() => {
 
-        axios.get(
-            `${API}/api/users?role=crew`,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`
+        async function loadCrewMembers() {
+
+            try {
+
+                const token = localStorage.getItem("token");
+
+                if (!token) {
+                    console.error("No token found");
+                    return;
                 }
+
+                const response = await api.get(
+                    "/api/users?role=crew"
+                );
+
+                console.log(
+                    "CREW MEMBERS:",
+                    response.data
+                );
+
+                setCrewMembers(response.data);
+
+            } catch (error) {
+
+                console.error(
+                    "Crew fetch error:",
+                    error.response?.data || error.message
+                );
+
             }
-        )
-        .then(res => setCrewMembers(res.data))
-        .catch(err => console.error(err));
+        }
+
+        loadCrewMembers();
 
     }, []);
 
-    // RESET
+    // -----------------------------------
+    // RESET FORM
+    // -----------------------------------
 
     useEffect(() => {
 
         if (isSuccess) {
+
             reset();
+
         }
 
     }, [isSuccess, reset]);
 
-    // AUTO ACTION
+    // -----------------------------------
+    // AUTO STRATEGY
+    // -----------------------------------
 
     useEffect(() => {
 
         if (!destination) return;
 
-        const suggestion = getStrategyFromCity(destination);
+        const suggestion =
+            getStrategyFromCity(destination);
 
         if (!missionAction) {
-            setValue("missionAction", suggestion);
+
+            setValue(
+                "missionAction",
+                suggestion
+            );
         }
 
-    }, [destination, missionAction, setValue]);
+    }, [
+        destination,
+        missionAction,
+        setValue
+    ]);
+
+    // -----------------------------------
+    // SUBMIT
+    // -----------------------------------
+
+    function submitMission(data) {
+
+        const payload = {
+
+            title: `${data.city} Mission`,
+
+            description: `
+                Captain: ${data.captain}
+                Rocket: ${data.rocket}
+                Launchpad: ${data.launchpad}
+                Landing Pad: ${data.landpad}
+                Action: ${data.missionAction}
+            `,
+
+            launchDate: new Date(),
+
+            crew: [
+                data.crewMember1,
+                data.crewMember2
+            ].filter(Boolean),
+
+            captain: data.captain,
+            rocket: data.rocket,
+            launchpad: data.launchpad,
+            landpad: data.landpad,
+            missionAction: data.missionAction,
+            city: data.city
+        };
+
+        console.log(
+            "MISSION PAYLOAD:",
+            payload
+        );
+
+        onSubmit(payload);
+    }
+
+    // -----------------------------------
+    // UI
+    // -----------------------------------
 
     return (
 
         <div className="outer-form">
 
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={handleSubmit(submitMission)}>
+
+                {/* TITLE */}
 
                 <div className="text-container">
 
@@ -94,13 +209,20 @@ const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
                         className="submit-mission"
                         disabled={loading}
                     >
-                        🚀 Launch Mission
+                        {loading
+                            ? "Loading..."
+                            : "🚀 Launch Mission"}
                     </button>
 
                     <button
                         type="button"
-                        onClick={() => handleRandom(options, setValue)}
                         className="random-mission"
+                        onClick={() =>
+                            handleRandom(
+                                options,
+                                setValue
+                            )
+                        }
                     >
                         🎲 Random Mission
                     </button>
@@ -121,13 +243,15 @@ const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
 
                                 Captain:
 
-                                <select {...register("captain")}>
+                                <select
+                                    {...register("captain")}
+                                >
 
                                     <option value="">
                                         Select Captain
                                     </option>
 
-                                    {options?.astronauts?.map(a => (
+                                    {options?.astronauts?.map((a) => (
 
                                         <option
                                             key={a.id}
@@ -142,25 +266,28 @@ const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
 
                             </label>
 
-                            {/* CREW 1 */}
+                            {/* CREW MEMBER 1 */}
 
                             <label className="placeholder">
 
                                 Assign Crew Member 1:
 
-                                <select {...register("crewMember1")}>
+                                <select
+                                    {...register("crewMember1")}
+                                >
 
                                     <option value="">
                                         Select Crew Member
                                     </option>
 
-                                    {crewMembers.map(c => (
+                                    {crewMembers.map((crew) => (
 
                                         <option
-                                            key={c.id}
-                                            value={c.id}
+                                            key={crew.id}
+                                            value={crew.id}
                                         >
-                                            {c.firstname} {c.lastname}
+                                            {crew.firstname}{" "}
+                                            {crew.lastname}
                                         </option>
 
                                     ))}
@@ -169,25 +296,28 @@ const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
 
                             </label>
 
-                            {/* CREW 2 */}
+                            {/* CREW MEMBER 2 */}
 
                             <label className="placeholder">
 
                                 Assign Crew Member 2:
 
-                                <select {...register("crewMember2")}>
+                                <select
+                                    {...register("crewMember2")}
+                                >
 
                                     <option value="">
                                         Select Crew Member
                                     </option>
 
-                                    {crewMembers.map(c => (
+                                    {crewMembers.map((crew) => (
 
                                         <option
-                                            key={c.id}
-                                            value={c.id}
+                                            key={crew.id}
+                                            value={crew.id}
                                         >
-                                            {c.firstname} {c.lastname}
+                                            {crew.firstname}{" "}
+                                            {crew.lastname}
                                         </option>
 
                                     ))}
@@ -202,19 +332,21 @@ const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
 
                                 Rocket:
 
-                                <select {...register("rocket")}>
+                                <select
+                                    {...register("rocket")}
+                                >
 
                                     <option value="">
                                         Select Rocket
                                     </option>
 
-                                    {options?.rockets?.map(r => (
+                                    {options?.rockets?.map((rocket) => (
 
                                         <option
-                                            key={r.id}
-                                            value={r.name}
+                                            key={rocket.id}
+                                            value={rocket.name}
                                         >
-                                            {r.name}
+                                            {rocket.name}
                                         </option>
 
                                     ))}
@@ -229,19 +361,21 @@ const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
 
                                 Launch Pad:
 
-                                <select {...register("launchpad")}>
+                                <select
+                                    {...register("launchpad")}
+                                >
 
                                     <option value="">
                                         Select Launch Pad
                                     </option>
 
-                                    {options?.launchpads?.map(lp => (
+                                    {options?.launchpads?.map((launchpad) => (
 
                                         <option
-                                            key={lp.id}
-                                            value={lp.full_name}
+                                            key={launchpad.id}
+                                            value={launchpad.full_name}
                                         >
-                                            {lp.full_name}
+                                            {launchpad.full_name}
                                         </option>
 
                                     ))}
@@ -256,19 +390,21 @@ const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
 
                                 Landing Pad:
 
-                                <select {...register("landpad")}>
+                                <select
+                                    {...register("landpad")}
+                                >
 
                                     <option value="">
                                         Select Landing Pad
                                     </option>
 
-                                    {options?.landpads?.map(lp => (
+                                    {options?.landpads?.map((landpad) => (
 
                                         <option
-                                            key={lp.id}
-                                            value={lp.full_name}
+                                            key={landpad.id}
+                                            value={landpad.full_name}
                                         >
-                                            {lp.full_name}
+                                            {landpad.full_name}
                                         </option>
 
                                     ))}
@@ -283,7 +419,9 @@ const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
 
                                 Mission Action:
 
-                                <select {...register("missionAction")}>
+                                <select
+                                    {...register("missionAction")}
+                                >
 
                                     <option value="">
                                         Select Action
@@ -313,8 +451,8 @@ const MissionForm = ({ onSubmit, options, loading, isSuccess }) => {
 
                                 <input
                                     type="text"
-                                    {...register("city")}
                                     placeholder="Destination City"
+                                    {...register("city")}
                                 />
 
                             </label>
