@@ -3,10 +3,8 @@ import axios from "axios";
 import MissionDetailCard from "../components/MissionDetailCard";
 import MissionForm from "../components/MissionForm";
 
-// Gebruik overal 127.0.0.1
 const API = "http://127.0.0.1:5000";
 
-// Axios instance
 const api = axios.create({
     baseURL: API,
     headers: {
@@ -14,7 +12,6 @@ const api = axios.create({
     }
 });
 
-// Voeg automatisch token toe
 api.interceptors.request.use((config) => {
 
     const token = localStorage.getItem("token");
@@ -31,12 +28,9 @@ export default function CaptainDashboard() {
     const [missions, setMissions] = useState([]);
     const [users, setUsers] = useState([]);
     const [options, setOptions] = useState({});
+
     const [loading, setLoading] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
-
-    // -----------------------------------
-    // LOAD DATA
-    // -----------------------------------
 
     useEffect(() => {
 
@@ -47,38 +41,30 @@ export default function CaptainDashboard() {
                 const token = localStorage.getItem("token");
 
                 if (!token) {
-                    console.error("No token found");
                     return;
                 }
 
-                // MISSIONS
-                const missionsRes = await api.get("/api/missions");
-
-                console.log("MISSIONS:", missionsRes.data);
+                const missionsRes =
+                    await api.get("/api/missions");
 
                 setMissions(missionsRes.data);
 
-                // USERS
-                const usersRes = await api.get("/api/users");
-
-                console.log("USERS:", usersRes.data);
+                const usersRes =
+                    await api.get("/api/users");
 
                 setUsers(usersRes.data);
 
-                // OPTIONS
-                const optionsRes = await api.get("/api/mission-options");
-
-                console.log("OPTIONS:", optionsRes.data);
+                const optionsRes =
+                    await api.get("/api/mission-options");
 
                 setOptions(optionsRes.data);
 
             } catch (error) {
 
                 console.error(
-                    "Dashboard error:",
-                    error.response?.data || error.message
+                    error.response?.data ||
+                    error.message
                 );
-
             }
         }
 
@@ -86,74 +72,105 @@ export default function CaptainDashboard() {
 
     }, []);
 
-    // -----------------------------------
-    // CREATE MISSION
-    // -----------------------------------
-
     async function createMission(payload) {
+
+        if (loading) return;
+
+        setLoading(true);
 
         try {
 
-            setLoading(true);
+            const missionData = {
 
-            console.log("Creating mission:", payload);
+                title: `${payload.city} Mission`,
 
-            await api.post("/api/missions", payload);
+                description:
+                    "Generated mission from dashboard",
 
-            // Refresh missions
-            const response = await api.get("/api/missions");
+                launchDate: payload.departure,
 
-            setMissions(response.data);
+                returnDate: payload.returnDate,
+
+                rocket: payload.rocket,
+
+                launchPad: payload.launchPad,
+
+                landingPad: payload.landingPad,
+
+                city: payload.city,
+
+                crew: [
+                    payload.crewMember1,
+                    payload.crewMember2
+                ]
+            };
+
+            const response = await api.post(
+                "/api/missions",
+                missionData
+            );
+
+            const refreshed =
+                await api.get("/api/missions");
+
+            setMissions(refreshed.data);
 
             setIsSuccess(true);
+
+            setTimeout(() => {
+                setIsSuccess(false);
+            }, 3000);
 
         } catch (error) {
 
             console.error(
-                "Create mission error:",
-                error.response?.data || error.message
+                error.response?.data ||
+                error.message
             );
 
         } finally {
 
             setLoading(false);
-
         }
     }
 
-    // -----------------------------------
-    // DELETE MISSION
-    // -----------------------------------
+    async function removeMission(id) {
 
-    function removeMission(id) {
+        try {
 
-        setMissions((prev) =>
-            prev.filter((mission) => mission._id !== id)
-        );
+            await api.delete(
+                `/api/missions/${id}`
+            );
+
+            setMissions((prev) =>
+                prev.filter(
+                    (m) => m._id !== id
+                )
+            );
+
+        } catch (error) {
+
+            console.error(
+                error.response?.data ||
+                error.message
+            );
+        }
     }
 
-    // -----------------------------------
-    // UI
-    // -----------------------------------
-
     return (
-
         <main className="dashboard">
 
             <h1 className="unbounded">
                 Captain Dashboard
             </h1>
 
-            {/* CREATE MISSION */}
-
             <MissionForm
                 onSubmit={createMission}
+                users={users}
                 options={options}
                 loading={loading}
                 isSuccess={isSuccess}
             />
-
-            {/* MISSIONS */}
 
             <section className="mission-list">
 
@@ -163,18 +180,19 @@ export default function CaptainDashboard() {
 
                 ) : (
 
-                    missions.map((mission) => (
+                    missions.map(
+                        (mission, index) => (
 
-                        <MissionDetailCard
-                            key={mission._id}
-                            mission={mission}
-                            users={users}
-                            isCaptain={true}
-                            onDelete={removeMission}
-                        />
-
-                    ))
-
+                            <MissionDetailCard
+                                key={mission._id}
+                                mission={mission}
+                                index={index}
+                                users={users}
+                                isCaptain={true}
+                                onDelete={removeMission}
+                            />
+                        )
+                    )
                 )}
 
             </section>

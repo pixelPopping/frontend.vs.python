@@ -1,472 +1,331 @@
-// MissionForm.jsx
-
-import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import axios from "axios";
-
-import handleRandom from "../Helpers/handleRandom";
-import getStrategyFromCity from "../Helpers/getStrategyFromCity";
-
+import React, { useState } from "react";
 import "./MissionForm.css";
 
-// Gebruik overal 127.0.0.1
-const API = "http://127.0.0.1:5000";
-
-// Axios instance
-const api = axios.create({
-    baseURL: API,
-    headers: {
-        "Content-Type": "application/json"
-    }
-});
-
-// Token automatisch toevoegen
-api.interceptors.request.use((config) => {
-
-    const token = localStorage.getItem("token");
-
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-    }
-
-    return config;
-});
-
-const MissionForm = ({
+export default function MissionForm({
     onSubmit,
+    users,
     options,
     loading,
     isSuccess
-}) => {
+}) {
 
-    const {
-        register,
-        handleSubmit,
-        setValue,
-        reset,
-        watch
-    } = useForm();
+    const crewUsers =
+        users?.filter(
+            (u) => u.role === "crew"
+        ) || [];
 
-    const [crewMembers, setCrewMembers] = useState([]);
+    const [formData, setFormData] = useState({
+        departure: "",
+        returnDate: "",
+        crewMember1: "",
+        crewMember2: "",
+        rocket: "",
+        launchPad: "",
+        landingPad: "",
+        city: ""
+    });
 
-    // WATCHERS
+    function handleChange(e) {
 
-    const destination = watch("city");
-    const missionAction = watch("missionAction");
+        const { name, value } = e.target;
 
-    // -----------------------------------
-    // LOAD CREW MEMBERS
-    // -----------------------------------
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value
+        }));
+    }
 
-    useEffect(() => {
+    function handleSubmit(e) {
 
-        async function loadCrewMembers() {
+        e.preventDefault();
 
-            try {
-
-                const token = localStorage.getItem("token");
-
-                if (!token) {
-                    console.error("No token found");
-                    return;
-                }
-
-                const response = await api.get(
-                    "/api/users?role=crew"
-                );
-
-                console.log(
-                    "CREW MEMBERS:",
-                    response.data
-                );
-
-                setCrewMembers(response.data);
-
-            } catch (error) {
-
-                console.error(
-                    "Crew fetch error:",
-                    error.response?.data || error.message
-                );
-
-            }
-        }
-
-        loadCrewMembers();
-
-    }, []);
-
-    // -----------------------------------
-    // RESET FORM
-    // -----------------------------------
-
-    useEffect(() => {
-
-        if (isSuccess) {
-
-            reset();
-
-        }
-
-    }, [isSuccess, reset]);
-
-    // -----------------------------------
-    // AUTO STRATEGY
-    // -----------------------------------
-
-    useEffect(() => {
-
-        if (!destination) return;
-
-        const suggestion =
-            getStrategyFromCity(destination);
-
-        if (!missionAction) {
-
-            setValue(
-                "missionAction",
-                suggestion
+        if (
+            !formData.crewMember1 ||
+            !formData.crewMember2
+        ) {
+            alert(
+                "Select exactly 2 crew members"
             );
+
+            return;
         }
 
-    }, [
-        destination,
-        missionAction,
-        setValue
-    ]);
+        if (
+            formData.crewMember1 ===
+            formData.crewMember2
+        ) {
+            alert(
+                "Crew members must be different"
+            );
 
-    // -----------------------------------
-    // SUBMIT
-    // -----------------------------------
-
-    function submitMission(data) {
+            return;
+        }
 
         const payload = {
 
-            title: `${data.city} Mission`,
+            departure:
+                formData.departure,
 
-            description: `
-                Captain: ${data.captain}
-                Rocket: ${data.rocket}
-                Launchpad: ${data.launchpad}
-                Landing Pad: ${data.landpad}
-                Action: ${data.missionAction}
-            `,
+            returnDate:
+                formData.returnDate,
 
-            launchDate: new Date(),
+            crewMember1:
+                formData.crewMember1,
 
-            crew: [
-                data.crewMember1,
-                data.crewMember2
-            ].filter(Boolean),
+            crewMember2:
+                formData.crewMember2,
 
-            captain: data.captain,
-            rocket: data.rocket,
-            launchpad: data.launchpad,
-            landpad: data.landpad,
-            missionAction: data.missionAction,
-            city: data.city
+            rocket:
+                formData.rocket,
+
+            launchPad:
+                formData.launchPad,
+
+            landingPad:
+                formData.landingPad,
+
+            city:
+                formData.city
         };
-
-        console.log(
-            "MISSION PAYLOAD:",
-            payload
-        );
 
         onSubmit(payload);
     }
 
-    // -----------------------------------
-    // UI
-    // -----------------------------------
-
     return (
 
-        <div className="outer-form">
+        <form
+            className="mission-form"
+            onSubmit={handleSubmit}
+        >
+
+            <h2>
+                Create Mission
+            </h2>
 
-            <form onSubmit={handleSubmit(submitMission)}>
+            <label>
 
-                {/* TITLE */}
+                Departure:
 
-                <div className="text-container">
+                <input
+                    type="date"
+                    name="departure"
+                    value={formData.departure}
+                    onChange={handleChange}
+                    required
+                />
 
-                    <header>
+            </label>
 
-                        <h1 className="unbounded-title-mission">
-                            Mission Control
-                        </h1>
+            <label>
 
-                    </header>
+                Return Date:
 
-                </div>
+                <input
+                    type="date"
+                    name="returnDate"
+                    value={formData.returnDate}
+                    onChange={handleChange}
+                    required
+                />
 
-                {/* BUTTONS */}
+            </label>
 
-                <div className="button-section">
+            <label>
 
-                    <button
-                        type="submit"
-                        className="submit-mission"
-                        disabled={loading}
-                    >
-                        {loading
-                            ? "Loading..."
-                            : "🚀 Launch Mission"}
-                    </button>
+                Crew Member 1:
 
-                    <button
-                        type="button"
-                        className="random-mission"
-                        onClick={() =>
-                            handleRandom(
-                                options,
-                                setValue
-                            )
-                        }
-                    >
-                        🎲 Random Mission
-                    </button>
+                <select
+                    name="crewMember1"
+                    value={formData.crewMember1}
+                    onChange={handleChange}
+                    required
+                >
 
-                </div>
+                    <option value="">
+                        Select Crew
+                    </option>
 
-                {/* FORM */}
+                    {crewUsers.map((u) => (
 
-                <div className="form-input-outer">
+                        <option
+                            key={u.id}
+                            value={u.id}
+                            disabled={
+                                u.id ===
+                                formData.crewMember2
+                            }
+                        >
+                            {u.firstname}
+                            {" "}
+                            {u.lastname}
+                        </option>
 
-                    <section className="inner-form-mission">
+                    ))}
 
-                        <article className="text">
+                </select>
 
-                            {/* CAPTAIN */}
+            </label>
 
-                            <label className="placeholder">
+            <label>
 
-                                Captain:
+                Crew Member 2:
 
-                                <select
-                                    {...register("captain")}
-                                >
+                <select
+                    name="crewMember2"
+                    value={formData.crewMember2}
+                    onChange={handleChange}
+                    required
+                >
 
-                                    <option value="">
-                                        Select Captain
-                                    </option>
+                    <option value="">
+                        Select Crew
+                    </option>
 
-                                    {options?.astronauts?.map((a) => (
+                    {crewUsers.map((u) => (
 
-                                        <option
-                                            key={a.id}
-                                            value={a.name}
-                                        >
-                                            {a.name}
-                                        </option>
+                        <option
+                            key={u.id}
+                            value={u.id}
+                            disabled={
+                                u.id ===
+                                formData.crewMember1
+                            }
+                        >
+                            {u.firstname}
+                            {" "}
+                            {u.lastname}
+                        </option>
 
-                                    ))}
+                    ))}
 
-                                </select>
+                </select>
 
-                            </label>
+            </label>
 
-                            {/* CREW MEMBER 1 */}
+            <label>
 
-                            <label className="placeholder">
+                Rocket:
 
-                                Assign Crew Member 1:
+                <select
+                    name="rocket"
+                    value={formData.rocket}
+                    onChange={handleChange}
+                    required
+                >
 
-                                <select
-                                    {...register("crewMember1")}
-                                >
+                    <option value="">
+                        Select Rocket
+                    </option>
 
-                                    <option value="">
-                                        Select Crew Member
-                                    </option>
+                    {options?.rockets?.map((r) => (
 
-                                    {crewMembers.map((crew) => (
+                        <option
+                            key={r.id}
+                            value={r.id}
+                        >
+                            {r.name}
+                        </option>
 
-                                        <option
-                                            key={crew.id}
-                                            value={crew.id}
-                                        >
-                                            {crew.firstname}{" "}
-                                            {crew.lastname}
-                                        </option>
+                    ))}
 
-                                    ))}
+                </select>
 
-                                </select>
+            </label>
 
-                            </label>
+            <label>
 
-                            {/* CREW MEMBER 2 */}
+                Launch Pad:
 
-                            <label className="placeholder">
+                <select
+                    name="launchPad"
+                    value={formData.launchPad}
+                    onChange={handleChange}
+                    required
+                >
 
-                                Assign Crew Member 2:
+                    <option value="">
+                        Select Launch Pad
+                    </option>
 
-                                <select
-                                    {...register("crewMember2")}
-                                >
+                    {options?.launchpads?.map((p) => (
 
-                                    <option value="">
-                                        Select Crew Member
-                                    </option>
+                        <option
+                            key={p.id}
+                            value={p.id}
+                        >
+                            {p.name}
+                        </option>
 
-                                    {crewMembers.map((crew) => (
+                    ))}
 
-                                        <option
-                                            key={crew.id}
-                                            value={crew.id}
-                                        >
-                                            {crew.firstname}{" "}
-                                            {crew.lastname}
-                                        </option>
+                </select>
 
-                                    ))}
+            </label>
 
-                                </select>
+            <label>
 
-                            </label>
+                Landing Pad:
 
-                            {/* ROCKET */}
+                <select
+                    name="landingPad"
+                    value={formData.landingPad}
+                    onChange={handleChange}
+                    required
+                >
 
-                            <label className="placeholder">
+                    <option value="">
+                        Select Landing Pad
+                    </option>
 
-                                Rocket:
+                    {options?.landpads?.map((p) => (
 
-                                <select
-                                    {...register("rocket")}
-                                >
+                        <option
+                            key={p.id}
+                            value={p.id}
+                        >
+                            {p.name}
+                        </option>
 
-                                    <option value="">
-                                        Select Rocket
-                                    </option>
+                    ))}
 
-                                    {options?.rockets?.map((rocket) => (
+                </select>
 
-                                        <option
-                                            key={rocket.id}
-                                            value={rocket.name}
-                                        >
-                                            {rocket.name}
-                                        </option>
+            </label>
 
-                                    ))}
+            <label>
 
-                                </select>
+                Destination:
 
-                            </label>
+                <input
+                    type="text"
+                    name="city"
+                    value={formData.city}
+                    onChange={handleChange}
+                    placeholder="Enter destination"
+                    required
+                />
 
-                            {/* LAUNCHPAD */}
+            </label>
 
-                            <label className="placeholder">
+            <button
+                type="submit"
+                disabled={loading}
+            >
 
-                                Launch Pad:
+                {loading
+                    ? "Saving..."
+                    : "Create Mission"}
 
-                                <select
-                                    {...register("launchpad")}
-                                >
+            </button>
 
-                                    <option value="">
-                                        Select Launch Pad
-                                    </option>
+            {isSuccess && (
 
-                                    {options?.launchpads?.map((launchpad) => (
+                <p className="success">
+                    Mission created successfully!
+                </p>
 
-                                        <option
-                                            key={launchpad.id}
-                                            value={launchpad.full_name}
-                                        >
-                                            {launchpad.full_name}
-                                        </option>
+            )}
 
-                                    ))}
-
-                                </select>
-
-                            </label>
-
-                            {/* LANDPAD */}
-
-                            <label className="placeholder">
-
-                                Landing Pad:
-
-                                <select
-                                    {...register("landpad")}
-                                >
-
-                                    <option value="">
-                                        Select Landing Pad
-                                    </option>
-
-                                    {options?.landpads?.map((landpad) => (
-
-                                        <option
-                                            key={landpad.id}
-                                            value={landpad.full_name}
-                                        >
-                                            {landpad.full_name}
-                                        </option>
-
-                                    ))}
-
-                                </select>
-
-                            </label>
-
-                            {/* ACTION */}
-
-                            <label className="placeholder">
-
-                                Mission Action:
-
-                                <select
-                                    {...register("missionAction")}
-                                >
-
-                                    <option value="">
-                                        Select Action
-                                    </option>
-
-                                    <option value="stay">
-                                        Stay
-                                    </option>
-
-                                    <option value="refuel">
-                                        Refuel
-                                    </option>
-
-                                    <option value="return">
-                                        Return
-                                    </option>
-
-                                </select>
-
-                            </label>
-
-                            {/* DESTINATION */}
-
-                            <label className="placeholder">
-
-                                Destination:
-
-                                <input
-                                    type="text"
-                                    placeholder="Destination City"
-                                    {...register("city")}
-                                />
-
-                            </label>
-
-                        </article>
-
-                    </section>
-
-                </div>
-
-            </form>
-
-        </div>
+        </form>
     );
-};
-
-export default MissionForm;
+}
