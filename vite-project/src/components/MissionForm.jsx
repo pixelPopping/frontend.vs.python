@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import "./MissionForm.css";
 
 export default function MissionForm({
@@ -9,40 +9,56 @@ export default function MissionForm({
     isSuccess
 }) {
 
+    // ---------------- CREW USERS ----------------
     const crewUsers =
         users?.filter(
             (u) => u.role === "crew"
         ) || [];
 
+    // ---------------- FORM STATE ----------------
     const [formData, setFormData] = useState({
+
         departure: "",
+
         returnDate: "",
+
         crewMember1: "",
+
         crewMember2: "",
+
         rocket: "",
+
         launchPad: "",
+
         landingPad: "",
+
         city: ""
     });
 
+    // ---------------- HANDLE CHANGE ----------------
     function handleChange(e) {
 
         const { name, value } = e.target;
 
         setFormData((prev) => ({
+
             ...prev,
+
             [name]: value
         }));
     }
 
+    // ---------------- SUBMIT ----------------
     function handleSubmit(e) {
 
         e.preventDefault();
 
+        // crew validation
         if (
             !formData.crewMember1 ||
             !formData.crewMember2
         ) {
+
             alert(
                 "Select exactly 2 crew members"
             );
@@ -50,10 +66,12 @@ export default function MissionForm({
             return;
         }
 
+        // no duplicate users
         if (
             formData.crewMember1 ===
             formData.crewMember2
         ) {
+
             alert(
                 "Crew members must be different"
             );
@@ -61,9 +79,13 @@ export default function MissionForm({
             return;
         }
 
+        // ---------------- PAYLOAD ----------------
         const payload = {
 
-            departure:
+            title:
+                "Space Mission",
+
+            launchDate:
                 formData.departure,
 
             returnDate:
@@ -88,6 +110,11 @@ export default function MissionForm({
                 formData.city
         };
 
+        console.log(
+            "MISSION PAYLOAD:",
+            payload
+        );
+
         onSubmit(payload);
     }
 
@@ -101,6 +128,8 @@ export default function MissionForm({
             <h2>
                 Create Mission
             </h2>
+
+            {/* ---------------- DEPARTURE ---------------- */}
 
             <label>
 
@@ -116,6 +145,8 @@ export default function MissionForm({
 
             </label>
 
+            {/* ---------------- RETURN ---------------- */}
+
             <label>
 
                 Return Date:
@@ -129,6 +160,8 @@ export default function MissionForm({
                 />
 
             </label>
+
+            {/* ---------------- CREW 1 ---------------- */}
 
             <label>
 
@@ -155,9 +188,11 @@ export default function MissionForm({
                                 formData.crewMember2
                             }
                         >
+
                             {u.firstname}
                             {" "}
                             {u.lastname}
+
                         </option>
 
                     ))}
@@ -165,6 +200,8 @@ export default function MissionForm({
                 </select>
 
             </label>
+
+            {/* ---------------- CREW 2 ---------------- */}
 
             <label>
 
@@ -191,9 +228,11 @@ export default function MissionForm({
                                 formData.crewMember1
                             }
                         >
+
                             {u.firstname}
                             {" "}
                             {u.lastname}
+
                         </option>
 
                     ))}
@@ -201,6 +240,8 @@ export default function MissionForm({
                 </select>
 
             </label>
+
+            {/* ---------------- ROCKET ---------------- */}
 
             <label>
 
@@ -223,7 +264,9 @@ export default function MissionForm({
                             key={r.id}
                             value={r.id}
                         >
+
                             {r.name}
+
                         </option>
 
                     ))}
@@ -231,6 +274,8 @@ export default function MissionForm({
                 </select>
 
             </label>
+
+            {/* ---------------- LAUNCHPAD ---------------- */}
 
             <label>
 
@@ -253,7 +298,9 @@ export default function MissionForm({
                             key={p.id}
                             value={p.id}
                         >
+
                             {p.name}
+
                         </option>
 
                     ))}
@@ -261,6 +308,8 @@ export default function MissionForm({
                 </select>
 
             </label>
+
+            {/* ---------------- LANDPAD ---------------- */}
 
             <label>
 
@@ -283,7 +332,9 @@ export default function MissionForm({
                             key={p.id}
                             value={p.id}
                         >
+
                             {p.name}
+
                         </option>
 
                     ))}
@@ -291,6 +342,8 @@ export default function MissionForm({
                 </select>
 
             </label>
+
+            {/* ---------------- CITY ---------------- */}
 
             <label>
 
@@ -307,6 +360,8 @@ export default function MissionForm({
 
             </label>
 
+            {/* ---------------- BUTTON ---------------- */}
+
             <button
                 type="submit"
                 disabled={loading}
@@ -317,6 +372,8 @@ export default function MissionForm({
                     : "Create Mission"}
 
             </button>
+
+            {/* ---------------- SUCCESS ---------------- */}
 
             {isSuccess && (
 

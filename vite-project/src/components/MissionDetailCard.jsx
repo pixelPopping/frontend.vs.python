@@ -1,40 +1,80 @@
 import getStrategyFromCity from "../Helpers/getStrategyFromCity";
+
 import "./MissionDetailCard.css";
 
 function MissionDetailCard({
     mission,
     index,
     onDelete,
-    isCaptain
+    isCaptain,
 }) {
 
+    // ---------------- SAFETY ----------------
     if (!mission) {
+
         return (
+
             <article className="mission-card">
+
                 <p>Loading mission...</p>
+
             </article>
         );
     }
 
-    const crewList = Array.isArray(mission?.crew)
+    // ---------------- DATA ----------------
+    const crewList = Array.isArray(mission.crew)
         ? mission.crew
         : [];
 
+    const captain =
+        mission.captain || "Unknown";
+
+    const rocket =
+        mission.rocket?.name ||
+        "Unknown";
+
+    const launchPad =
+        mission.launchPad?.full_name ||
+        mission.launchPad?.name ||
+        "Unknown";
+
+    const landingPad =
+        mission.landingPad?.full_name ||
+        mission.landingPad?.name ||
+        "Unknown";
+
+    const destination =
+        mission.city || "Unknown";
+
+    const strategy =
+        getStrategyFromCity(destination);
+
+    const launchDate =
+        mission.launchDate || "Unknown";
+
+    const returnDate =
+        mission.returnDate || "Unknown";
+
+    // ---------------- RENDER ----------------
     return (
+
         <article className="mission-card">
 
-            <h3>Mission {index + 1}</h3>
+            <h3>
+                Mission {index + 1}
+            </h3>
 
             <div className="card-text">
 
                 <p>
                     <strong>Periode:</strong>{" "}
-                    {mission?.launchDate} t/m {mission?.returnDate}
+                    {launchDate} t/m {returnDate}
                 </p>
 
                 <p>
                     <strong>Captain:</strong>{" "}
-                    {mission?.captain || "Unknown"}
+                    {captain}
                 </p>
 
                 <p>
@@ -44,50 +84,46 @@ function MissionDetailCard({
                         : "No crew assigned"}
                 </p>
 
-              
                 <p>
                     <strong>Rocket:</strong>{" "}
-                    {mission?.rocket?.name || mission?.rocket || "Unknown"}
+                    {rocket}
                 </p>
 
-                
                 <p>
                     <strong>Launch Pad:</strong>{" "}
-                    {mission?.launchPad?.full_name ||
-                     mission?.launchPad?.name ||
-                     mission?.launchPad ||
-                     "Unknown"}
+                    {launchPad}
                 </p>
 
-               
                 <p>
                     <strong>Landing Pad:</strong>{" "}
-                    {mission?.landingPad?.full_name ||
-                     mission?.landingPad?.name ||
-                     mission?.landingPad ||
-                     "Unknown"}
+                    {landingPad}
                 </p>
 
                 <p>
                     <strong>Destination:</strong>{" "}
-                    {mission?.city}
+                    {destination}
                 </p>
 
                 <p>
                     <strong>Strategy:</strong>{" "}
-                    {getStrategyFromCity(mission?.city)}
+                    {strategy}
                 </p>
 
             </div>
 
             {isCaptain && (
+
                 <section className="delete-button-container">
+
                     <button
-                        onClick={() => onDelete?.(mission?._id)}
+                        onClick={() =>
+                            onDelete?.(mission._id)
+                        }
                         className="delete"
                     >
                         Delete
                     </button>
+
                 </section>
             )}
 
