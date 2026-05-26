@@ -22,27 +22,7 @@ function MissionForm({
 
     async function submitForm(data) {
 
-        const payload = {
-
-            title: data.title,
-
-            rocket: data.rocket,
-
-            launchPad: data.launchPad,
-
-            landingPad: data.landingPad,
-
-            captain: data.captain,
-
-            crew: [
-
-                data.crewMember1,
-
-                data.crewMember2,
-            ],
-        };
-
-        await onSubmit(payload);
+        await onSubmit(data);
     }
 
     return (
@@ -55,18 +35,14 @@ function MissionForm({
                 Create Mission
             </h2>
 
-            {/* ================================================= */}
             {/* TITLE */}
-            {/* ================================================= */}
             <input
                 type="text"
-                placeholder="Mission Title"
+                placeholder="Title"
                 {...register("title")}
             />
 
-            {/* ================================================= */}
             {/* ROCKET */}
-            {/* ================================================= */}
             <select
                 {...register("rocket")}
             >
@@ -90,61 +66,7 @@ function MissionForm({
 
             </select>
 
-            {/* ================================================= */}
-            {/* LAUNCHPAD */}
-            {/* ================================================= */}
-            <select
-                {...register("launchPad")}
-            >
-
-                <option value="">
-                    Select Launchpad
-                </option>
-
-                {options?.launchpads?.map(
-                    (pad) => (
-
-                        <option
-                            key={pad.id}
-                            value={pad.id}
-                        >
-                            {pad.name}
-                        </option>
-
-                    )
-                )}
-
-            </select>
-
-            {/* ================================================= */}
-            {/* LANDINGPAD */}
-            {/* ================================================= */}
-            <select
-                {...register("landingPad")}
-            >
-
-                <option value="">
-                    Select Landing Pad
-                </option>
-
-                {options?.landpads?.map(
-                    (pad) => (
-
-                        <option
-                            key={pad.id}
-                            value={pad.id}
-                        >
-                            {pad.name}
-                        </option>
-
-                    )
-                )}
-
-            </select>
-
-            {/* ================================================= */}
             {/* CAPTAIN */}
-            {/* ================================================= */}
             <select
                 {...register("captain")}
             >
@@ -173,17 +95,13 @@ function MissionForm({
 
             </select>
 
-            {/* ================================================= */}
-            {/* CREW MEMBER 1 */}
-            {/* ================================================= */}
+            {/* CREW */}
             <select
-                {...register(
-                    "crewMember1"
-                )}
+                {...register("crew")}
             >
 
                 <option value="">
-                    Select Crew Member 1
+                    Select Crew
                 </option>
 
                 {users
@@ -206,42 +124,6 @@ function MissionForm({
 
             </select>
 
-            {/* ================================================= */}
-            {/* CREW MEMBER 2 */}
-            {/* ================================================= */}
-            <select
-                {...register(
-                    "crewMember2"
-                )}
-            >
-
-                <option value="">
-                    Select Crew Member 2
-                </option>
-
-                {users
-                    ?.filter(
-                        (user) =>
-                            user.role ===
-                            "crew"
-                    )
-                    ?.map((user) => (
-
-                        <option
-                            key={user.id}
-                            value={user.id}
-                        >
-                            {user.firstname}
-                        </option>
-
-                    ))
-                }
-
-            </select>
-
-            {/* ================================================= */}
-            {/* BUTTON */}
-            {/* ================================================= */}
             <button
                 type="submit"
                 disabled={loading}
