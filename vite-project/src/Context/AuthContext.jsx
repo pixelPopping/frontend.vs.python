@@ -13,12 +13,14 @@ export default function AuthContextProvider({ children }) {
 
     const [loading, setLoading] = useState(true);
 
-   
+    // ---------------- CHECK AUTH ----------------
     useEffect(() => {
 
         const token = localStorage.getItem("token");
 
-        
+        console.log("TOKEN:", token);
+
+        // Geen token aanwezig
         if (!token) {
 
             setLoading(false);
@@ -35,15 +37,23 @@ export default function AuthContextProvider({ children }) {
         })
         .then((res) => {
 
+            console.log("AUTH SUCCESS:", res.data);
+
             setUser(res.data);
 
             setIsAuth(true);
         })
-        .catch(() => {
+        .catch((err) => {
 
-           
+            console.error(
+                "AUTH ERROR:",
+                err.response?.data || err
+            );
+
+            // Verwijder slechte token
             localStorage.removeItem("token");
 
+            // Reset auth state
             setUser(null);
 
             setIsAuth(false);
@@ -55,8 +65,10 @@ export default function AuthContextProvider({ children }) {
 
     }, []);
 
-   
+    // ---------------- LOGIN ----------------
     function login(userData, token) {
+
+        console.log("LOGIN TOKEN:", token);
 
         localStorage.setItem("token", token);
 
@@ -65,7 +77,10 @@ export default function AuthContextProvider({ children }) {
         setIsAuth(true);
     }
 
+    // ---------------- LOGOUT ----------------
     function logout() {
+
+        console.log("LOGOUT");
 
         localStorage.removeItem("token");
 
@@ -74,17 +89,28 @@ export default function AuthContextProvider({ children }) {
         setIsAuth(false);
     }
 
+    // ---------------- LOADING ----------------
+    if (loading) {
+
+        return (
+            <div>
+                Loading...
+            </div>
+        );
+    }
+
+    // ---------------- PROVIDER ----------------
     return (
 
-        <AuthContext.Provider value={{
-
-            isAuth,
-            user,
-            loading,
-            login,
-            logout
-
-        }}>
+        <AuthContext.Provider
+            value={{
+                isAuth,
+                user,
+                loading,
+                login,
+                logout
+            }}
+        >
 
             {children}
 

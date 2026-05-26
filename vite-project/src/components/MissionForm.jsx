@@ -1,388 +1,258 @@
-import { useState } from "react";
-import "./MissionForm.css";
+import { useForm } from "react-hook-form";
 
-export default function MissionForm({
+function MissionForm({
+
     onSubmit,
-    users,
-    options,
+
+    users = [],
+
+    options = {},
+
     loading,
-    isSuccess
+
 }) {
 
-    // ---------------- CREW USERS ----------------
-    const crewUsers =
-        users?.filter(
-            (u) => u.role === "crew"
-        ) || [];
+    const {
 
-    // ---------------- FORM STATE ----------------
-    const [formData, setFormData] = useState({
+        register,
 
-        departure: "",
+        handleSubmit,
 
-        returnDate: "",
+    } = useForm();
 
-        crewMember1: "",
+    async function submitForm(data) {
 
-        crewMember2: "",
-
-        rocket: "",
-
-        launchPad: "",
-
-        landingPad: "",
-
-        city: ""
-    });
-
-    // ---------------- HANDLE CHANGE ----------------
-    function handleChange(e) {
-
-        const { name, value } = e.target;
-
-        setFormData((prev) => ({
-
-            ...prev,
-
-            [name]: value
-        }));
-    }
-
-    // ---------------- SUBMIT ----------------
-    function handleSubmit(e) {
-
-        e.preventDefault();
-
-        // crew validation
-        if (
-            !formData.crewMember1 ||
-            !formData.crewMember2
-        ) {
-
-            alert(
-                "Select exactly 2 crew members"
-            );
-
-            return;
-        }
-
-        // no duplicate users
-        if (
-            formData.crewMember1 ===
-            formData.crewMember2
-        ) {
-
-            alert(
-                "Crew members must be different"
-            );
-
-            return;
-        }
-
-        // ---------------- PAYLOAD ----------------
         const payload = {
 
-            title:
-                "Space Mission",
+            title: data.title,
 
-            launchDate:
-                formData.departure,
+            rocket: data.rocket,
 
-            returnDate:
-                formData.returnDate,
+            launchPad: data.launchPad,
 
-            crewMember1:
-                formData.crewMember1,
+            landingPad: data.landingPad,
 
-            crewMember2:
-                formData.crewMember2,
+            captain: data.captain,
 
-            rocket:
-                formData.rocket,
+            crew: [
 
-            launchPad:
-                formData.launchPad,
+                data.crewMember1,
 
-            landingPad:
-                formData.landingPad,
-
-            city:
-                formData.city
+                data.crewMember2,
+            ],
         };
 
-        console.log(
-            "MISSION PAYLOAD:",
-            payload
-        );
-
-        onSubmit(payload);
+        await onSubmit(payload);
     }
 
     return (
 
         <form
-            className="mission-form"
-            onSubmit={handleSubmit}
+            onSubmit={handleSubmit(submitForm)}
         >
 
             <h2>
                 Create Mission
             </h2>
 
-            {/* ---------------- DEPARTURE ---------------- */}
+            {/* ================================================= */}
+            {/* TITLE */}
+            {/* ================================================= */}
+            <input
+                type="text"
+                placeholder="Mission Title"
+                {...register("title")}
+            />
 
-            <label>
+            {/* ================================================= */}
+            {/* ROCKET */}
+            {/* ================================================= */}
+            <select
+                {...register("rocket")}
+            >
 
-                Departure:
+                <option value="">
+                    Select Rocket
+                </option>
 
-                <input
-                    type="date"
-                    name="departure"
-                    value={formData.departure}
-                    onChange={handleChange}
-                    required
-                />
-
-            </label>
-
-            {/* ---------------- RETURN ---------------- */}
-
-            <label>
-
-                Return Date:
-
-                <input
-                    type="date"
-                    name="returnDate"
-                    value={formData.returnDate}
-                    onChange={handleChange}
-                    required
-                />
-
-            </label>
-
-            {/* ---------------- CREW 1 ---------------- */}
-
-            <label>
-
-                Crew Member 1:
-
-                <select
-                    name="crewMember1"
-                    value={formData.crewMember1}
-                    onChange={handleChange}
-                    required
-                >
-
-                    <option value="">
-                        Select Crew
-                    </option>
-
-                    {crewUsers.map((u) => (
+                {options?.rockets?.map(
+                    (rocket) => (
 
                         <option
-                            key={u.id}
-                            value={u.id}
-                            disabled={
-                                u.id ===
-                                formData.crewMember2
-                            }
+                            key={rocket.id}
+                            value={rocket.id}
                         >
-
-                            {u.firstname}
-                            {" "}
-                            {u.lastname}
-
+                            {rocket.name}
                         </option>
 
-                    ))}
+                    )
+                )}
 
-                </select>
+            </select>
 
-            </label>
+            {/* ================================================= */}
+            {/* LAUNCHPAD */}
+            {/* ================================================= */}
+            <select
+                {...register("launchPad")}
+            >
 
-            {/* ---------------- CREW 2 ---------------- */}
+                <option value="">
+                    Select Launchpad
+                </option>
 
-            <label>
-
-                Crew Member 2:
-
-                <select
-                    name="crewMember2"
-                    value={formData.crewMember2}
-                    onChange={handleChange}
-                    required
-                >
-
-                    <option value="">
-                        Select Crew
-                    </option>
-
-                    {crewUsers.map((u) => (
+                {options?.launchpads?.map(
+                    (pad) => (
 
                         <option
-                            key={u.id}
-                            value={u.id}
-                            disabled={
-                                u.id ===
-                                formData.crewMember1
-                            }
+                            key={pad.id}
+                            value={pad.id}
                         >
-
-                            {u.firstname}
-                            {" "}
-                            {u.lastname}
-
+                            {pad.name}
                         </option>
 
-                    ))}
+                    )
+                )}
 
-                </select>
+            </select>
 
-            </label>
+            {/* ================================================= */}
+            {/* LANDINGPAD */}
+            {/* ================================================= */}
+            <select
+                {...register("landingPad")}
+            >
 
-            {/* ---------------- ROCKET ---------------- */}
+                <option value="">
+                    Select Landing Pad
+                </option>
 
-            <label>
-
-                Rocket:
-
-                <select
-                    name="rocket"
-                    value={formData.rocket}
-                    onChange={handleChange}
-                    required
-                >
-
-                    <option value="">
-                        Select Rocket
-                    </option>
-
-                    {options?.rockets?.map((r) => (
+                {options?.landpads?.map(
+                    (pad) => (
 
                         <option
-                            key={r.id}
-                            value={r.id}
+                            key={pad.id}
+                            value={pad.id}
                         >
-
-                            {r.name}
-
+                            {pad.name}
                         </option>
 
-                    ))}
+                    )
+                )}
 
-                </select>
+            </select>
 
-            </label>
+            {/* ================================================= */}
+            {/* CAPTAIN */}
+            {/* ================================================= */}
+            <select
+                {...register("captain")}
+            >
 
-            {/* ---------------- LAUNCHPAD ---------------- */}
+                <option value="">
+                    Select Captain
+                </option>
 
-            <label>
-
-                Launch Pad:
-
-                <select
-                    name="launchPad"
-                    value={formData.launchPad}
-                    onChange={handleChange}
-                    required
-                >
-
-                    <option value="">
-                        Select Launch Pad
-                    </option>
-
-                    {options?.launchpads?.map((p) => (
+                {users
+                    ?.filter(
+                        (user) =>
+                            user.role ===
+                            "captain"
+                    )
+                    ?.map((user) => (
 
                         <option
-                            key={p.id}
-                            value={p.id}
+                            key={user.id}
+                            value={user.id}
                         >
-
-                            {p.name}
-
+                            {user.firstname}
                         </option>
 
-                    ))}
+                    ))
+                }
 
-                </select>
+            </select>
 
-            </label>
+            {/* ================================================= */}
+            {/* CREW MEMBER 1 */}
+            {/* ================================================= */}
+            <select
+                {...register(
+                    "crewMember1"
+                )}
+            >
 
-            {/* ---------------- LANDPAD ---------------- */}
+                <option value="">
+                    Select Crew Member 1
+                </option>
 
-            <label>
-
-                Landing Pad:
-
-                <select
-                    name="landingPad"
-                    value={formData.landingPad}
-                    onChange={handleChange}
-                    required
-                >
-
-                    <option value="">
-                        Select Landing Pad
-                    </option>
-
-                    {options?.landpads?.map((p) => (
+                {users
+                    ?.filter(
+                        (user) =>
+                            user.role ===
+                            "crew"
+                    )
+                    ?.map((user) => (
 
                         <option
-                            key={p.id}
-                            value={p.id}
+                            key={user.id}
+                            value={user.id}
                         >
-
-                            {p.name}
-
+                            {user.firstname}
                         </option>
 
-                    ))}
+                    ))
+                }
 
-                </select>
+            </select>
 
-            </label>
+            {/* ================================================= */}
+            {/* CREW MEMBER 2 */}
+            {/* ================================================= */}
+            <select
+                {...register(
+                    "crewMember2"
+                )}
+            >
 
-            {/* ---------------- CITY ---------------- */}
+                <option value="">
+                    Select Crew Member 2
+                </option>
 
-            <label>
+                {users
+                    ?.filter(
+                        (user) =>
+                            user.role ===
+                            "crew"
+                    )
+                    ?.map((user) => (
 
-                Destination:
+                        <option
+                            key={user.id}
+                            value={user.id}
+                        >
+                            {user.firstname}
+                        </option>
 
-                <input
-                    type="text"
-                    name="city"
-                    value={formData.city}
-                    onChange={handleChange}
-                    placeholder="Enter destination"
-                    required
-                />
+                    ))
+                }
 
-            </label>
+            </select>
 
-            {/* ---------------- BUTTON ---------------- */}
-
+            {/* ================================================= */}
+            {/* BUTTON */}
+            {/* ================================================= */}
             <button
                 type="submit"
                 disabled={loading}
             >
 
-                {loading
-                    ? "Saving..."
-                    : "Create Mission"}
+                Create Mission
 
             </button>
-
-            {/* ---------------- SUCCESS ---------------- */}
-
-            {isSuccess && (
-
-                <p className="success">
-                    Mission created successfully!
-                </p>
-
-            )}
 
         </form>
     );
 }
+
+export default MissionForm;
