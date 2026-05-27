@@ -1,75 +1,94 @@
-import React, {
+import {
+
     createContext,
+
     useEffect,
+
     useState,
+
 } from "react";
 
 import {
+
     getMissions,
+
     createMission,
+
     deleteMission,
+
 } from "../api/missions";
 
-import { getUsers } from "../api/users";
+import {
 
-import { getMissionOptions } from "../api/options";
+    getUsers,
 
-// =====================================================
-// CONTEXT
-// =====================================================
-export const CaptainContext = createContext({
+} from "../api/users";
 
-    missions: [],
+import {
 
-    users: [],
+    getMissionOptions,
 
-    options: {},
+} from "../api/missionOptions";
 
-    loading: false,
+export const CaptainContext =
+    createContext(null);
 
-    isSuccess: false,
+function CaptainContextProvider({
 
-    error: null,
+    children,
 
-    refreshMissions: async () => {},
-
-    handleCreateMission: async () => {},
-
-    handleDeleteMission: async () => {},
-});
-
-// =====================================================
-// PROVIDER
-// =====================================================
-function CaptainContextProvider({ children }) {
+}) {
 
     // =================================================
     // STATE
     // =================================================
-    const [missions, setMissions] =
-        useState([]);
+    const [
 
-    const [users, setUsers] =
-        useState([]);
+        missions,
 
-    const [options, setOptions] =
-        useState({
+        setMissions,
 
-            rockets: [],
+    ] = useState([]);
 
-            launchpads: [],
+    const [
 
-            landpads: [],
-        });
+        users,
 
-    const [loading, setLoading] =
-        useState(false);
+        setUsers,
 
-    const [isSuccess, setIsSuccess] =
-        useState(false);
+    ] = useState([]);
 
-    const [error, setError] =
-        useState(null);
+    const [
+
+        options,
+
+        setOptions,
+
+    ] = useState({});
+
+    const [
+
+        loading,
+
+        setLoading,
+
+    ] = useState(false);
+
+    const [
+
+        isSuccess,
+
+        setIsSuccess,
+
+    ] = useState(false);
+
+    const [
+
+        error,
+
+        setError,
+
+    ] = useState(null);
 
     // =================================================
     // INIT
@@ -81,7 +100,7 @@ function CaptainContextProvider({ children }) {
     }, []);
 
     // =================================================
-    // INITIALIZE DASHBOARD
+    // INITIALIZE
     // =================================================
     async function initializeDashboard() {
 
@@ -91,99 +110,22 @@ function CaptainContextProvider({ children }) {
 
             setError(null);
 
-            // =========================================
-            // MISSIONS
-            // =========================================
-            let missionsData = [];
+            const [
 
-            try {
+                missionsData,
 
-                missionsData =
-                    await getMissions();
+                usersData,
 
-                console.log(
-                    "MISSIONS DATA:",
-                    missionsData
-                );
+                optionsData,
 
-            } catch (error) {
+            ] = await Promise.all([
 
-                console.error(
-                    "MISSIONS ERROR:",
-                    error
-                );
-            }
+                getMissions(),
 
-            // =========================================
-            // USERS
-            // =========================================
-            let usersData = [];
+                getUsers(),
 
-            try {
-
-                usersData =
-                    await getUsers();
-
-                console.log(
-                    "USERS DATA:",
-                    usersData
-                );
-
-            } catch (error) {
-
-                console.error(
-                    "USERS ERROR:",
-                    error
-                );
-            }
-
-            // =========================================
-            // OPTIONS
-            // =========================================
-            let optionsData = {
-
-                rockets: [],
-
-                launchpads: [],
-
-                landpads: [],
-            };
-
-            try {
-
-                optionsData =
-                    await getMissionOptions();
-
-                console.log(
-                    "OPTIONS DATA:",
-                    optionsData
-                );
-
-            } catch (error) {
-
-                console.error(
-                    "OPTIONS ERROR:",
-                    error
-                );
-            }
-
-            // =========================================
-            // SET STATE
-            // =========================================
-            console.log(
-                "SETTING MISSIONS:",
-                missionsData
-            );
-
-            console.log(
-                "SETTING USERS:",
-                usersData
-            );
-
-            console.log(
-                "SETTING OPTIONS:",
-                optionsData
-            );
+                getMissionOptions(),
+            ]);
 
             setMissions(
                 missionsData || []
@@ -193,26 +135,20 @@ function CaptainContextProvider({ children }) {
                 usersData || []
             );
 
-            setOptions({
-
-                rockets:
-                    optionsData?.rockets || [],
-
-                launchpads:
-                    optionsData?.launchpads || [],
-
-                landpads:
-                    optionsData?.landpads || [],
-            });
+            setOptions(
+                optionsData || {}
+            );
 
         } catch (error) {
 
             console.error(
-                "DASHBOARD INIT ERROR:",
+                "DASHBOARD ERROR:",
                 error
             );
 
-            setError(error.message);
+            setError(
+                error.message
+            );
 
         } finally {
 
@@ -221,36 +157,10 @@ function CaptainContextProvider({ children }) {
     }
 
     // =================================================
-    // REFRESH MISSIONS
-    // =================================================
-    async function refreshMissions() {
-
-        try {
-
-            const data =
-                await getMissions();
-
-            console.log(
-                "REFRESH MISSIONS:",
-                data
-            );
-
-            setMissions(data || []);
-
-        } catch (error) {
-
-            console.error(
-                "REFRESH ERROR:",
-                error
-            );
-        }
-    }
-
-    // =================================================
     // CREATE MISSION
     // =================================================
     async function handleCreateMission(
-        payload
+        missionData
     ) {
 
         try {
@@ -261,29 +171,29 @@ function CaptainContextProvider({ children }) {
 
             setIsSuccess(false);
 
-            console.log(
-                "CREATE PAYLOAD:",
-                payload
+            await createMission(
+                missionData
             );
 
-            await createMission(payload);
+            const updatedMissions =
+                await getMissions();
 
-            console.log(
-                "MISSION CREATED SUCCESS"
+            setMissions(
+                updatedMissions
             );
-
-            await refreshMissions();
 
             setIsSuccess(true);
 
         } catch (error) {
 
             console.error(
-                "CREATE ERROR:",
+                "CREATE MISSION ERROR:",
                 error
             );
 
-            setError(error.message);
+            setError(
+                error.message
+            );
 
         } finally {
 
@@ -302,16 +212,14 @@ function CaptainContextProvider({ children }) {
 
             setLoading(true);
 
-            setError(null);
-
-            console.log(
-                "DELETE MISSION:",
-                id
-            );
-
             await deleteMission(id);
 
-            await refreshMissions();
+            const updatedMissions =
+                await getMissions();
+
+            setMissions(
+                updatedMissions
+            );
 
         } catch (error) {
 
@@ -320,7 +228,9 @@ function CaptainContextProvider({ children }) {
                 error
             );
 
-            setError(error.message);
+            setError(
+                error.message
+            );
 
         } finally {
 
@@ -334,6 +244,7 @@ function CaptainContextProvider({ children }) {
     return (
 
         <CaptainContext.Provider
+
             value={{
 
                 missions,
@@ -344,11 +255,9 @@ function CaptainContextProvider({ children }) {
 
                 loading,
 
-                isSuccess,
-
                 error,
 
-                refreshMissions,
+                isSuccess,
 
                 handleCreateMission,
 

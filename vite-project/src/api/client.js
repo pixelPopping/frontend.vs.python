@@ -2,10 +2,13 @@ import axios from "axios";
 
 const client = axios.create({
 
-    baseURL: "http://localhost:5000/api",
+    baseURL:
+        "http://127.0.0.1:5000/api",
 
     headers: {
-        "Content-Type": "application/json",
+
+        "Content-Type":
+            "application/json",
     },
 });
 
@@ -17,17 +20,9 @@ client.interceptors.request.use(
     (config) => {
 
         const token =
-            localStorage.getItem("token");
-
-        console.log(
-            "TOKEN:",
-            token
-        );
-
-        console.log(
-            "REQUEST URL:",
-            config.url
-        );
+            localStorage.getItem(
+                "token"
+            );
 
         if (token) {
 
@@ -35,48 +30,14 @@ client.interceptors.request.use(
                 `Bearer ${token}`;
         }
 
-        console.log(
-            "REQUEST HEADERS:",
-            config.headers
-        );
-
         return config;
     },
 
     (error) => {
 
-        console.error(
-            "REQUEST ERROR:",
+        return Promise.reject(
             error
         );
-
-        return Promise.reject(error);
-    }
-);
-
-// =================================================
-// RESPONSE INTERCEPTOR
-// =================================================
-client.interceptors.response.use(
-
-    (response) => {
-
-        console.log(
-            "API RESPONSE:",
-            response
-        );
-
-        return response;
-    },
-
-    (error) => {
-
-        console.error(
-            "API ERROR:",
-            error.response || error
-        );
-
-        return Promise.reject(error);
     }
 );
 

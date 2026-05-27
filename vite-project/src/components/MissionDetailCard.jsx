@@ -1,112 +1,230 @@
-import getStrategyFromCity from "../Helpers/getStrategyFromCity";
+import getStrategyFromCity
+from "../Helpers/getStrategyFromCity";
 
 import "./MissionDetailCard.css";
 
 function MissionDetailCard({
+
     mission,
+
     index,
+
     onDelete,
+
     isCaptain,
+
 }) {
 
-    // ---------------- SAFETY ----------------
     if (!mission) {
 
         return (
 
             <article className="mission-card">
 
-                <p>Loading mission...</p>
+                <p>
+                    Loading mission...
+                </p>
 
             </article>
         );
     }
 
-    // ---------------- DATA ----------------
-    const crewList = Array.isArray(mission.crew)
-        ? mission.crew
-        : [];
+    const crewList =
+
+        Array.isArray(
+            mission.crew
+        )
+
+            ? mission.crew
+
+            : [];
 
     const captain =
-        mission.captain || "Unknown";
+
+        mission.captain ||
+
+        "Unknown";
 
     const rocket =
-        mission.rocket?.name ||
+
+        mission.rocket ||
+
+        "Unknown";
+
+    const ship =
+
+        mission.ship ||
+
         "Unknown";
 
     const launchPad =
-        mission.launchPad?.full_name ||
-        mission.launchPad?.name ||
+
+        mission.launchPad ||
+
         "Unknown";
 
     const landingPad =
-        mission.landingPad?.full_name ||
-        mission.landingPad?.name ||
+
+        mission.landingPad ||
+
         "Unknown";
 
     const destination =
-        mission.city || "Unknown";
+
+        mission.city ||
+
+        "Unknown";
 
     const strategy =
-        getStrategyFromCity(destination);
+
+        getStrategyFromCity(
+            destination
+        );
 
     const launchDate =
-        mission.launchDate || "Unknown";
+
+        mission.launchDate ||
+
+        "Unknown";
 
     const returnDate =
-        mission.returnDate || "Unknown";
 
-    // ---------------- RENDER ----------------
+        mission.returnDate ||
+
+        "Unknown";
+
+    const status =
+
+        mission.status ||
+
+        "pending";
+
     return (
 
         <article className="mission-card">
 
             <h3>
+
                 Mission {index + 1}
+
             </h3>
 
             <div className="card-text">
 
                 <p>
-                    <strong>Periode:</strong>{" "}
-                    {launchDate} t/m {returnDate}
+
+                    <strong>
+                        Status:
+                    </strong>{" "}
+
+                    {status}
+
                 </p>
 
                 <p>
-                    <strong>Captain:</strong>{" "}
+
+                    <strong>
+                        Launch:
+                    </strong>{" "}
+
+                    {launchDate}
+
+                </p>
+
+                <p>
+
+                    <strong>
+                        Return:
+                    </strong>{" "}
+
+                    {returnDate}
+
+                </p>
+
+                <p>
+
+                    <strong>
+                        Captain:
+                    </strong>{" "}
+
                     {captain}
+
                 </p>
 
                 <p>
-                    <strong>Crew:</strong>{" "}
+
+                    <strong>
+                        Crew:
+                    </strong>{" "}
+
                     {crewList.length > 0
-                        ? crewList.join(" & ")
+
+                        ? crewList.join(
+                            " & "
+                        )
+
                         : "No crew assigned"}
+
                 </p>
 
                 <p>
-                    <strong>Rocket:</strong>{" "}
+
+                    <strong>
+                        Rocket:
+                    </strong>{" "}
+
                     {rocket}
+
                 </p>
 
                 <p>
-                    <strong>Launch Pad:</strong>{" "}
+
+                    <strong>
+                        Ship:
+                    </strong>{" "}
+
+                    {ship}
+
+                </p>
+
+                <p>
+
+                    <strong>
+                        Launch Pad:
+                    </strong>{" "}
+
                     {launchPad}
+
                 </p>
 
                 <p>
-                    <strong>Landing Pad:</strong>{" "}
+
+                    <strong>
+                        Landing Pad:
+                    </strong>{" "}
+
                     {landingPad}
+
                 </p>
 
                 <p>
-                    <strong>Destination:</strong>{" "}
+
+                    <strong>
+                        Destination:
+                    </strong>{" "}
+
                     {destination}
+
                 </p>
 
                 <p>
-                    <strong>Strategy:</strong>{" "}
+
+                    <strong>
+                        Strategy:
+                    </strong>{" "}
+
                     {strategy}
+
                 </p>
 
             </div>
@@ -116,12 +234,19 @@ function MissionDetailCard({
                 <section className="delete-button-container">
 
                     <button
+
                         onClick={() =>
-                            onDelete?.(mission._id)
+
+                            onDelete?.(
+                                mission._id
+                            )
                         }
+
                         className="delete"
                     >
+
                         Delete
+
                     </button>
 
                 </section>

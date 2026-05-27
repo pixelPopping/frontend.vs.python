@@ -4,8 +4,8 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import AuthContextProvider, { AuthContext } from "./context/AuthContext";
 import MissionContextProvider, { MissionContext } from "./Context/MissionContext";
-import CrewContextProvider, { CrewContext } from "./Context/CrewContext";
-import CaptainContextProvider, { CaptainContext } from "./Context/CaptainContext";
+import CrewContextProvider, { CrewContext } from "./context/CrewContext";
+import CaptainContextProvider, { CaptainContext } from "./context/CaptainContext";
 
 
 ReactDOM.createRoot(document.getElementById("root")).render(

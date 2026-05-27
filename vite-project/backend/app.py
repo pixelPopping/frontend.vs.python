@@ -1,4 +1,8 @@
-from flask import Flask, jsonify, request
+from flask import (
+    Flask,
+    jsonify,
+    request,
+)
 
 from flask_cors import CORS
 
@@ -13,8 +17,6 @@ from werkzeug.security import (
 
 from functools import wraps
 
-from dotenv import load_dotenv
-
 from datetime import (
     datetime,
     timedelta,
@@ -22,15 +24,7 @@ from datetime import (
 )
 
 import jwt
-
-# =========================================================
-# ENV
-# =========================================================
-load_dotenv()
-
-MONGO_URI = "mongodb://127.0.0.1:27017/"
-
-SECRET_KEY = "super_secret_key_123"
+import requests
 
 # =========================================================
 # APP
@@ -38,8 +32,12 @@ SECRET_KEY = "super_secret_key_123"
 app = Flask(__name__)
 
 # =========================================================
-# CORS
+# CONFIG
 # =========================================================
+SECRET_KEY = "super_secret_key_123"
+
+MONGO_URI = "mongodb://127.0.0.1:27017/"
+
 # =========================================================
 # CORS
 # =========================================================
@@ -77,49 +75,21 @@ def after_request(response):
 
     return response
 
-@app.after_request
-def after_request(response):
-
-    response.headers[
-        "Access-Control-Allow-Origin"
-    ] = "http://127.0.0.1:5173"
-
-    response.headers[
-        "Access-Control-Allow-Headers"
-    ] = "Content-Type,Authorization"
-
-    response.headers[
-        "Access-Control-Allow-Methods"
-    ] = "GET,POST,PUT,DELETE,OPTIONS"
-
-    return response
-
 # =========================================================
 # MONGO
 # =========================================================
-try:
+client = MongoClient(MONGO_URI)
 
-    client = MongoClient(MONGO_URI)
-
-    client.admin.command("ping")
-
-    print("✅ MongoDB Connected")
-
-except Exception as e:
-
-    print("❌ Mongo ERROR:", e)
-
-# =========================================================
-# DATABASE
-# =========================================================
 db = client["space_app"]
 
 users = db["users"]
 
 missions = db["missions"]
 
+print("✅ MongoDB Connected")
+
 # =========================================================
-# AUTH
+# TOKEN REQUIRED
 # =========================================================
 def token_required(f):
 
@@ -127,27 +97,21 @@ def token_required(f):
 
     def wrapper(*args, **kwargs):
 
-        auth = request.headers.get(
+        auth_header = request.headers.get(
             "Authorization"
         )
 
-        print("AUTH HEADER:", auth)
-
-        if not auth:
+        if not auth_header:
 
             return jsonify({
                 "error": "Token missing"
             }), 401
 
-        if not auth.startswith("Bearer "):
-
-            return jsonify({
-                "error": "Invalid auth format"
-            }), 401
-
         try:
 
-            token = auth.split(" ")[1]
+            token = auth_header.split(
+                " "
+            )[1]
 
             decoded = jwt.decode(
 
@@ -158,13 +122,9 @@ def token_required(f):
                 algorithms=["HS256"]
             )
 
-            print("DECODED:", decoded)
-
             request.user = decoded
 
         except Exception as e:
-
-            print("JWT ERROR:", e)
 
             return jsonify({
                 "error": str(e)
@@ -181,7 +141,7 @@ def token_required(f):
 def test():
 
     return jsonify({
-        "message": "Backend OK 🚀"
+        "message": "Backend works 🚀"
     })
 
 # =========================================================
@@ -197,60 +157,67 @@ def register():
 
         data = request.get_json()
 
-        print("REGISTER DATA:", data)
+        existing_user = users.find_one({
 
-        user = {
+            "email":
+                data["email"]
+        })
 
-            "firstname": data.get(
-                "firstname"
-            ),
+        if existing_user:
 
-            "lastname": data.get(
-                "lastname"
-            ),
+            return jsonify({
+                "error":
+                    "Email already exists"
+            }), 400
 
-            "city": data.get(
-                "city"
-            ),
+        role = (
 
-            "phone": data.get(
-                "phone"
-            ),
+            "captain"
 
-            "email": data.get(
-                "email"
-            ),
+            if data.get("inviteCode")
+            == "CAPTAIN123"
 
-            "password": generate_password_hash(
-                data.get("password")
-            ),
-
-            "role":
-
-                "captain"
-
-                if data.get("inviteCode")
-                == "CAPTAIN123"
-
-                else "crew",
-
-            "createdAt": datetime.now(UTC),
-        }
-
-        result = users.insert_one(user)
-
-        print(
-            "✅ USER CREATED:",
-            result.inserted_id
+            else "crew"
         )
 
+        new_user = {
+
+            "firstname":
+                data["firstname"],
+
+            "lastname":
+                data["lastname"],
+
+            "city":
+                data["city"],
+
+            "phone":
+                data["phone"],
+
+            "email":
+                data["email"],
+
+            "password":
+
+                generate_password_hash(
+                    data["password"]
+                ),
+
+            "role":
+                role,
+
+            "createdAt":
+                datetime.now(UTC),
+        }
+
+        users.insert_one(new_user)
+
         return jsonify({
-            "message": "User created"
+            "message":
+                "User created"
         })
 
     except Exception as e:
-
-        print("❌ REGISTER ERROR:", e)
 
         return jsonify({
             "error": str(e)
@@ -269,36 +236,45 @@ def login():
 
         data = request.get_json()
 
-        print("LOGIN DATA:", data)
-
         user = users.find_one({
 
-            "email": data.get("email")
+            "email":
+                data["email"]
         })
 
         if not user:
 
             return jsonify({
-                "error": "User not found"
+                "error":
+                    "User not found"
             }), 401
 
-        if not check_password_hash(
+        password_correct = (
 
-            user["password"],
-            data.get("password")
-        ):
+            check_password_hash(
+
+                user["password"],
+
+                data["password"]
+            )
+        )
+
+        if not password_correct:
 
             return jsonify({
-                "error": "Wrong password"
+                "error":
+                    "Wrong password"
             }), 401
 
         token = jwt.encode(
 
             {
 
-                "userId": str(user["_id"]),
+                "userId":
+                    str(user["_id"]),
 
-                "role": user["role"],
+                "role":
+                    user["role"],
 
                 "exp":
 
@@ -312,34 +288,35 @@ def login():
             algorithm="HS256",
         )
 
-        print("✅ TOKEN CREATED")
-
         return jsonify({
 
-            "token": token,
+            "token":
+                token,
 
             "user": {
 
-                "id": str(user["_id"]),
+                "id":
+                    str(user["_id"]),
 
-                "firstname": user["firstname"],
+                "firstname":
+                    user["firstname"],
 
-                "lastname": user["lastname"],
+                "lastname":
+                    user["lastname"],
 
-                "role": user["role"],
+                "role":
+                    user["role"],
             }
         })
 
     except Exception as e:
-
-        print("❌ LOGIN ERROR:", e)
 
         return jsonify({
             "error": str(e)
         }), 500
 
 # =========================================================
-# ME
+# CURRENT USER
 # =========================================================
 @app.route(
     "/api/me",
@@ -352,32 +329,36 @@ def me():
 
         user = users.find_one({
 
-            "_id": ObjectId(
-                request.user["userId"]
-            )
+            "_id":
+
+                ObjectId(
+                    request.user["userId"]
+                )
         })
 
         return jsonify({
 
-            "id": str(user["_id"]),
+            "id":
+                str(user["_id"]),
 
-            "firstname": user["firstname"],
+            "firstname":
+                user["firstname"],
 
-            "lastname": user["lastname"],
+            "lastname":
+                user["lastname"],
 
-            "role": user["role"],
+            "role":
+                user["role"],
         })
 
     except Exception as e:
-
-        print("❌ ME ERROR:", e)
 
         return jsonify({
             "error": str(e)
         }), 500
 
 # =========================================================
-# USERS
+# GET USERS
 # =========================================================
 @app.route(
     "/api/users",
@@ -388,36 +369,42 @@ def get_users():
 
     try:
 
-        data = list(users.find())
+        all_users = list(
+            users.find()
+        )
 
-        print("USERS FROM DB:", data)
-
-        return jsonify([
+        formatted_users = [
 
             {
 
-                "id": str(u["_id"]),
+                "id":
+                    str(user["_id"]),
 
-                "firstname": u["firstname"],
+                "firstname":
+                    user["firstname"],
 
-                "lastname": u["lastname"],
+                "lastname":
+                    user["lastname"],
 
-                "role": u["role"],
+                "role":
+                    user["role"],
             }
 
-            for u in data
-        ])
+            for user in all_users
+        ]
+
+        return jsonify(
+            formatted_users
+        )
 
     except Exception as e:
-
-        print("❌ USERS ERROR:", e)
 
         return jsonify({
             "error": str(e)
         }), 500
 
 # =========================================================
-# OPTIONS
+# SPACEX OPTIONS
 # =========================================================
 @app.route(
     "/api/mission-options",
@@ -425,37 +412,119 @@ def get_users():
 )
 def mission_options():
 
-    return jsonify({
+    try:
 
-        "rockets": [
+        rockets_response = requests.get(
+            "https://api.spacexdata.com/v4/rockets"
+        )
+
+        dragons_response = requests.get(
+            "https://api.spacexdata.com/v4/dragons"
+        )
+
+        ships_response = requests.get(
+            "https://api.spacexdata.com/v4/ships"
+        )
+
+        launchpads_response = requests.get(
+            "https://api.spacexdata.com/v4/launchpads"
+        )
+
+        landpads_response = requests.get(
+            "https://api.spacexdata.com/v4/landpads"
+        )
+
+        rockets = rockets_response.json()
+
+        dragons = dragons_response.json()
+
+        ships = ships_response.json()
+
+        launchpads = (
+            launchpads_response.json()
+        )
+
+        landpads = (
+            landpads_response.json()
+        )
+
+        formatted_rockets = [
 
             {
-                "id": "falcon9",
-                "name": "Falcon 9"
-            },
-
-            {
-                "id": "starship",
-                "name": "Starship"
+                "id": rocket["id"],
+                "name": rocket["name"],
             }
-        ],
 
-        "launchpads": [
-
-            {
-                "id": "kennedy",
-                "name": "Kennedy Space Center"
-            }
-        ],
-
-        "landpads": [
-
-            {
-                "id": "pacific",
-                "name": "Pacific Ocean Platform"
-            }
+            for rocket in rockets
         ]
-    })
+
+        formatted_dragons = [
+
+            {
+                "id": dragon["id"],
+                "name": dragon["name"],
+            }
+
+            for dragon in dragons
+        ]
+
+        formatted_ships = [
+
+            {
+                "id": ship["id"],
+                "name": ship["name"],
+            }
+
+            for ship in ships
+        ]
+
+        formatted_launchpads = [
+
+            {
+                "id": pad["id"],
+                "name": pad["name"],
+            }
+
+            for pad in launchpads
+        ]
+
+        formatted_landpads = [
+
+            {
+                "id": pad["id"],
+                "name": pad["name"],
+            }
+
+            for pad in landpads
+        ]
+
+        return jsonify({
+
+            "rockets":
+                formatted_rockets +
+
+                formatted_dragons,
+
+            "ships":
+                formatted_ships,
+
+            "launchpads":
+                formatted_launchpads,
+
+            "landpads":
+                formatted_landpads,
+        })
+
+    except Exception as e:
+
+        print(
+            "MISSION OPTIONS ERROR:",
+            e
+        )
+
+        return jsonify({
+            "error": str(e)
+        }), 500
 
 # =========================================================
 # CREATE MISSION
@@ -471,51 +540,59 @@ def create_mission():
 
         data = request.get_json()
 
-        print("MISSION PAYLOAD:", data)
-
         mission = {
 
-            "title": data.get("title"),
+            "title":
+                data.get("title"),
 
-            "description": data.get("description"),
+            "city":
+                data.get("city"),
 
-            "city": data.get("city"),
+            "launchDate":
+                data.get("launchDate"),
 
-            "launchDate": data.get("launchDate"),
+            "returnDate":
+                data.get("returnDate"),
 
-            "returnDate": data.get("returnDate"),
+            "rocket":
+                data.get("rocket"),
 
-            "rocket": data.get("rocket"),
+            "ship":
+                data.get("ship"),
 
-            "launchPad": data.get("launchPad"),
+            "launchPad":
+                data.get("launchPad"),
 
-            "landingPad": data.get("landingPad"),
+            "landingPad":
+                data.get("landingPad"),
 
-            "crew": data.get("crew", []),
+            "captain":
+                data.get("captain"),
 
-            "captain": request.user["userId"],
+            "crew":
+                data.get("crew", []),
 
-            "status": "pending",
+            "status":
+                "pending",
 
-            "createdAt": datetime.now(UTC),
+            "createdAt":
+                datetime.now(UTC),
         }
 
         result = missions.insert_one(
             mission
         )
 
-        print(
-            "✅ MISSION CREATED:",
-            result.inserted_id
-        )
-
         return jsonify({
-            "message": "Mission created"
+
+            "message":
+                "Mission created",
+
+            "id":
+                str(result.inserted_id),
         })
 
     except Exception as e:
-
-        print("❌ CREATE MISSION ERROR:", e)
 
         return jsonify({
             "error": str(e)
@@ -533,31 +610,84 @@ def get_missions():
 
     try:
 
-        data = list(missions.find())
+        all_missions = list(
+            missions.find()
+        )
 
-        print("MISSIONS FROM DB:", data)
-
-        return jsonify([
+        formatted_missions = [
 
             {
 
-                "_id": str(m["_id"]),
+                "_id":
+                    str(
+                        mission["_id"]
+                    ),
 
-                "title": m.get("title"),
+                "title":
+                    mission.get(
+                        "title"
+                    ),
 
-                "description": m.get("description"),
+                "city":
+                    mission.get(
+                        "city"
+                    ),
 
-                "city": m.get("city"),
+                "launchDate":
+                    mission.get(
+                        "launchDate"
+                    ),
 
-                "status": m.get("status"),
+                "returnDate":
+                    mission.get(
+                        "returnDate"
+                    ),
+
+                "rocket":
+                    mission.get(
+                        "rocket"
+                    ),
+
+                "ship":
+                    mission.get(
+                        "ship"
+                    ),
+
+                "launchPad":
+                    mission.get(
+                        "launchPad"
+                    ),
+
+                "landingPad":
+                    mission.get(
+                        "landingPad"
+                    ),
+
+                "captain":
+                    mission.get(
+                        "captain"
+                    ),
+
+                "crew":
+                    mission.get(
+                        "crew",
+                        []
+                    ),
+
+                "status":
+                    mission.get(
+                        "status"
+                    ),
             }
 
-            for m in data
-        ])
+            for mission in all_missions
+        ]
+
+        return jsonify(
+            formatted_missions
+        )
 
     except Exception as e:
-
-        print("❌ GET MISSIONS ERROR:", e)
 
         return jsonify({
             "error": str(e)
@@ -577,7 +707,9 @@ def accept_mission(id):
 
         missions.update_one(
 
-            {"_id": ObjectId(id)},
+            {
+                "_id": ObjectId(id)
+            },
 
             {
                 "$set": {
@@ -587,19 +719,18 @@ def accept_mission(id):
         )
 
         return jsonify({
-            "message": "Mission accepted"
+            "message":
+                "Mission accepted"
         })
 
     except Exception as e:
-
-        print("❌ ACCEPT ERROR:", e)
 
         return jsonify({
             "error": str(e)
         }), 500
 
 # =========================================================
-# DELETE
+# DELETE MISSION
 # =========================================================
 @app.route(
     "/api/missions/<id>",
@@ -612,28 +743,31 @@ def delete_mission(id):
 
         missions.delete_one({
 
-            "_id": ObjectId(id)
+            "_id":
+                ObjectId(id)
         })
 
         return jsonify({
-            "message": "Mission deleted"
+            "message":
+                "Mission deleted"
         })
 
     except Exception as e:
-
-        print("❌ DELETE ERROR:", e)
 
         return jsonify({
             "error": str(e)
         }), 500
 
 # =========================================================
-# START
+# START SERVER
 # =========================================================
 if __name__ == "__main__":
 
     app.run(
+
         debug=True,
+
         host="127.0.0.1",
-        port=5000
+
+        port=5000,
     )
