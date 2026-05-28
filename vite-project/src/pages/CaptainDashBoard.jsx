@@ -1,10 +1,8 @@
 import { useContext } from "react";
-
 import MissionForm from "../components/MissionForm";
-
 import MissionDetailCard from "../components/MissionDetailCard";
-
 import { CaptainContext } from "../context/CaptainContext";
+import "./CaptainDashBoard.css";
 
 function CaptainDashboard() {
 
@@ -24,81 +22,104 @@ function CaptainDashboard() {
 
         handleDeleteMission,
 
-    } = useContext(CaptainContext);
+    } = useContext(
+        CaptainContext
+    );
 
     return (
 
-        <main className="captain-dashboard">
+        <div className="dashboard">
 
-            <h1>
-                Captain Dashboard
-            </h1>
+            <header>
 
-            <MissionForm
+                <h1 className="unbounded">
 
-                onSubmit={
-                    handleCreateMission
-                }
+                    Captain Dashboard
 
-                users={users}
+                </h1>
 
-                options={options}
+            </header>
 
-                loading={loading}
+            <main className="mission-page">
 
-                isSuccess={isSuccess}
-            />
+                <section className="outer-mission">
 
-            <section className="missions-list">
+                    <article className="mission-outer-form">
 
-                {(!missions ||
+                        <MissionForm
 
-                    missions.length === 0) && (
+                            onSubmit={
+                                handleCreateMission
+                            }
 
-                    <p>
-                        No missions yet 🚀
-                    </p>
-                )}
+                            users={users}
 
-                {Array.isArray(missions) &&
+                            options={options}
 
-                    missions
-                        .filter(Boolean)
-                        .map(
-                            (
-                                mission,
-                                index
-                            ) => (
+                            loading={loading}
 
-                                <MissionDetailCard
+                            isSuccess={isSuccess}
+                        />
 
-                                    key={
-                                        mission._id
-                                    }
+                    </article>
 
-                                    mission={
-                                        mission
-                                    }
+                    {(!missions ||
 
-                                    index={
+                        missions.length === 0) && (
+
+                        <p>
+                            No missions yet 🚀
+                        </p>
+                    )}
+
+                    <div className="mission-list">
+
+                        {Array.isArray(
+                            missions
+                        ) &&
+
+                            missions
+                                .filter(Boolean)
+                                .map(
+
+                                    (
+                                        mission,
                                         index
-                                    }
+                                    ) => (
 
-                                    onDelete={
-                                        handleDeleteMission
-                                    }
+                                        <MissionDetailCard
 
-                                    isCaptain={
-                                        true
-                                    }
-                                />
-                            )
-                        )
-                }
+                                            key={
+                                                mission._id
+                                            }
 
-            </section>
+                                            mission={
+                                                mission
+                                            }
 
-        </main>
+                                            index={
+                                                index
+                                            }
+
+                                            onDelete={
+                                                handleDeleteMission
+                                            }
+
+                                            isCaptain={
+                                                true
+                                            }
+                                        />
+                                    )
+                                )
+                        }
+
+                    </div>
+
+                </section>
+
+            </main>
+
+        </div>
     );
 }
 

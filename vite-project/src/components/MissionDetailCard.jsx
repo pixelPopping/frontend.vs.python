@@ -100,7 +100,7 @@ function MissionDetailCard({
         "pending";
 
     return (
-
+        <section className="mission-card-inner-container">
         <article className="mission-card">
 
             <h3>
@@ -253,6 +253,7 @@ function MissionDetailCard({
             )}
 
         </article>
+        </section>
     );
 }
 

@@ -1,18 +1,28 @@
 .mission-card{
+
     display: flex;
+
     flex-direction: column;
-    border: solid black 4px;
-    flex-basis: 500px;
+
     justify-content: space-between;
+
+    border: solid black 4px;
+
+    width: 400px;
+
+    padding: 20px;
 }
 
 .card-text{
+
     display: flex;
+
     flex-direction: column;
+
     padding: 15px;
 }
 
 .card-text p{
+
     padding: 10px;
 }
-

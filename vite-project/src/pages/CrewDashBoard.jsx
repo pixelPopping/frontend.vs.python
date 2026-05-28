@@ -1,60 +1,97 @@
-import { useEffect, useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
-import CrewCard from "../components/CrewCard";
-import { CrewContext } from "../context/CrewContext";
+import { useContext } from "react";
+import CrewCard
+from "../components/CrewCard";
+import { CrewContext }
+from "../context/CrewContext";
+
 
 function CrewDashboard() {
 
-     const { missions, loading, acceptMission} = useContext(CrewContext);
+    const {
 
-    // ---------------- UI ----------------
+        missions,
+
+        handleAcceptMission,
+
+    } = useContext(
+        CrewContext
+    );
+
     return (
 
-        <main className="crew-dashboard">
+        <>
+            {/* ================================================= */}
+            {/* HEADER */}
+            {/* ================================================= */}
+            <header>
 
-            <h1>
-                Crew Dashboard
-            </h1>
+                <h1>
+                    Crew Dashboard
+                </h1>
 
-            {loading && (
+            </header>
 
-                <p>
-                    Loading missions...
-                </p>
+            {/* ================================================= */}
+            {/* MAIN */}
+            {/* ================================================= */}
+            <main className="crew-dashboard">
 
-            )}
+                {/* ================================================= */}
+                {/* EMPTY */}
+                {/* ================================================= */}
+                {(!missions ||
 
-            {/* ---------------- EMPTY ---------------- */}
+                    missions.length === 0) && (
 
-            {!loading &&
-                missions.length === 0 && (
+                    <p>
+                        No missions available 🚀
+                    </p>
+                )}
 
-                <p>
-                    No missions assigned yet 🚀
-                </p>
+                {/* ================================================= */}
+                {/* MISSION LIST */}
+                {/* ================================================= */}
+                <section className="crew-card-container">
 
-            )}
+                    {Array.isArray(
+                        missions
+                    ) &&
 
-            {/* ---------------- MISSIONS ---------------- */}
+                        missions
+                            .filter(Boolean)
+                            .map(
 
-            {!loading &&
-                missions.length > 0 && (
+                                (
+                                    mission,
+                                    index
+                                ) => (
 
-                missions.map((mission) => (
+                                    <CrewCard
 
-                    <CrewCard
+                                        key={
+                                            mission._id
+                                        }
 
-                        key={mission._id}
+                                        mission={
+                                            mission
+                                        }
 
-                        mission={mission}
+                                        index={
+                                            index
+                                        }
 
-                        onAccept={acceptMission}
-                    />
+                                        onAccept={
+                                            handleAcceptMission
+                                        }
+                                    />
+                                )
+                            )
+                    }
 
-                ))
-            )}
+                </section>
 
-        </main>
+            </main>
+        </>
     );
 }
 
