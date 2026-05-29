@@ -1,11 +1,11 @@
-import React, { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css';
-import './Home.css';
-import '../App.css';
+import React, { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
+import "./Home.css";
+import "../App.css";
 
-import { AuthContext } from '../context/AuthContext';
+import { AuthContext } from "../context/AuthContext";
 
 function Home() {
   const [dateRange, setDateRange] = useState([new Date(), new Date()]);
@@ -14,28 +14,27 @@ function Home() {
   const { isAuth, user } = useContext(AuthContext);
 
   const handleNext = () => {
-
     // -----------------------------------
     // SAFETY CHECK (no crash)
     // -----------------------------------
     if (!dateRange?.[0] || !dateRange?.[1]) return;
 
-    const start = dateRange[0].toLocaleDateString('nl-NL');
-    const end = dateRange[1].toLocaleDateString('nl-NL');
+    const start = dateRange[0].toLocaleDateString("nl-NL");
+    const end = dateRange[1].toLocaleDateString("nl-NL");
 
     // -----------------------------------
     // NOT AUTHENTICATED → SAVE STATE
     // -----------------------------------
     if (!isAuth) {
       localStorage.setItem(
-        'pendingMission',
+        "pendingMission",
         JSON.stringify({
           departure: start,
-          returnDate: end
-        })
+          returnDate: end,
+        }),
       );
 
-      navigate('/signin');
+      navigate("/signin");
       return;
     }
 
@@ -43,15 +42,15 @@ function Home() {
     // ROLE BASED ROUTING
     // -----------------------------------
     const routes = {
-      captain: '/captain',
-      crew: '/crew'
+      captain: "/captain",
+      crew: "/crew",
     };
 
-    navigate(routes[user?.role] || '/mission', {
+    navigate(routes[user?.role] || "/mission", {
       state: {
         departure: start,
-        returnDate: end
-      }
+        returnDate: end,
+      },
     });
   };
 
@@ -73,7 +72,6 @@ function Home() {
       <div className="outer-layout">
         <main className="main-outer-form">
           <div className="inner-form">
-
             <div className="text-container">
               <h2>Plan je reis</h2>
               <p>Selecteer je vertrek- en terugkomstdatum</p>
@@ -81,7 +79,6 @@ function Home() {
 
             <section className="outer-calender">
               <section className="inner-calendar">
-
                 <article className="calendar-wrapper">
                   <Calendar
                     onChange={setDateRange}
@@ -91,17 +88,12 @@ function Home() {
                 </article>
 
                 <div className="button-container">
-                  <button
-                    onClick={handleNext}
-                    className="submit-next"
-                  >
+                  <button onClick={handleNext} className="submit-next">
                     Volgende
                   </button>
                 </div>
-
               </section>
             </section>
-
           </div>
         </main>
       </div>

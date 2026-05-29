@@ -1,94 +1,199 @@
-@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@200..900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Pixelify+Sans:wght@400..700&family=Unbounded:wght@200..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Unbounded:wght@200..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Archivo+Black&family=Pixelify+Sans:wght@400..700&family=Unbounded:wght@200..900&display=swap");
 
-header .unbounded-title-mission  {
+/* ================================================= */
+/* TITLE */
+/* ================================================= */
+
+header .unbounded-title-mission {
   font-family: "Unbounded", sans-serif;
+
   font-weight: 700;
+
   font-size: clamp(2rem, 10vw, 120px);
+
   color: red;
-  -webkit-text-stroke: 5px #0B3D91;
+
+  -webkit-text-stroke: 5px #0b3d91;
+
   margin: 0;
+
   padding: 20px;
 }
 
-
-label{
-    text-align: start;
-}
-
-.text label{
-    display: flex;
-    flex-direction: row;
-    gap: 100px;
-    font-size: clamp(2rem, 10vw, 20px);
-    font-family: "Unbounded", sans-serif;
-    font-optical-sizing: auto;
-    font-style: normal;
-}
-
-.text-container {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-}
-
-.form-input-outer{
-    display: flex;
-    flex-direction: row;
-    padding: 40px;
-    width: 800px;
-    width: 100%;
-}
+/* ================================================= */
+/* FORM */
+/* ================================================= */
 
 .inner-form-mission {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
+  display: flex;
+
+  flex-direction: column;
+
+  width: 100%;
+
+  max-width: 1000px;
+
+  gap: 20px;
 }
 
-option{
-    width: 100px;
-    padding: 20px;
+/* ================================================= */
+/* ALL FORM FIELDS */
+/* ================================================= */
+
+.mission-fields {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 20px;
+
+  width: 100%;
 }
 
-select{
-    width: 100%;
-    padding: 20px;
-    border: solid black 10px;
+/* ================================================= */
+/* LABELS */
+/* ================================================= */
+
+label {
+  text-align: start;
+
+  font-size: clamp(1rem, 3vw, 20px);
+
+  font-family: "Unbounded", sans-serif;
 }
 
-input{
-    width: 100%;
-    padding: 20px;
+/* ================================================= */
+/* TEXT CONTAINER */
+/* ================================================= */
 
+.text-container {
+  display: flex;
+
+  flex-direction: column;
+
+  width: 100%;
 }
 
-.container-position{
-    display: flex;
-    flex-direction: column;
-    width: 100%;
+/* ================================================= */
+/* FORM INPUT OUTER */
+/* ================================================= */
+
+.form-input-outer {
+  display: flex;
+
+  flex-direction: column;
+
+  padding: 40px;
+
+  width: 100%;
 }
 
-.outer{
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    justify-content: center;
+/* ================================================= */
+/* INPUTS */
+/* ================================================= */
+
+input {
+  width: 100%;
+
+  padding: 20px;
+
+  border: solid black 4px;
+
+  border-radius: 10px;
+
+  box-sizing: border-box;
 }
 
-.button-section{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    gap: 40px;
-    width: 100%;
-    margin: 20px 0;
+/* ================================================= */
+/* SELECTS */
+/* ================================================= */
+
+select {
+  width: 100%;
+
+  padding: 20px;
+
+  border: solid black 4px;
+
+  border-radius: 10px;
+
+  box-sizing: border-box;
 }
+
+option {
+  padding: 20px;
+}
+
+/* ================================================= */
+/* CONTAINER POSITION */
+/* ================================================= */
+
+.container-position {
+  display: flex;
+
+  flex-direction: column;
+
+  width: 100%;
+}
+
+/* ================================================= */
+/* OUTER */
+/* ================================================= */
+
+.outer {
+  display: flex;
+
+  flex-direction: row;
+
+  justify-content: center;
+
+  width: 100%;
+}
+
+/* ================================================= */
+/* BUTTON SECTION */
+/* ================================================= */
+
+.button-section {
+  display: flex;
+
+  flex-direction: row;
+
+  justify-content: center;
+
+  gap: 40px;
+
+  width: 100%;
+
+  margin: 20px 0;
+}
+
+/* ================================================= */
+/* BUTTONS */
+/* ================================================= */
 
 .submit-mission,
 .submit {
-    width: 200px;
-    padding: 20px;
-    flex-grow: 0;
-    cursor: pointer;
+  width: 200px;
+
+  padding: 20px;
+
+  cursor: pointer;
+
+  border: none;
+
+  border-radius: 10px;
+
+  font-weight: bold;
+}
+
+/* ================================================= */
+/* CREW TITLE */
+/* ================================================= */
+
+h3 {
+  margin-top: 20px;
+
+  font-family: "Unbounded", sans-serif;
 }

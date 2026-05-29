@@ -2,366 +2,155 @@ import { useForm } from "react-hook-form";
 import "./MissionForm.css";
 
 function MissionForm({
+  onSubmit,
 
-    onSubmit,
+  users = [],
 
-    users = [],
+  options = {},
 
-    options = {},
+  loading,
 
-    loading,
-
-    isSuccess,
-
+  isSuccess,
 }) {
+  const {
+    register,
 
-    const {
+    handleSubmit,
 
-        register,
+    reset,
+  } = useForm();
 
-        handleSubmit,
+  async function submitForm(data) {
+    const payload = {
+      title: data.title,
 
-        reset,
+      city: data.city,
 
-    } = useForm();
+      launchDate: data.launchDate,
 
-    // =================================================
-    // SUBMIT
-    // =================================================
-    async function submitForm(data) {
+      returnDate: data.returnDate,
 
-        const payload = {
+      rocket: data.rocket,
 
-            title:
-                data.title,
+      ship: data.ship,
 
-            city:
-                data.city,
+      launchPad: data.launchPad,
 
-            launchDate:
-                data.launchDate,
+      landingPad: data.landingPad,
 
-            returnDate:
-                data.returnDate,
+      captain: data.captain,
 
-            rocket:
-                data.rocket,
+      crew: [data.crewMember1, data.crewMember2].filter(Boolean),
+    };
 
-            ship:
-                data.ship,
+    await onSubmit(payload);
 
-            launchPad:
-                data.launchPad,
+    reset();
+  }
 
-            landingPad:
-                data.landingPad,
+  return (
+    <form className="inner-form-mission" onSubmit={handleSubmit(submitForm)}>
+      <h2>Create Mission</h2>
 
-            captain:
-                data.captain,
+      <div className="mission-fields">
+        <input type="text" placeholder="Mission Title" {...register("title")} />
 
-            crew: [
+        <input type="text" placeholder="Destination" {...register("city")} />
 
-                data.crewMember1,
+        <label>Launch Date</label>
 
-                data.crewMember2,
-            ],
-        };
+        <input type="date" {...register("launchDate")} />
 
-        await onSubmit(payload);
+        <label>Return Date</label>
 
-        reset();
-    }
+        <input type="date" {...register("returnDate")} />
 
-    // =================================================
-    // RENDER
-    // =================================================
-    return (
+        <select {...register("rocket")}>
+          <option value="">Select Rocket</option>
 
-        <form
-            className="inner-form-mission"
-            onSubmit={handleSubmit(submitForm)}
-        >
+          {options?.rockets?.map((rocket) => (
+            <option key={rocket.id} value={rocket.name}>
+              {rocket.name}
+            </option>
+          ))}
+        </select>
 
-            <h2>
-                Create Mission
-            </h2>
+        <select {...register("ship")}>
+          <option value="">Select Ship</option>
 
-            {/* ================================================= */}
-            {/* TITLE */}
-            {/* ================================================= */}
-            <input
-                type="text"
-                placeholder="Mission Title"
-                {...register("title")}
-            />
+          {options?.ships?.map((ship) => (
+            <option key={ship.id} value={ship.name}>
+              {ship.name}
+            </option>
+          ))}
+        </select>
 
-            {/* ================================================= */}
-            {/* DESTINATION */}
-            {/* ================================================= */}
-            <input
-                type="text"
-                placeholder="Destination"
-                {...register("city")}
-            />
-
-            {/* ================================================= */}
-            {/* LAUNCH DATE */}
-            {/* ================================================= */}
-            <label>
-                Launch Date
-            </label>
+        <select {...register("launchPad")}>
+          <option value="">Select Launch Pad</option>
 
-            <input
-                type="date"
-                {...register("launchDate")}
-            />
-
-            {/* ================================================= */}
-            {/* RETURN DATE */}
-            {/* ================================================= */}
-            <label>
-                Return Date
-            </label>
-
-            <input
-                type="date"
-                {...register("returnDate")}
-            />
-
-            {/* ================================================= */}
-            {/* ROCKET */}
-            {/* ================================================= */}
-            <select
-                {...register("rocket")}
-            >
-
-                <option value="">
-                    Select Rocket
-                </option>
-
-                {options?.rockets?.map(
-                    (rocket) => (
-
-                        <option
-                            key={rocket.id}
-                            value={rocket.name}
-                        >
-                            {rocket.name}
-                        </option>
-
-                    )
-                )}
-
-            </select>
-
-            {/* ================================================= */}
-            {/* SHIP */}
-            {/* ================================================= */}
-            <select
-                {...register("ship")}
-            >
-
-                <option value="">
-                    Select Ship
-                </option>
-
-                {options?.ships?.map(
-                    (ship) => (
-
-                        <option
-                            key={ship.id}
-                            value={ship.name}
-                        >
-                            {ship.name}
-                        </option>
-
-                    )
-                )}
-
-            </select>
-
-            {/* ================================================= */}
-            {/* LAUNCHPAD */}
-            {/* ================================================= */}
-            <select
-                {...register("launchPad")}
-            >
-
-                <option value="">
-                    Select Launchpad
-                </option>
-
-                {options?.launchpads?.map(
-                    (pad) => (
-
-                        <option
-                            key={pad.id}
-                            value={pad.name}
-                        >
-                            {pad.name}
-                        </option>
-
-                    )
-                )}
-
-            </select>
-
-            {/* ================================================= */}
-            {/* LANDINGPAD */}
-            {/* ================================================= */}
-            <select
-                {...register("landingPad")}
-            >
-
-                <option value="">
-                    Select Landing Pad
-                </option>
-
-                {options?.landpads?.map(
-                    (pad) => (
-
-                        <option
-                            key={pad.id}
-                            value={pad.name}
-                        >
-                            {pad.name}
-                        </option>
-
-                    )
-                )}
-
-            </select>
-
-            {/* ================================================= */}
-            {/* CAPTAIN */}
-            {/* ================================================= */}
-            <select
-                {...register("captain")}
-            >
-
-                <option value="">
-                    Select Captain
-                </option>
-
-                {users
-                    ?.filter(
-                        (user) =>
-                            user.role ===
-                            "captain"
-                    )
-                    ?.map((user) => (
-
-                        <option
-                            key={user.id}
-                            value={user.firstname}
-                        >
-                            {user.firstname}
-                        </option>
-
-                    ))
-                }
-
-            </select>
-
-            {/* ================================================= */}
-            {/* ASSIGNED CREW */}
-            {/* ================================================= */}
-            <h3>
-                Assigned Crew
-            </h3>
-
-            {/* ================================================= */}
-            {/* CREW MEMBER 1 */}
-            {/* ================================================= */}
-            <select
-                {...register(
-                    "crewMember1"
-                )}
-            >
-
-                <option value="">
-                    Select Crew Member 1
-                </option>
-
-                {users
-                    ?.filter(
-                        (user) =>
-                            user.role ===
-                            "crew"
-                    )
-                    ?.map((user) => (
-
-                        <option
-                            key={user.id}
-                            value={user.firstname}
-                        >
-                            {user.firstname}
-                        </option>
-
-                    ))
-                }
-
-            </select>
-
-            {/* ================================================= */}
-            {/* CREW MEMBER 2 */}
-            {/* ================================================= */}
-            <select
-                {...register(
-                    "crewMember2"
-                )}
-            >
-
-                <option value="">
-                    Select Crew Member 2
-                </option>
-
-                {users
-                    ?.filter(
-                        (user) =>
-                            user.role ===
-                            "crew"
-                    )
-                    ?.map((user) => (
-
-                        <option
-                            key={user.id}
-                            value={user.firstname}
-                        >
-                            {user.firstname}
-                        </option>
-
-                    ))
-                }
-
-            </select>
-
-            {/* ================================================= */}
-            {/* BUTTON */}
-            {/* ================================================= */}
-            <button
-                type="submit"
-                disabled={loading}
-            >
-
-                {loading
-                    ? "Creating..."
-                    : "Create Mission"}
-
-            </button>
-
-            {/* ================================================= */}
-            {/* SUCCESS */}
-            {/* ================================================= */}
-            {isSuccess && (
-
-                <p>
-                    Mission created 🚀
-                </p>
-            )}
-
-        </form>
-    );
+          {options?.launchpads?.map((pad) => (
+            <option key={pad.id} value={pad.name}>
+              {pad.name}
+            </option>
+          ))}
+        </select>
+
+        <select {...register("landingPad")}>
+          <option value="">Select Landing Pad</option>
+
+          {options?.landpads?.map((pad) => (
+            <option key={pad.id} value={pad.name}>
+              {pad.name}
+            </option>
+          ))}
+        </select>
+
+        <select {...register("captain")}>
+          <option value="">Select Captain</option>
+
+          {users
+            ?.filter((user) => user.role === "captain")
+            ?.map((user) => (
+              <option key={user.id} value={user.firstname}>
+                {user.firstname}
+              </option>
+            ))}
+        </select>
+
+        <h3>Assigned Crew</h3>
+
+        <select {...register("crewMember1")}>
+          <option value="">Select Crew Member 1</option>
+
+          {users
+            ?.filter((user) => user.role === "crew")
+            ?.map((user) => (
+              <option key={user.id} value={user.firstname}>
+                {user.firstname}
+              </option>
+            ))}
+        </select>
+
+        <select {...register("crewMember2")}>
+          <option value="">Select Crew Member 2</option>
+
+          {users
+            ?.filter((user) => user.role === "crew")
+            ?.map((user) => (
+              <option key={user.id} value={user.firstname}>
+                {user.firstname}
+              </option>
+            ))}
+        </select>
+      </div>
+
+      <button type="submit" disabled={loading}>
+        {loading ? "Creating..." : "Create Mission"}
+      </button>
+
+      {isSuccess && <p>Mission created 🚀</p>}
+    </form>
+  );
 }
 
 export default MissionForm;

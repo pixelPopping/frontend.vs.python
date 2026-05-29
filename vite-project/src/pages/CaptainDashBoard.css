@@ -1,84 +1,228 @@
-@import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Unbounded:wght@200..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Unbounded:wght@200..900&display=swap");
 
-.dashboard{
+/* ================================================= */
+/* DASHBOARD */
+/* ================================================= */
 
-    display: flex;
+.dashboard {
+  display: flex;
 
-    flex-direction: column;
+  flex-direction: column;
 
-    align-items: center;
+  align-items: center;
 
-    width: 100%;
+  width: 100%;
+
+  min-height: 100vh;
+
+  background-color: lightblue;
+
 }
 
-.mission-list{
+/* ================================================= */
+/* HEADER */
+/* ================================================= */
 
-    display: flex;
+.dashboard-header {
+  position: relative;
 
-    justify-content: center;
+  display: flex;
 
-    flex-wrap: wrap;
+  justify-content: center;
 
-    gap: 20px;
+  width: 100%;
 
-    width: 100%;
+  margin-top: 40px;
 }
 
-.mission-page{
+/* ================================================= */
+/* NOVI LOGO */
+/* ================================================= */
 
-    display: flex;
+.novilogo {
+  position: absolute;
 
-    flex-direction: row;
+  top: -50px;
 
-    justify-content: center;
+  left: 50%;
 
-    width: 100%;
+  transform: translateX(-50%);
+
+  width: 450px;
+
+  height: 450px;
+
+  background-image: url("/src/assets/Images/Novilogo.png");
+
+  background-size: contain;
+
+  background-repeat: no-repeat;
+
+  background-position: center;
+
+  opacity: 0.75;
+
+  z-index: 0;
+
+  margin-top: 80px;
 }
 
-.outer-mission {
+/* ================================================= */
+/* TITLE */
+/* ================================================= */
 
-    display: flex;
+.unbounded-title {
+  position: relative;
 
-    flex-direction: column;
+  z-index: 1;
 
-    align-items: center;
+  font-family: "Unbounded", sans-serif;
 
-    padding-bottom: 100px;
+  font-weight: 700;
 
-    width: 100%;
+  font-size: 120px;
+
+  color: white;
+
+  -webkit-text-stroke: 4px #0b3d91;
+
+  text-align: center;
+
+  margin-top: 120px;
 }
+
+/* ================================================= */
+/* MAIN */
+/* ================================================= */
+
+.mission-page {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  width: 100%;
+}
+
+/* ================================================= */
+/* FORM SECTION */
+/* ================================================= */
 
 .mission-outer-form {
+  display: flex;
 
-    display: flex;
+  justify-content: center;
 
-    flex-direction: column;
+  width: 100%;
 
-    align-items: center;
+  margin-top: 40px;
 
-    width: 100%;
+  margin-bottom: 40px;
 }
 
-.mission-list{
+/* ================================================= */
+/* MISSIONS SECTION */
+/* ================================================= */
 
-    display: flex;
+.outer-mission {
+  display: flex;
 
-    justify-content: center;
+  flex-direction: column;
 
-    flex-wrap: wrap;
+  align-items: center;
 
-    gap: 20px;
+  width: 100%;
 
-    width: 100%;
+  padding-bottom: 100px;
 }
 
-.unbounded {
+/* ================================================= */
+/* MISSION LIST */
+/* ================================================= */
 
-    font-family: "Unbounded", sans-serif;
+.mission-list {
+  display: flex;
 
-    font-weight: 700;
+  flex-wrap: wrap;
 
-    font-size: 50px;
+  justify-content: center;
 
-    text-align: center;
+  gap: 25px;
+
+  width: 100%;
+
+  padding: 40px;
+}
+
+/* ================================================= */
+/* MISSION CARD */
+/* ================================================= */
+
+.mission-card {
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: space-between;
+
+  width: 400px;
+
+  min-height: 500px;
+
+  background: white;
+
+  border: 4px solid #0b3d91;
+
+  border-radius: 20px;
+
+  padding: 20px;
+
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* ================================================= */
+/* CARD TEXT */
+/* ================================================= */
+
+.card-text {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 8px;
+}
+
+.card-text p {
+  padding: 6px 0;
+}
+
+/* ================================================= */
+/* DELETE BUTTON */
+/* ================================================= */
+
+.delete-button-container {
+  display: flex;
+
+  justify-content: center;
+
+  margin-top: 20px;
+}
+
+.delete {
+  padding: 12px 24px;
+
+  border: none;
+
+  border-radius: 10px;
+
+  background-color: crimson;
+
+  color: white;
+
+  cursor: pointer;
+}
+
+.delete:hover {
+  background-color: darkred;
 }

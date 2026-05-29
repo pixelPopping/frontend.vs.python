@@ -1,33 +1,32 @@
-@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@200..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Unbounded:wght@200..900&display=swap");
 
 .backgroundimg {
   position: fixed;
   inset: 0;
   width: 100vw;
   height: 100vh;
-  background-image: url('/src/assets/Images/193414-rick-sanchez-1920x1080.jpg');
+  background-image: url("/src/assets/Images/193414-rick-sanchez-1920x1080.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   z-index: -1;
 }
 
-.novilogo{
-  background-image: url('/src/assets/Images/Novilogo.png');
-  
+.novilogo {
+  background-image: url("/src/assets/Images/Novilogo.png");
 }
-.header-container{
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    justify-content: center;
+.header-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: center;
 }
 
-header h1{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    margin-top: 100px;
+header h1 {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin-top: 100px;
 }
 
 header .unbounded-title {
@@ -35,10 +34,10 @@ header .unbounded-title {
   font-weight: 700;
   font-size: 120px;
   color: red;
-  -webkit-text-stroke: 5px #0B3D91;
+  -webkit-text-stroke: 5px #0b3d91;
 }
 
-.outer-layout{
+.outer-layout {
   display: flex;
   flex-direction: row;
   margin-top: 20px;
@@ -46,51 +45,51 @@ header .unbounded-title {
   padding: 70px;
 }
 
-.main-outer-form{
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    justify-content: flex-start;
+.main-outer-form {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: flex-start;
 }
 
-.inner-form{
-    display: flex;
-    flex-direction: column;
+.inner-form {
+  display: flex;
+  flex-direction: column;
 }
 
-.text-container{
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    margin-top: 100px;
-    margin-bottom: 100px;
+.text-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-top: 100px;
+  margin-bottom: 100px;
 }
 
-.outer-calender{
-   display: flex;
-   flex-direction: row;
-   width: 100%;
-   justify-content: center;
+.outer-calender {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: center;
 }
 
-.inner-calendar{
-   display: grid;
-   grid-template-columns: 1fr;
-   place-items: center;
-   gap: 2rem;
-   width: 100%;
+.inner-calendar {
+  display: grid;
+  grid-template-columns: 1fr;
+  place-items: center;
+  gap: 2rem;
+  width: 100%;
 }
 
 .calendar-wrapper {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    justify-content: center;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: center;
 }
 
-.react-calendar{
-    width: 600px;
-    padding: 20px;
+.react-calendar {
+  width: 600px;
+  padding: 20px;
 }
 
 .react-calendar__navigation button {
@@ -103,15 +102,15 @@ header .unbounded-title {
   text-align: center;
 }
 
-.button-container{
+.button-container {
   display: flex;
   flex-direction: row;
   width: 100px;
 }
 
-.submit-next{
-    width: 100%;
-    padding: 20px;
+.submit-next {
+  width: 100%;
+  padding: 20px;
 }
 
 .react-calendar__tile {
@@ -143,8 +142,7 @@ footer {
   z-index: 1;
 }
 
-
-@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@200..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Unbounded:wght@200..900&display=swap");
 
 /* BACKGROUND */
 .backgroundimg {
@@ -152,7 +150,7 @@ footer {
   inset: 0;
   width: 100vw;
   height: 100vh;
-  background-image: url('/src/assets/Images/193414-rick-sanchez-1920x1080.jpg');
+  background-image: url("/src/assets/Images/193414-rick-sanchez-1920x1080.jpg");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -177,7 +175,7 @@ footer {
   width: 500px;
   height: 500px;
 
-  background-image: url('/src/assets/Images/Novilogo.png');
+  background-image: url("/src/assets/Images/Novilogo.png");
   background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
@@ -189,20 +187,31 @@ footer {
   filter: drop-shadow(0 0 40px rgba(11, 61, 145, 0.6));
 
   /* floating + rotate */
-  animation: floatLogo 6s ease-in-out infinite,
-             rotateLogo 80s linear infinite;
+  animation:
+    floatLogo 6s ease-in-out infinite,
+    rotateLogo 80s linear infinite;
 }
 
 /* ANIMATIES */
 @keyframes floatLogo {
-  0% { transform: translate(-50%, 0px); }
-  50% { transform: translate(-50%, -15px); }
-  100% { transform: translate(-50%, 0px); }
+  0% {
+    transform: translate(-50%, 0px);
+  }
+  50% {
+    transform: translate(-50%, -15px);
+  }
+  100% {
+    transform: translate(-50%, 0px);
+  }
 }
 
 @keyframes rotateLogo {
-  from { transform: translateX(-50%) rotate(0deg); }
-  to { transform: translateX(-50%) rotate(360deg); }
+  from {
+    transform: translateX(-50%) rotate(0deg);
+  }
+  to {
+    transform: translateX(-50%) rotate(360deg);
+  }
 }
 
 /* HEADER TEXT */
@@ -219,7 +228,7 @@ header h1 {
   font-weight: 700;
   font-size: 120px;
   color: red;
-  -webkit-text-stroke: 5px #0B3D91;
+  -webkit-text-stroke: 5px #0b3d91;
 }
 
 /* LAYOUT */
