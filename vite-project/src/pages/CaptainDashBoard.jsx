@@ -10,29 +10,24 @@ import "./CaptainDashBoard.css";
 function CaptainDashboard() {
   const {
     missions,
-
     users,
-
     options,
-
     loading,
-
     isSuccess,
-
     handleCreateMission,
-
     handleDeleteMission,
   } = useContext(CaptainContext);
 
   return (
     <div className="dashboard">
-      <div className="header-container">
-        <div className="novilogo"></div>
+      {/* Eigen header zodat Home-styling niet wordt overgenomen */}
+     <div className="header-container">
+  <div className="novilogo"></div>
+</div>
 
-        <header>
-          <h1 className="unbounded-title">Novi-Naut in Space</h1>
-        </header>
-      </div>
+<header className="captain-title">
+  <h1>Captain Dashboard</h1>
+</header>
       <main className="mission-page">
         <section className="outer-mission">
           <article className="mission-outer-form">
