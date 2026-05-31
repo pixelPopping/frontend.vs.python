@@ -42,7 +42,7 @@ function MissionDetailCard({
   const status = mission.status || "pending";
 
   return (
-    <section className="mission-card-inner-container">
+    <section>
       <article className="mission-card">
         <h3>Mission {index + 1}</h3>
 

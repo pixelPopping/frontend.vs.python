@@ -1,5 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Unbounded:wght@200..900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Archivo+Black&family=Pixelify+Sans:wght@400..700&family=Unbounded:wght@200..900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap');
 
 /* ================================================= */
 /* TITLE */
@@ -24,17 +25,19 @@ header .unbounded-title-mission {
 /* ================================================= */
 /* FORM */
 /* ================================================= */
+.archivo-black-regular {
+  font-family: "Archivo Black", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: clamp(1.5rem, 5vw, 400px);
+}
+
 
 .inner-form-mission {
   display: flex;
-
   flex-direction: column;
-
   width: 100%;
-
   max-width: 1000px;
-
-  gap: 20px;
 }
 
 /* ================================================= */
@@ -173,19 +176,20 @@ option {
 /* BUTTONS */
 /* ================================================= */
 
-.submit-mission,
-.submit {
-  width: 200px;
+section{
+  display: flex;
+  margin-top: 100px;
+}
 
-  padding: 20px;
+.create-button-cotainer {
+  display: flex;
+  flex-direction: row;
+  width: 350px;
+}
 
-  cursor: pointer;
-
-  border: none;
-
-  border-radius: 10px;
-
-  font-weight: bold;
+.create-btn {
+ width: 100%;
+ padding: 20px;
 }
 
 /* ================================================= */

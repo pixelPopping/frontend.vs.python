@@ -50,7 +50,7 @@ function MissionForm({
 
   return (
     <form className="inner-form-mission" onSubmit={handleSubmit(submitForm)}>
-      <h2>Create Mission</h2>
+      <h2 className="archivo-black-regular">Create Mission</h2>
 
       <div className="mission-fields">
         <input type="text" placeholder="Mission Title" {...register("title")} />
@@ -143,12 +143,12 @@ function MissionForm({
             ))}
         </select>
       </div>
-
-      <button type="submit" disabled={loading}>
+      <section className="create-button-container">
+      <button type="submit" className="create-btn" disabled={loading}>
         {loading ? "Creating..." : "Create Mission"}
       </button>
-
       {isSuccess && <p>Mission created 🚀</p>}
+      </section>
     </form>
   );
 }

@@ -17,6 +17,7 @@ import CaptainDashboard from "./pages/CaptainDashboard";
 import CrewDashboard from "./pages/CrewDashboard";
 
 import ProtectedRoute from "./components/ProtectedRoute";
+import "./styles/vars.css";
 
 function App() {
   return (

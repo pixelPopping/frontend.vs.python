@@ -101,10 +101,14 @@
 }
 
 .captain-title h1 {
-  font-family: "Unbounded", sans-serif;
-  font-weight: 700;
-  font-size: 120px;
-  color: red;
-  -webkit-text-stroke: 5px #0b3d91;
-  margin: 0;
+  font-family: var(--font-title);
+  font-size: var(--header-size);
+  font-weight: var(--header-weight);
+  color: var(--color-secondary);
+  -webkit-text-stroke: var(--header-stroke);
+  --header-clamp: var(--header-size);
+}
+
+.mission-list{
+  margin-top: 100px;
 }

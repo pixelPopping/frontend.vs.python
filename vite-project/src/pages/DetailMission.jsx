@@ -42,8 +42,9 @@ function DetailMission() {
     <main className="detail-outer-form">
       <div className="outer-form-detail">
         <div className="text-container">
-          <h1>Mission History</h1>
-
+          <header>
+            <h1>Mission Details</h1>
+          </header>
           <button onClick={() => navigate("/mission")}>Terug</button>
 
           <button onClick={() => navigate("/savedmissions")}>
