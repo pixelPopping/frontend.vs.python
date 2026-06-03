@@ -52,10 +52,10 @@ function App() {
         />
 
         <Route
-          path="/savedmissions"
+          path="/contact"
           element={
-            <ProtectedRoute>
-              <SavedMissions />
+           <ProtectedRoute role="user">
+              <Contact/>
             </ProtectedRoute>
           }
         />

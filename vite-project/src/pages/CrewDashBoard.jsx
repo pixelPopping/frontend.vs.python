@@ -6,7 +6,7 @@ function CrewDashboard() {
   const {
     missions,
 
-    handleAcceptMission,
+    acceptMission,
   } = useContext(CrewContext);
 
   return (
@@ -41,7 +41,7 @@ function CrewDashboard() {
                   key={mission._id}
                   mission={mission}
                   index={index}
-                  onAccept={handleAcceptMission}
+                  onAccept={acceptMission}
                 />
               ))}
         </section>

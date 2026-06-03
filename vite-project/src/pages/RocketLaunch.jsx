@@ -1,25 +1,38 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import "./RocketLaunch.css";
+import { AuthContext } from "../context/AuthContext";
 
-// Afbeeldingen
 import rocketImg from "../assets/Images/rocket.png";
 import ufoImg from "../assets/Images/ufo.png";
 
 function RocketLaunch() {
-  const { id } = useParams();
-  const [launchReady, setLaunchReady] = useState(false);
-  const [countdown, setCountdown] = useState(5);
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
 
-  // ⭐ Countdown (stil)
+  const [countdown, setCountdown] = useState(5);
+  const [launchReady, setLaunchReady] = useState(false);
+
   useEffect(() => {
-    let i = 5;
-    const timer = setInterval(() => {
-      i--;
-      setCountdown(i);
+    console.log("RocketLaunch mounted");
+    console.log("User:", user);
+  }, [user]);
 
-      if (i === 0) {
+  // Countdown
+  useEffect(() => {
+    console.log("Countdown started");
+
+    let current = 5;
+
+    const timer = setInterval(() => {
+      current--;
+
+      console.log("Countdown:", current);
+
+      setCountdown(current);
+
+      if (current <= 0) {
+        console.log("Launch Ready!");
         clearInterval(timer);
         setLaunchReady(true);
       }
@@ -28,79 +41,69 @@ function RocketLaunch() {
     return () => clearInterval(timer);
   }, []);
 
-  // 🚀 Redirect na launch
+  // Kijk of launchReady verandert
   useEffect(() => {
-    if (launchReady) {
-      setTimeout(() => {
-        navigate(`/detailmission/${id}`);
-      }, 2500);
-    }
-  }, [launchReady, navigate, id]);
+    console.log("launchReady =", launchReady);
+  }, [launchReady]);
+
+  // Fallback redirect na 8 seconden
+  useEffect(() => {
+    if (!launchReady) return;
+
+    console.log("Launch sequence active");
+
+    const timer = setTimeout(() => {
+      console.log("FORCED REDIRECT TO /contact");
+      navigate("/contact");
+    }, 8000);
+
+    return () => clearTimeout(timer);
+  }, [launchReady, navigate]);
+
+  const handleAnimationEnd = (e) => {
+    console.log("Animation ended");
+    console.log("Animation name:", e.animationName);
+    console.log("Navigating to /contact");
+
+    navigate("/contact");
+  };
 
   return (
     <main className="launch-container">
-      {/* ⭐ Animated sterren achtergrond */}
-      <div className="starry-background">
-        {Array.from({ length: 80 }).map((_, i) => (
-          <div
-            key={i}
-            className="star"
-            style={{
-              top: Math.random() * 100 + "%",
-              left: Math.random() * 100 + "%",
-              animationDelay: Math.random() * 2 + "s",
-            }}
-          />
-        ))}
-      </div>
+      <div className="starry-background"></div>
 
-      {/* 🪐 Planeet */}
       <div className="planet"></div>
 
-      {/* 🌠 Meteoren */}
-      {Array.from({ length: 10 }).map((_, i) => (
-        <div
-          key={i}
-          className="meteor"
-          style={{
-            top: Math.random() * 50 + "%",
-            left: Math.random() * 100 + "%",
-            animationDelay: Math.random() * 2 + "s",
-          }}
-        />
-      ))}
-
-      {/* 🔮 Wormhole */}
       <div className="wormhole"></div>
 
-      {/* 🛸 UFO’s */}
       <img src={ufoImg} className="ufo ufo1" alt="ufo" />
       <img src={ufoImg} className="ufo ufo2" alt="ufo" />
       <img src={ufoImg} className="ufo ufo3" alt="ufo" />
 
-      {/* 🔫 Laser */}
       <div className="laser"></div>
 
-      {/* Countdown tekst */}
       {countdown > 0 && (
-        <p className="countdown unbounded">Launch in: {countdown}</p>
+        <p className="countdown unbounded">
+          Launch in: {countdown}
+        </p>
       )}
 
-      {countdown === 0 && <p className="countdown unbounded">🚀 Launch!</p>}
+      {countdown === 0 && (
+        <p className="countdown unbounded">
+          🚀 Launch!
+        </p>
+      )}
 
-      {/* Launch scene */}
       <div className="launch-scene">
-        {/* 🗼 Launch tower */}
         <div className="launch-tower"></div>
 
-        {/* 🚀 Raket */}
         <img
           src={rocketImg}
           alt="rocket"
-          className={`rocket-img ${countdown === 0 ? "launch" : ""}`}
+          className={`rocket-img ${launchReady ? "launch" : ""}`}
+          onAnimationEnd={handleAnimationEnd}
         />
 
-        {/* Rook + platform */}
         <div className="smoke"></div>
         <div className="platform"></div>
       </div>

@@ -728,6 +728,8 @@ def accept_mission(id):
         return jsonify({
             "error": str(e)
         }), 500
+    
+
 
 # =========================================================
 # DELETE MISSION
@@ -757,6 +759,8 @@ def delete_mission(id):
         return jsonify({
             "error": str(e)
         }), 500
+
+
 
 # =========================================================
 # START SERVER
