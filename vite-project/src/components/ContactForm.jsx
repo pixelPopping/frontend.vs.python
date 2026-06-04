@@ -9,10 +9,7 @@ import "./ContactForm.css";
 const ContactForm = () => {
   const navigate = useNavigate();
 
-  const {
-    activeMissionId,
-    clearActiveMission,
-  } = useContext(CrewContext);
+  const { activeMissionId, clearActiveMission } = useContext(CrewContext);
 
   async function endMission() {
     try {
@@ -22,7 +19,7 @@ const ContactForm = () => {
       }
 
       const confirmed = window.confirm(
-        "Are you sure you want to end this mission?"
+        "Are you sure you want to end this mission?",
       );
 
       if (!confirmed) {
@@ -37,14 +34,9 @@ const ContactForm = () => {
 
       navigate("/crew-dashboard");
     } catch (error) {
-      console.error(
-        "END MISSION ERROR:",
-        error
-      );
+      console.error("END MISSION ERROR:", error);
 
-      alert(
-        "Failed to end mission"
-      );
+      alert("Failed to end mission");
     }
   }
 
@@ -60,28 +52,16 @@ const ContactForm = () => {
 
       <section className="contact-content">
         <p>
-          You can return to your
-          dashboard to monitor your
-          active mission and future
-          assignments.
+          You can return to your dashboard to monitor your active mission and
+          future assignments.
         </p>
 
         <div className="button-group">
-          <button
-            type="button"
-            onClick={() =>
-              navigate(
-                "/crew-dashboard"
-              )
-            }
-          >
+          <button type="button" onClick={() => navigate("/crew-dashboard")}>
             Crew Dashboard
           </button>
 
-          <button
-            type="button"
-            onClick={endMission}
-          >
+          <button type="button" onClick={endMission}>
             End Mission 🚀
           </button>
         </div>

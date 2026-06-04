@@ -4,11 +4,11 @@
 /* DASHBOARD */
 /* ================================================= */
 .outer-mission {
-    display: flex;
-    flex-direction: column;
-    padding-bottom: 100px;
-    width: 100%;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 100px;
+  width: 100%;
+  align-items: center;
 }
 
 .dashboard {
@@ -109,6 +109,6 @@
   --header-clamp: var(--header-size);
 }
 
-.mission-list{
+.mission-list {
   margin-top: 100px;
 }

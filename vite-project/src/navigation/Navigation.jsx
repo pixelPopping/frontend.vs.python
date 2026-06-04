@@ -17,11 +17,7 @@ function Navigation() {
         <NavLink to="/crew-dashboard">Crew Dashboard</NavLink>
       )}
 
-      {isAuth && user?.role === "crew" && (
-        <NavLink to="/contact"></NavLink>
-      )}
-
-
+      {isAuth && user?.role === "crew" && <NavLink to="/contact"></NavLink>}
 
       {!isAuth && (
         <>

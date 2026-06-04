@@ -54,8 +54,8 @@ function App() {
         <Route
           path="/contact"
           element={
-           <ProtectedRoute role="user">
-              <Contact/>
+            <ProtectedRoute role="user">
+              <Contact />
             </ProtectedRoute>
           }
         />

@@ -40,9 +40,7 @@ function CaptainDashboard() {
             />
           </article>
 
-          {(!missions || missions.length === 0) && (
-            <p>No missions yet 🚀</p>
-          )}
+          {(!missions || missions.length === 0) && <p>No missions yet 🚀</p>}
 
           <div className="outer-card-list">
             <div className="mission-list">

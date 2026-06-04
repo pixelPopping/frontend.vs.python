@@ -65,9 +65,10 @@ function MissionDetailCard({
 
           <p>
             <strong>Crew:</strong>{" "}
-            {crewList.length > 0 ? crewList.join(" & ") : "No crew assigned"}
+            {crewList.length > 0
+              ? crewList.map((member) => member.name).join(" & ")
+              : "No crew assigned"}
           </p>
-
           <p>
             <strong>Rocket:</strong> {rocket}
           </p>

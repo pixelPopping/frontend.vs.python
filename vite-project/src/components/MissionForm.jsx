@@ -40,7 +40,17 @@ function MissionForm({
 
       captain: data.captain,
 
-      crew: [data.crewMember1, data.crewMember2].filter(Boolean),
+      crew: [
+        data.crewMember1 && {
+          name: data.crewMember1,
+          accepted: false,
+        },
+
+        data.crewMember2 && {
+          name: data.crewMember2,
+          accepted: false,
+        },
+      ].filter(Boolean),
     };
 
     await onSubmit(payload);
@@ -144,10 +154,10 @@ function MissionForm({
         </select>
       </div>
       <section className="create-button-container">
-      <button type="submit" className="create-btn" disabled={loading}>
-        {loading ? "Creating..." : "Create Mission"}
-      </button>
-      {isSuccess && <p>Mission created 🚀</p>}
+        <button type="submit" className="create-btn" disabled={loading}>
+          {loading ? "Creating..." : "Create Mission"}
+        </button>
+        {isSuccess && <p>Mission created 🚀</p>}
       </section>
     </form>
   );

@@ -696,6 +696,9 @@ def get_missions():
 # =========================================================
 # ACCEPT MISSION
 # =========================================================
+# =========================================================
+# ACCEPT MISSION
+# =========================================================
 @app.route(
     "/api/missions/<id>/accept",
     methods=["PUT"]
@@ -705,32 +708,96 @@ def accept_mission(id):
 
     try:
 
-        missions.update_one(
+        print("\n====================")
+        print("ACCEPT MISSION")
+        print("====================")
 
+        print("MISSION ID:", id)
+
+        user = users.find_one(
+            {
+                "_id": ObjectId(
+                    request.user["userId"]
+                )
+            }
+        )
+
+        print("USER:", user)
+
+        firstname = user["firstname"]
+
+        print(
+            "FIRSTNAME:",
+            firstname
+        )
+
+        mission = missions.find_one(
             {
                 "_id": ObjectId(id)
-            },
+            }
+        )
 
+        print(
+            "MISSION BEFORE:"
+        )
+
+        print(mission)
+
+        result = missions.update_one(
+            {
+                "_id": ObjectId(id),
+                "crew.name": firstname
+            },
             {
                 "$set": {
-                    "status": "accepted"
+                    "crew.$.accepted": True
                 }
             }
         )
 
-        return jsonify({
-            "message":
-                "Mission accepted"
-        })
+        print(
+            "MATCHED:",
+            result.matched_count
+        )
+
+        print(
+            "MODIFIED:",
+            result.modified_count
+        )
+
+        updated_mission = missions.find_one(
+            {
+                "_id": ObjectId(id)
+            }
+        )
+
+        print(
+            "MISSION AFTER:"
+        )
+
+        print(updated_mission)
+
+        print("====================\n")
+
+        return jsonify(
+            {
+                "message":
+                    "Mission accepted"
+            }
+        )
 
     except Exception as e:
 
-        return jsonify({
-            "error": str(e)
-        }), 500
-    
+        print(
+            "ACCEPT ERROR:",
+            str(e)
+        )
 
-
+        return jsonify(
+            {
+                "error": str(e)
+            }
+        ), 500
 # =========================================================
 # DELETE MISSION
 # =========================================================

@@ -1,6 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Unbounded:wght@200..900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Archivo+Black&family=Pixelify+Sans:wght@400..700&family=Unbounded:wght@200..900&display=swap");
-@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap");
 
 /* ================================================= */
 /* TITLE */
@@ -31,7 +31,6 @@ header .unbounded-title-mission {
   font-style: normal;
   font-size: clamp(1.5rem, 5vw, 400px);
 }
-
 
 .inner-form-mission {
   display: flex;
@@ -176,7 +175,7 @@ option {
 /* BUTTONS */
 /* ================================================= */
 
-section{
+section {
   display: flex;
   margin-top: 100px;
 }
@@ -188,8 +187,8 @@ section{
 }
 
 .create-btn {
- width: 100%;
- padding: 20px;
+  width: 100%;
+  padding: 20px;
 }
 
 /* ================================================= */

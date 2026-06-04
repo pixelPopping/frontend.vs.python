@@ -83,16 +83,10 @@ function RocketLaunch() {
       <div className="laser"></div>
 
       {countdown > 0 && (
-        <p className="countdown unbounded">
-          Launch in: {countdown}
-        </p>
+        <p className="countdown unbounded">Launch in: {countdown}</p>
       )}
 
-      {countdown === 0 && (
-        <p className="countdown unbounded">
-          🚀 Launch!
-        </p>
-      )}
+      {countdown === 0 && <p className="countdown unbounded">🚀 Launch!</p>}
 
       <div className="launch-scene">
         <div className="launch-tower"></div>
