@@ -85,6 +85,8 @@ db = client["space_app"]
 users = db["users"]
 
 missions = db["missions"]
+print("DATABASE:", db.name)
+print("COLLECTION:", missions.name)
 
 print("✅ MongoDB Connected")
 
@@ -692,7 +694,6 @@ def get_missions():
         return jsonify({
             "error": str(e)
         }), 500
-
 # =========================================================
 # ACCEPT MISSION
 # =========================================================
@@ -708,12 +709,17 @@ def accept_mission(id):
 
     try:
 
-        print("\n====================")
+        print("\n================================")
         print("ACCEPT MISSION")
-        print("====================")
+        print("================================")
 
+        print("DATABASE:", db.name)
+        print("COLLECTION:", missions.name)
         print("MISSION ID:", id)
 
+        # =====================================
+        # GET CURRENT USER
+        # =====================================
         user = users.find_one(
             {
                 "_id": ObjectId(
@@ -722,27 +728,41 @@ def accept_mission(id):
             }
         )
 
-        print("USER:", user)
+        if not user:
+            return jsonify({
+                "error": "User not found"
+            }), 404
 
         firstname = user["firstname"]
 
         print(
-            "FIRSTNAME:",
+            "\nFIRSTNAME:",
             firstname
         )
 
+        # =====================================
+        # FIND MISSION
+        # =====================================
         mission = missions.find_one(
             {
                 "_id": ObjectId(id)
             }
         )
 
+        if not mission:
+            return jsonify({
+                "error": "Mission not found"
+            }), 404
+
         print(
-            "MISSION BEFORE:"
+            "\nMISSION BEFORE UPDATE:"
         )
 
         print(mission)
 
+        # =====================================
+        # ACCEPT CURRENT CREW MEMBER
+        # =====================================
         result = missions.update_one(
             {
                 "_id": ObjectId(id),
@@ -756,7 +776,7 @@ def accept_mission(id):
         )
 
         print(
-            "MATCHED:",
+            "\nMATCHED:",
             result.matched_count
         )
 
@@ -765,6 +785,45 @@ def accept_mission(id):
             result.modified_count
         )
 
+        # =====================================
+        # GET UPDATED MISSION
+        # =====================================
+        updated_mission = missions.find_one(
+            {
+                "_id": ObjectId(id)
+            }
+        )
+
+        # =====================================
+        # CHECK ALL CREW ACCEPTED
+        # =====================================
+        all_accepted = all(
+            member.get("accepted", False)
+            for member in updated_mission["crew"]
+        )
+
+        print(
+            "\nALL ACCEPTED:",
+            all_accepted
+        )
+
+        if all_accepted:
+
+            missions.update_one(
+                {
+                    "_id": ObjectId(id)
+                },
+                {
+                    "$set": {
+                        "status": "accepted"
+                    }
+                }
+            )
+
+            print(
+                "MISSION STATUS UPDATED TO ACCEPTED"
+            )
+
         updated_mission = missions.find_one(
             {
                 "_id": ObjectId(id)
@@ -772,24 +831,25 @@ def accept_mission(id):
         )
 
         print(
-            "MISSION AFTER:"
+            "\nMISSION AFTER UPDATE:"
         )
 
         print(updated_mission)
 
-        print("====================\n")
+        print(
+            "\n================================"
+        )
 
         return jsonify(
             {
-                "message":
-                    "Mission accepted"
+                "message": "Mission accepted"
             }
         )
 
     except Exception as e:
 
         print(
-            "ACCEPT ERROR:",
+            "\nACCEPT ERROR:",
             str(e)
         )
 
@@ -798,6 +858,8 @@ def accept_mission(id):
                 "error": str(e)
             }
         ), 500
+# DELETE MISSION DEBUG
+# =========================================================
 # =========================================================
 # DELETE MISSION
 # =========================================================
@@ -810,25 +872,88 @@ def delete_mission(id):
 
     try:
 
-        missions.delete_one({
+        print("\n================================")
+        print("DELETE MISSION")
+        print("================================")
 
-            "_id":
-                ObjectId(id)
-        })
+        print("DATABASE:", db.name)
+        print("COLLECTION:", missions.name)
 
-        return jsonify({
-            "message":
-                "Mission deleted"
-        })
+        print("MISSION ID:", id)
+
+        # =====================================
+        # FIND MISSION
+        # =====================================
+        mission = missions.find_one(
+            {
+                "_id": ObjectId(id)
+            }
+        )
+
+        if not mission:
+
+            return jsonify({
+                "error": "Mission not found"
+            }), 404
+
+        print(
+            "\nMISSION BEFORE DELETE:"
+        )
+
+        print(mission)
+
+        return jsonify(
+    {
+        "message": "Mission accepted"
+    }
+)
+
+        # =====================================
+        # DELETE
+        # =====================================
+        result = missions.delete_one(
+            {
+                "_id": ObjectId(id)
+            }
+        )
+
+        print(
+            "\nDELETED:",
+            result.deleted_count
+        )
+
+        mission_after = missions.find_one(
+            {
+                "_id": ObjectId(id)
+            }
+        )
+
+        print(
+            "\nMISSION AFTER DELETE:"
+        )
+
+        print(mission_after)
+
+        print("\n================================")
+
+        return jsonify(
+            {
+                "message": "Mission deleted"
+            }
+        )
 
     except Exception as e:
 
-        return jsonify({
-            "error": str(e)
-        }), 500
+        print(
+            "\nDELETE ERROR:",
+            str(e)
+        )
 
-
-
+        return jsonify(
+            {
+                "error": str(e)
+            }
+        ), 500
 # =========================================================
 # START SERVER
 # =========================================================

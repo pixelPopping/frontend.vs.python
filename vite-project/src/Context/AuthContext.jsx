@@ -1,25 +1,46 @@
-import { createContext, useState, useEffect } from "react";
+import {
+  createContext,
+  useState,
+  useEffect,
+} from "react";
+
 import axios from "axios";
 
-export const AuthContext = createContext();
+export const AuthContext =
+  createContext();
 
-const API = "http://localhost:5000";
+const API =
+  "http://localhost:5000";
 
-export default function AuthContextProvider({ children }) {
-  const [isAuth, setIsAuth] = useState(false);
+export default function AuthContextProvider({
+  children,
+}) {
+  const [isAuth, setIsAuth] =
+    useState(false);
 
-  const [user, setUser] = useState(null);
+  const [user, setUser] =
+    useState(null);
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] =
+    useState(true);
 
-  // ---------------- CHECK AUTH ----------------
+  // =================================================
+  // CHECK AUTH
+  // =================================================
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token =
+      localStorage.getItem("token");
 
-    console.log("TOKEN:", token);
+    console.log(
+      "TOKEN:",
+      token
+    );
 
-    // Geen token aanwezig
     if (!token) {
+      console.log(
+        "NO TOKEN FOUND"
+      );
+
       setLoading(false);
 
       return;
@@ -32,19 +53,44 @@ export default function AuthContextProvider({ children }) {
         },
       })
       .then((res) => {
-        console.log("AUTH SUCCESS:", res.data);
+        console.log(
+          "AUTH SUCCESS:"
+        );
+
+        console.log(
+          res.data
+        );
+
+        console.log(
+          "FIRSTNAME:",
+          res.data.firstname
+        );
+
+        console.log(
+          "LASTNAME:",
+          res.data.lastname
+        );
+
+        console.log(
+          "ROLE:",
+          res.data.role
+        );
 
         setUser(res.data);
 
         setIsAuth(true);
       })
       .catch((err) => {
-        console.error("AUTH ERROR:", err.response?.data || err);
+        console.error(
+          "AUTH ERROR:",
+          err.response?.data ||
+            err
+        );
 
-        // Verwijder slechte token
-        localStorage.removeItem("token");
+        localStorage.removeItem(
+          "token"
+        );
 
-        // Reset auth state
         setUser(null);
 
         setIsAuth(false);
@@ -54,34 +100,74 @@ export default function AuthContextProvider({ children }) {
       });
   }, []);
 
-  // ---------------- LOGIN ----------------
-  function login(userData, token) {
-    console.log("LOGIN TOKEN:", token);
+  // =================================================
+  // LOGIN
+  // =================================================
+  function login(
+    userData,
+    token
+  ) {
+    console.log(
+      "LOGIN CALLED"
+    );
 
-    localStorage.setItem("token", token);
+    console.log(
+      "LOGIN USER DATA:"
+    );
+
+    console.log(userData);
+
+    console.log(
+      "LOGIN TOKEN:",
+      token
+    );
+
+    localStorage.setItem(
+      "token",
+      token
+    );
 
     setUser(userData);
 
     setIsAuth(true);
   }
 
-  // ---------------- LOGOUT ----------------
+  // =================================================
+  // LOGOUT
+  // =================================================
   function logout() {
     console.log("LOGOUT");
 
-    localStorage.removeItem("token");
+    localStorage.removeItem(
+      "token"
+    );
 
     setUser(null);
 
     setIsAuth(false);
   }
 
-  // ---------------- LOADING ----------------
+  // =================================================
+  // GLOBAL DEBUG
+  // =================================================
+  console.log(
+    "AUTH CONTEXT USER:"
+  );
+
+  console.log(user);
+
+  // =================================================
+  // LOADING
+  // =================================================
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div>Loading...</div>
+    );
   }
 
-  // ---------------- PROVIDER ----------------
+  // =================================================
+  // PROVIDER
+  // =================================================
   return (
     <AuthContext.Provider
       value={{

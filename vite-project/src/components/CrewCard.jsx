@@ -1,9 +1,12 @@
 import "./CrewCard.css";
 import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 
 function CrewCard({ mission, onAccept }) {
   const { user } = useContext(AuthContext);
+
+  const navigate = useNavigate();
 
   // =================================================
   // SAFETY
@@ -37,33 +40,83 @@ function CrewCard({ mission, onAccept }) {
   // DATA
   // =================================================
   const title =
-    mission.title || `Mission ${mission._id?.slice(-4)}` || "Untitled Mission";
+    mission.title ||
+    `Mission ${mission._id?.slice(-4)}` ||
+    "Untitled Mission";
 
-  const description = mission.description || "No mission briefing available.";
+  const description =
+    mission.description ||
+    "No mission briefing available.";
 
-  const captain = mission.captain || "Unknown";
+  const captain =
+    mission.captain || "Unknown";
 
-  const crewList = Array.isArray(mission.crew) ? mission.crew : [];
+  const crewList = Array.isArray(
+    mission.crew
+  )
+    ? mission.crew
+    : [];
 
-  const myCrewMember = crewList.find(
-    (member) => member.name === user?.firstname,
+  const myCrewMember =
+    crewList.find(
+      (member) =>
+        member.name ===
+        user?.firstname
+    );
+
+  const hasAccepted =
+    myCrewMember?.accepted || false;
+
+  // =================================================
+  // DEBUG
+  // =================================================
+  console.log(
+    "================================"
   );
 
-  const hasAccepted = myCrewMember?.accepted || false;
+  console.log("FULL USER:", user);
 
-  const rocket = mission.rocket || "Unknown";
+  console.log(
+    "CREW LIST:",
+    crewList
+  );
 
-  const ship = mission.ship || "Unknown";
+  console.log(
+    "MY CREW MEMBER:",
+    myCrewMember
+  );
 
-  const launchPad = mission.launchPad || "Unknown";
+  console.log(
+    "HAS ACCEPTED:",
+    hasAccepted
+  );
 
-  const landingPad = mission.landingPad || "Unknown";
+  console.log(
+    "================================"
+  );
 
-  const destination = mission.city || "Unknown";
+  const rocket =
+    mission.rocket || "Unknown";
 
-  const launchDate = formatDate(mission.launchDate);
+  const ship =
+    mission.ship || "Unknown";
 
-  const returnDate = formatDate(mission.returnDate);
+  const launchPad =
+    mission.launchPad || "Unknown";
+
+  const landingPad =
+    mission.landingPad || "Unknown";
+
+  const destination =
+    mission.city || "Unknown";
+
+  const launchDate = formatDate(
+    mission.launchDate
+  );
+
+  const returnDate = formatDate(
+    mission.returnDate
+  );
 
   // =================================================
   // RENDER
@@ -75,52 +128,73 @@ function CrewCard({ mission, onAccept }) {
           <h3>{title}</h3>
         </div>
 
-        <p className="crew-text">{description}</p>
-
         <p className="crew-text">
-          <strong>Launch Date:</strong> {launchDate}
+          {description}
         </p>
 
         <p className="crew-text">
-          <strong>Return Date:</strong> {returnDate}
+          <strong>Launch Date:</strong>{" "}
+          {launchDate}
         </p>
 
         <p className="crew-text">
-          <strong>Captain:</strong> {captain}
+          <strong>Return Date:</strong>{" "}
+          {returnDate}
+        </p>
+
+        <p className="crew-text">
+          <strong>Captain:</strong>{" "}
+          {captain}
         </p>
 
         <p className="crew-text">
           <strong>Crew:</strong>{" "}
           {crewList.length > 0
-            ? crewList.map((member) => member.name).join(" & ")
+            ? crewList
+                .map(
+                  (member) =>
+                    member.name
+                )
+                .join(" & ")
             : "No crew assigned"}
         </p>
 
         <p className="crew-text">
-          <strong>Rocket:</strong> {rocket}
+          <strong>Rocket:</strong>{" "}
+          {rocket}
         </p>
 
         <p className="crew-text">
-          <strong>Ship:</strong> {ship}
+          <strong>Ship:</strong>{" "}
+          {ship}
         </p>
 
         <p className="crew-text">
-          <strong>Launch Pad:</strong> {launchPad}
+          <strong>Launch Pad:</strong>{" "}
+          {launchPad}
         </p>
 
         <p className="crew-text">
-          <strong>Landing Pad:</strong> {landingPad}
+          <strong>Landing Pad:</strong>{" "}
+          {landingPad}
         </p>
 
         <p className="crew-text">
-          <strong>Destination:</strong> {destination}
+          <strong>Destination:</strong>{" "}
+          {destination}
         </p>
 
         {/* ================================================= */}
         {/* ACCEPT BUTTON */}
         {/* ================================================= */}
         {!hasAccepted && (
-          <button onClick={() => onAccept?.(mission._id)}>
+          <button
+            onClick={() =>
+              onAccept?.(
+                mission._id
+              )
+            }
+          >
             Accept Mission 🚀
           </button>
         )}
@@ -128,7 +202,27 @@ function CrewCard({ mission, onAccept }) {
         {/* ================================================= */}
         {/* ACCEPTED */}
         {/* ================================================= */}
-        {hasAccepted && <p>🚀 You accepted this mission</p>}
+        {hasAccepted && (
+          <>
+            <p>
+              🚀 You accepted this
+              mission
+            </p>
+
+            <button
+              onClick={() => {
+                localStorage.setItem(
+                  "activeMissionId",
+                  mission._id
+                );
+
+                navigate("/contact");
+              }}
+            >
+              Mission Control 🚀
+            </button>
+          </>
+        )}
       </article>
     </section>
   );
