@@ -1,71 +1,136 @@
 import { createContext, useEffect, useState } from "react";
 
-import { getMissions, createMission, deleteMission } from "../api/missions";
+import {
+  getMissions,
+  createMission,
+  deleteMission,
+} from "../api/missions";
 
 import { getUsers } from "../api/users";
 
 import { getMissionOptions } from "../api/missionOptions";
 
-export const CaptainContext = createContext(null);
+export const CaptainContext =
+  createContext(null);
 
-function CaptainContextProvider({ children }) {
-  // =================================================
-  // STATE
-  // =================================================
-  const [missions, setMissions] = useState([]);
+function CaptainContextProvider({
+  children,
+}) {
+  const [missions, setMissions] =
+    useState([]);
 
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] =
+    useState([]);
 
-  const [options, setOptions] = useState({});
+  const [options, setOptions] =
+    useState({});
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] =
+    useState(false);
 
-  const [isSuccess, setIsSuccess] = useState(false);
+  const [isSuccess, setIsSuccess] =
+    useState(false);
 
-  const [error, setError] = useState(null);
+  const [error, setError] =
+    useState(null);
 
-  // =================================================
-  // INIT
-  // =================================================
   useEffect(() => {
     initializeDashboard();
   }, []);
 
-  // =================================================
-  // INITIALIZE
-  // =================================================
   async function initializeDashboard() {
     try {
       setLoading(true);
 
       setError(null);
 
-      const [missionsData, usersData, optionsData] = await Promise.all([
+      console.log(
+        "================================"
+      );
+
+      console.log(
+        "LOADING DASHBOARD"
+      );
+
+      const [
+        missionsData,
+        usersData,
+        optionsData,
+      ] = await Promise.all([
         getMissions(),
-
         getUsers(),
-
         getMissionOptions(),
       ]);
 
-      setMissions(missionsData || []);
+      console.log(
+        "MISSIONS DATA:"
+      );
 
-      setUsers(usersData || []);
+      console.log(
+        missionsData
+      );
 
-      setOptions(optionsData || {});
+      console.log(
+        "USERS DATA:"
+      );
+
+      console.log(
+        usersData
+      );
+
+      console.log(
+        "MISSION OPTIONS DATA:"
+      );
+
+      console.log(
+        optionsData
+      );
+
+      setMissions(
+        missionsData || []
+      );
+
+      setUsers(
+        usersData || []
+      );
+
+      setOptions(
+        optionsData || {}
+      );
+
+      console.log(
+        "OPTIONS SAVED"
+      );
+
+      console.log(
+        optionsData
+      );
+
+      console.log(
+        "================================"
+      );
     } catch (error) {
-      console.error("DASHBOARD ERROR:", error);
+      console.error(
+        "DASHBOARD ERROR:"
+      );
 
-      setError(error.message);
+      console.error(error);
+
+      console.error(
+        error?.response?.data
+      );
+
+      setError(
+        error.message
+      );
     } finally {
       setLoading(false);
     }
   }
 
-  // =================================================
-  // CREATE MISSION
-  // =================================================
-  async function handleCreateMission(missionData) {
+  async function handleCreateMission(
+    missionData
+  ) {
     try {
       setLoading(true);
 
@@ -73,63 +138,93 @@ function CaptainContextProvider({ children }) {
 
       setIsSuccess(false);
 
-      await createMission(missionData);
+      console.log(
+        "MISSION PAYLOAD:"
+      );
 
-      const updatedMissions = await getMissions();
+      console.log(
+        missionData
+      );
 
-      setMissions(updatedMissions);
+      await createMission(
+        missionData
+      );
+
+      const updatedMissions =
+        await getMissions();
+
+      setMissions(
+        updatedMissions
+      );
 
       setIsSuccess(true);
     } catch (error) {
-      console.error("CREATE MISSION ERROR:", error);
+      console.error(
+        "CREATE ERROR:"
+      );
 
-      setError(error.message);
+      console.error(error);
+
+      console.error(
+        error?.response?.data
+      );
+
+      setError(
+        error.message
+      );
     } finally {
       setLoading(false);
     }
   }
 
-  // =================================================
-  // DELETE MISSION
-  // =================================================
-  async function handleDeleteMission(id) {
+  async function handleDeleteMission(
+    id
+  ) {
     try {
       setLoading(true);
 
+      console.log(
+        "DELETE ID:",
+        id
+      );
+
       await deleteMission(id);
 
-      const updatedMissions = await getMissions();
+      const updatedMissions =
+        await getMissions();
 
-      setMissions(updatedMissions);
+      setMissions(
+        updatedMissions
+      );
     } catch (error) {
-      console.error("DELETE ERROR:", error);
+      console.error(
+        "DELETE ERROR:"
+      );
 
-      setError(error.message);
+      console.error(error);
+
+      console.error(
+        error?.response?.data
+      );
+
+      setError(
+        error.message
+      );
     } finally {
       setLoading(false);
     }
   }
 
-  // =================================================
-  // PROVIDER
-  // =================================================
   return (
     <CaptainContext.Provider
       value={{
         missions,
-
         users,
-
         options,
-
         loading,
-
         error,
-
         isSuccess,
-
         handleCreateMission,
-
         handleDeleteMission,
       }}
     >

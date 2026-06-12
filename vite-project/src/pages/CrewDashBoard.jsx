@@ -1,6 +1,7 @@
 import { useContext, useEffect } from "react";
 import CrewCard from "../components/CrewCard";
 import { CrewContext } from "../context/CrewContext";
+import styles from './CrewDashBoard.module.css';
 
 function CrewDashboard() {
   const {
@@ -19,12 +20,11 @@ function CrewDashboard() {
         <h1>Crew Dashboard</h1>
       </header>
 
-      <main className="crew-dashboard">
+      <main className={styles.crewDashBoard}>
         {(!missions || missions.length === 0) && (
           <p>No missions available 🚀</p>
         )}
-
-        <section className="crew-card-container">
+        <section className={styles.crewCardContainer}>
           {Array.isArray(missions) &&
             missions
               .filter(Boolean)
@@ -38,6 +38,9 @@ function CrewDashboard() {
               ))}
         </section>
       </main>
+      <footer>
+        <p>PixelPopping@Productions</p>
+      </footer>
     </>
   );
 }

@@ -3,7 +3,7 @@
   flex-direction: column;
   border: solid black 4px;
   width: 100%;
-  max-width: 800px;
+  max-width: 400px;
   justify-content: space-between;
   height: fit-content;
 }
@@ -13,9 +13,13 @@
   flex-direction: column;
 }
 
+.titel-header{
+  text-align: center;
+  padding: 40px;
+}
+
 .crew-text {
   white-space: pre-line;
-  line-height: 1.8;
   text-align: start;
-  padding: 20px;
+  padding: 15px;
 }

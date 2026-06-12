@@ -1,6 +1,10 @@
 import { useForm } from "react-hook-form";
 
-function LoginFields({ onSubmit, loading, errorMessage }) {
+function LoginFields({
+  onSubmit,
+  loading,
+  errorMessage,
+}) {
   const {
     handleSubmit,
     register,
@@ -10,14 +14,16 @@ function LoginFields({ onSubmit, loading, errorMessage }) {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <label>
-        Email
+        Username
         <input
-          type="email"
-          {...register("email", {
-            required: "Email required",
+          type="text"
+          {...register("username", {
+            required: "Username required",
           })}
         />
-        {errors.email && <p>{errors.email.message}</p>}
+        {errors.username && (
+          <p>{errors.username.message}</p>
+        )}
       </label>
 
       <label>
@@ -28,14 +34,34 @@ function LoginFields({ onSubmit, loading, errorMessage }) {
             required: "Password required",
           })}
         />
-        {errors.password && <p>{errors.password.message}</p>}
+        {errors.password && (
+          <p>{errors.password.message}</p>
+        )}
       </label>
 
-      <button type="submit" disabled={loading}>
+      <label>
+        Invite Code
+        <input
+          type="text"
+          {...register("inviteCode", {
+            required: "Invite code required",
+          })}
+        />
+        {errors.inviteCode && (
+          <p>{errors.inviteCode.message}</p>
+        )}
+      </label>
+
+      <button
+        type="submit"
+        disabled={loading}
+      >
         {loading ? "Loading..." : "Login"}
       </button>
 
-      {errorMessage && <p>{errorMessage}</p>}
+      {errorMessage && (
+        <p>{errorMessage}</p>
+      )}
     </form>
   );
 }

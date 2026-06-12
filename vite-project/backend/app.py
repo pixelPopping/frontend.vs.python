@@ -160,50 +160,35 @@ def register():
         data = request.get_json()
 
         existing_user = users.find_one({
-
-            "email":
-                data["email"]
+            "username":
+                data["username"]
         })
 
         if existing_user:
 
             return jsonify({
                 "error":
-                    "Email already exists"
+                    "Username already exists"
             }), 400
 
         role = (
-
             "captain"
-
-            if data.get("inviteCode")
+            if data["inviteCode"]
             == "CAPTAIN123"
-
             else "crew"
         )
 
         new_user = {
-
-            "firstname":
-                data["firstname"],
-
-            "lastname":
-                data["lastname"],
-
-            "city":
-                data["city"],
-
-            "phone":
-                data["phone"],
-
-            "email":
-                data["email"],
+            "username":
+                data["username"],
 
             "password":
-
                 generate_password_hash(
                     data["password"]
                 ),
+
+            "inviteCode":
+                data["inviteCode"],
 
             "role":
                 role,
@@ -212,7 +197,9 @@ def register():
                 datetime.now(UTC),
         }
 
-        users.insert_one(new_user)
+        users.insert_one(
+            new_user
+        )
 
         return jsonify({
             "message":
@@ -222,7 +209,8 @@ def register():
     except Exception as e:
 
         return jsonify({
-            "error": str(e)
+            "error":
+                str(e)
         }), 500
 
 # =========================================================
@@ -239,9 +227,8 @@ def login():
         data = request.get_json()
 
         user = users.find_one({
-
-            "email":
-                data["email"]
+            "username":
+                data["username"]
         })
 
         if not user:
@@ -251,12 +238,18 @@ def login():
                     "User not found"
             }), 401
 
+        if (
+            user["inviteCode"]
+            != data["inviteCode"]
+        ):
+            return jsonify({
+                "error":
+                    "Invalid invite code"
+            }), 401
+
         password_correct = (
-
             check_password_hash(
-
                 user["password"],
-
                 data["password"]
             )
         )
@@ -269,9 +262,7 @@ def login():
             }), 401
 
         token = jwt.encode(
-
             {
-
                 "userId":
                     str(user["_id"]),
 
@@ -279,9 +270,7 @@ def login():
                     user["role"],
 
                 "exp":
-
                     datetime.now(UTC)
-
                     + timedelta(hours=4),
             },
 
@@ -291,20 +280,15 @@ def login():
         )
 
         return jsonify({
-
             "token":
                 token,
 
             "user": {
-
                 "id":
                     str(user["_id"]),
 
-                "firstname":
-                    user["firstname"],
-
-                "lastname":
-                    user["lastname"],
+                "username":
+                    user["username"],
 
                 "role":
                     user["role"],
@@ -314,7 +298,8 @@ def login():
     except Exception as e:
 
         return jsonify({
-            "error": str(e)
+            "error":
+                str(e)
         }), 500
 
 # =========================================================
@@ -330,27 +315,20 @@ def me():
     try:
 
         user = users.find_one({
-
-            "_id":
-
-                ObjectId(
-                    request.user["userId"]
-                )
+            "_id": ObjectId(
+                request.user["userId"]
+            )
         })
 
+        if not user:
+            return jsonify({
+                "error": "User not found"
+            }), 404
+
         return jsonify({
-
-            "id":
-                str(user["_id"]),
-
-            "firstname":
-                user["firstname"],
-
-            "lastname":
-                user["lastname"],
-
-            "role":
-                user["role"],
+            "id": str(user["_id"]),
+            "username": user["username"],
+            "role": user["role"],
         })
 
     except Exception as e:
@@ -378,18 +356,15 @@ def get_users():
         formatted_users = [
 
             {
-
-                "id":
-                    str(user["_id"]),
-
-                "firstname":
-                    user["firstname"],
-
-                "lastname":
-                    user["lastname"],
-
+                "id": str(user["_id"]),
+                "username":
+                    user.get(
+                        "username"
+                    ),
                 "role":
-                    user["role"],
+                    user.get(
+                        "role"
+                    ),
             }
 
             for user in all_users
@@ -404,7 +379,6 @@ def get_users():
         return jsonify({
             "error": str(e)
         }), 500
-
 # =========================================================
 # SPACEX OPTIONS
 # =========================================================
@@ -414,120 +388,139 @@ def get_users():
 )
 def mission_options():
 
+    fallback = {
+
+        "rockets": [
+            {
+                "id": "falcon9",
+                "name": "Falcon 9"
+            },
+            {
+                "id": "falconheavy",
+                "name": "Falcon Heavy"
+            },
+            {
+                "id": "dragon",
+                "name": "Dragon"
+            }
+        ],
+
+        "ships": [
+            {
+                "id": "jrti",
+                "name": "Just Read The Instructions"
+            },
+            {
+                "id": "ocisly",
+                "name": "Of Course I Still Love You"
+            }
+        ],
+
+        "launchpads": [
+            {
+                "id": "lc39a",
+                "name": "Launch Complex 39A"
+            },
+            {
+                "id": "slc40",
+                "name": "SLC-40"
+            },
+            {
+                "id": "slc4e",
+                "name": "SLC-4E"
+            },
+            {
+                "id": "starbase",
+                "name": "Starbase"
+            }
+        ],
+
+        "landpads": [
+            {
+                "id": "lz1",
+                "name": "Landing Zone 1"
+            },
+            {
+                "id": "lz2",
+                "name": "Landing Zone 2"
+            },
+            {
+                "id": "lz4",
+                "name": "Landing Zone 4"
+            }
+        ]
+    }
+
     try:
 
-        rockets_response = requests.get(
-            "https://api.spacexdata.com/v4/rockets"
-        )
+        rockets = requests.get(
+            "https://api.spacexdata.com/v4/rockets",
+            timeout=15
+        ).json()
 
-        dragons_response = requests.get(
-            "https://api.spacexdata.com/v4/dragons"
-        )
+        dragons = requests.get(
+            "https://api.spacexdata.com/v4/dragons",
+            timeout=15
+        ).json()
 
-        ships_response = requests.get(
-            "https://api.spacexdata.com/v4/ships"
-        )
+        ships = requests.get(
+            "https://api.spacexdata.com/v4/ships",
+            timeout=15
+        ).json()
 
-        launchpads_response = requests.get(
-            "https://api.spacexdata.com/v4/launchpads"
-        )
+        launchpads = requests.get(
+            "https://api.spacexdata.com/v4/launchpads",
+            timeout=15
+        ).json()
 
-        landpads_response = requests.get(
-            "https://api.spacexdata.com/v4/landpads"
-        )
-
-        rockets = rockets_response.json()
-
-        dragons = dragons_response.json()
-
-        ships = ships_response.json()
-
-        launchpads = (
-            launchpads_response.json()
-        )
-
-        landpads = (
-            landpads_response.json()
-        )
-
-        formatted_rockets = [
-
-            {
-                "id": rocket["id"],
-                "name": rocket["name"],
-            }
-
-            for rocket in rockets
-        ]
-
-        formatted_dragons = [
-
-            {
-                "id": dragon["id"],
-                "name": dragon["name"],
-            }
-
-            for dragon in dragons
-        ]
-
-        formatted_ships = [
-
-            {
-                "id": ship["id"],
-                "name": ship["name"],
-            }
-
-            for ship in ships
-        ]
-
-        formatted_launchpads = [
-
-            {
-                "id": pad["id"],
-                "name": pad["name"],
-            }
-
-            for pad in launchpads
-        ]
-
-        formatted_landpads = [
-
-            {
-                "id": pad["id"],
-                "name": pad["name"],
-            }
-
-            for pad in landpads
-        ]
+        landpads = requests.get(
+            "https://api.spacexdata.com/v4/landpads",
+            timeout=15
+        ).json()
 
         return jsonify({
 
-            "rockets":
-                formatted_rockets +
+            "rockets": [
+                {
+                    "id": x["id"],
+                    "name": x["name"]
+                }
+                for x in rockets + dragons
+            ],
 
-                formatted_dragons,
+            "ships": [
+                {
+                    "id": x["id"],
+                    "name": x["name"]
+                }
+                for x in ships
+            ],
 
-            "ships":
-                formatted_ships,
+            "launchpads": [
+                {
+                    "id": x["id"],
+                    "name": x["name"]
+                }
+                for x in launchpads
+            ],
 
-            "launchpads":
-                formatted_launchpads,
-
-            "landpads":
-                formatted_landpads,
+            "landpads": [
+                {
+                    "id": x["id"],
+                    "name": x["name"]
+                }
+                for x in landpads
+            ]
         })
 
     except Exception as e:
 
         print(
-            "MISSION OPTIONS ERROR:",
-            e
+            "SPACEX OFFLINE:",
+            str(e)
         )
 
-        return jsonify({
-            "error": str(e)
-        }), 500
-
+        return jsonify(fallback)
 # =========================================================
 # CREATE MISSION
 # =========================================================
@@ -541,6 +534,21 @@ def create_mission():
     try:
 
         data = request.get_json()
+
+        current_user = users.find_one(
+            {
+                "_id": ObjectId(
+                    request.user["userId"]
+                )
+            }
+        )
+
+        if not current_user:
+
+            return jsonify({
+                "error":
+                    "User not found"
+            }), 404
 
         mission = {
 
@@ -569,7 +577,7 @@ def create_mission():
                 data.get("landingPad"),
 
             "captain":
-                data.get("captain"),
+                current_user["username"],
 
             "crew":
                 data.get("crew", []),
@@ -591,15 +599,17 @@ def create_mission():
                 "Mission created",
 
             "id":
-                str(result.inserted_id),
+                str(
+                    result.inserted_id
+                ),
         })
 
     except Exception as e:
 
         return jsonify({
-            "error": str(e)
+            "error":
+                str(e)
         }), 500
-
 # =========================================================
 # GET MISSIONS
 # =========================================================
@@ -733,11 +743,11 @@ def accept_mission(id):
                 "error": "User not found"
             }), 404
 
-        firstname = user["firstname"]
+        username = user["username"]
 
         print(
-            "\nFIRSTNAME:",
-            firstname
+            "\nUsername:",
+            username
         )
 
         # =====================================
@@ -766,7 +776,7 @@ def accept_mission(id):
         result = missions.update_one(
             {
                 "_id": ObjectId(id),
-                "crew.name": firstname
+                "crew.name": username
             },
             {
                 "$set": {

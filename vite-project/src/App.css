@@ -20,22 +20,4 @@ body {
   flex-direction: column;
 }
 
-h1 {
-  position: relative;
 
-  z-index: 1;
-
-  font-family: "Unbounded", sans-serif;
-
-  font-weight: 700;
-
-  font-size: 120px;
-
-  color: white;
-
-  -webkit-text-stroke: 4px #0b3d91;
-
-  text-align: center;
-
-  margin-top: 120px;
-}

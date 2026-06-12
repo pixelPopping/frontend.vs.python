@@ -1,6 +1,10 @@
 import { useForm } from "react-hook-form";
 
-function RegisterFields({ onSubmit, loading, errorMessage }) {
+function RegisterFields({
+  onSubmit,
+  loading,
+  errorMessage,
+}) {
   const {
     handleSubmit,
     register,
@@ -9,43 +13,58 @@ function RegisterFields({ onSubmit, loading, errorMessage }) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <input
-        placeholder="Firstname"
-        {...register("firstname", { required: true })}
-      />
-      {errors.firstname && <p>Required</p>}
+      <label>
+        Username
+        <input
+          type="text"
+          {...register("username", {
+            required: "Username required",
+          })}
+        />
+        {errors.username && (
+          <p>{errors.username.message}</p>
+        )}
+      </label>
 
-      <input
-        placeholder="Lastname"
-        {...register("lastname", { required: true })}
-      />
-      {errors.lastname && <p>Required</p>}
+      <label>
+        Password
+        <input
+          type="password"
+          {...register("password", {
+            required: "Password required",
+            minLength: 8,
+          })}
+        />
+        {errors.password && (
+          <p>Minimum 8 characters</p>
+        )}
+      </label>
 
-      <input placeholder="City" {...register("city", { required: true })} />
-      {errors.city && <p>Required</p>}
+      <label>
+        Invite Code
+        <input
+          type="text"
+          {...register("inviteCode", {
+            required: "Invite code required",
+          })}
+        />
+        {errors.inviteCode && (
+          <p>{errors.inviteCode.message}</p>
+        )}
+      </label>
 
-      <input placeholder="Phone" {...register("phone", { required: true })} />
-      {errors.phone && <p>Required</p>}
+      <button
+        type="submit"
+        disabled={loading}
+      >
+        {loading
+          ? "Loading..."
+          : "Register"}
+      </button>
 
-      <input placeholder="Email" {...register("email", { required: true })} />
-      {errors.email && <p>Required</p>}
-
-      <input
-        type="password"
-        placeholder="Password"
-        {...register("password", { required: true, minLength: 8 })}
-      />
-      {errors.password && <p>Min 8 chars</p>}
-
-      <input
-        placeholder="Invite Code"
-        {...register("inviteCode", { required: true })}
-      />
-      {errors.inviteCode && <p>Required</p>}
-
-      <button disabled={loading}>{loading ? "Loading..." : "Login"}</button>
-
-      {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
+      {errorMessage && (
+        <p>{errorMessage}</p>
+      )}
     </form>
   );
 }

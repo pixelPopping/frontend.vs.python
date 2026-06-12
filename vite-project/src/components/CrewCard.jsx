@@ -125,7 +125,7 @@ function CrewCard({ mission, onAccept }) {
     <section className="crewCard">
       <article className="crew-card-detail">
         <div className="card-header">
-          <h3>{title}</h3>
+          <h3 className="titel-header">{title}</h3>
         </div>
 
         <p className="crew-text">
