@@ -1,4 +1,5 @@
 import { useForm } from "react-hook-form";
+import styles from "./RegisterFields.module.css";
 
 function RegisterFields({
   onSubmit,
@@ -12,8 +13,11 @@ function RegisterFields({
   } = useForm();
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <label>
+    <main className={styles.outerRegisterContainer}>
+      <section className={styles.innerRegisterContainer}>
+        <article className={styles.formContainer}>
+    <form className={styles.registerFields}onSubmit={handleSubmit(onSubmit)}>
+      <label className={styles.label}>
         Username
         <input
           type="text"
@@ -26,7 +30,7 @@ function RegisterFields({
         )}
       </label>
 
-      <label>
+      <label className={styles.label}>
         Password
         <input
           type="password"
@@ -40,7 +44,7 @@ function RegisterFields({
         )}
       </label>
 
-      <label>
+      <label className={styles.label}>
         Invite Code
         <input
           type="text"
@@ -52,8 +56,9 @@ function RegisterFields({
           <p>{errors.inviteCode.message}</p>
         )}
       </label>
-
-      <button
+      <section className={styles.outerButton}>
+      <div className={styles.buttonContainer}>
+      <button  className={styles.registerButton}
         type="submit"
         disabled={loading}
       >
@@ -61,11 +66,16 @@ function RegisterFields({
           ? "Loading..."
           : "Register"}
       </button>
+      </div>
+      </section>
 
       {errorMessage && (
         <p>{errorMessage}</p>
       )}
     </form>
+    </article>
+    </section>
+    </main>
   );
 }
 

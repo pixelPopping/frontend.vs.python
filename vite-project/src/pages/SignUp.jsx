@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import RegisterFields from "../components/RegisterFields";
+import styles from "./SignUp.module.css";
 
 const API = "http://localhost:5000";
 
@@ -41,15 +42,23 @@ function SignUp() {
   }
 
   return (
-    <main>
-      <h1>Register</h1>
-
+    <>
+    <header>
+       <h1>Register</h1>
+    </header>
+    <main className={styles.registerContainer}>
+      <section className={styles.innerRegisterContainer}>
       <RegisterFields
         onSubmit={handleSubmit}
         loading={loading}
         errorMessage={errorMessage}
       />
+      </section>
     </main>
+    <footer>
+      <p>Pixelpopping@Productions</p>
+    </footer>
+    </>
   );
 }
 

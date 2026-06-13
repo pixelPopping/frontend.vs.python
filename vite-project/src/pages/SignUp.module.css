@@ -1,0 +1,23 @@
+html{
+    background-color: lightblue;
+}
+
+main{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.registerConainer{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.innerRegisterConainer{
+   display: flex;
+   flex-direction: column;
+   width: 100%;
+   max-width: 800px;
+
+}

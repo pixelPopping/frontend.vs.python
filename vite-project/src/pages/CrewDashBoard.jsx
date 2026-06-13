@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react";
 import CrewCard from "../components/CrewCard";
 import { CrewContext } from "../context/CrewContext";
-import styles from './CrewDashBoard.module.css';
+import styles from "./CrewDashBoard.module.css";
 
 function CrewDashboard() {
   const {
