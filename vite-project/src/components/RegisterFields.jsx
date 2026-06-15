@@ -56,7 +56,8 @@ function RegisterFields({
           <p>{errors.inviteCode.message}</p>
         )}
       </label>
-      <section className={styles.outerButton}>
+    </form>
+     <section className={styles.outerButton}>
       <div className={styles.buttonContainer}>
       <button  className={styles.registerButton}
         type="submit"
@@ -72,7 +73,6 @@ function RegisterFields({
       {errorMessage && (
         <p>{errorMessage}</p>
       )}
-    </form>
     </article>
     </section>
     </main>

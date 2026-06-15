@@ -43,7 +43,7 @@ function SignUp() {
 
   return (
     <>
-    <header>
+     <header className={styles.header}>
        <h1>Register</h1>
     </header>
     <main className={styles.registerContainer}>
@@ -55,10 +55,12 @@ function SignUp() {
       />
       </section>
     </main>
-    <footer>
+    <div className={styles.footerContainer}>
+    <footer className={styles.footer}>
       <p>Pixelpopping@Productions</p>
     </footer>
-    </>
+    </div>
+   </>
   );
 }
 

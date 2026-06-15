@@ -2,35 +2,34 @@ html{
     background-color: lightblue;
 }
 
-main{
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-}
-
-.header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.signinheader{
+    text-align: center;
     margin-top: 100px;
 }
 
-.registerContainer {
+.signinmain{
     display: flex;
     flex-direction: column;
     width: 100%;
 }
 
-.innerRegisterContainer {
+.signsection{
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     width: 100%;
+    align-items: center;
+}
+
+.signarticle{
+   display: flex;
+   width: 100%;
+   max-width: 800px;
 }
 
 .footerContainer{
     display: flex;
     flex-direction: column;
     width: 100%;
-    border: solid black 3px;
+    border: solid black 5px;
     margin-top: 200px;
 }

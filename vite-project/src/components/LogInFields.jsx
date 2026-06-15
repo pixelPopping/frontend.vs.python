@@ -1,4 +1,5 @@
 import { useForm } from "react-hook-form";
+import styles from "./LoginFields.module.css";
 
 function LoginFields({
   onSubmit,
@@ -12,8 +13,11 @@ function LoginFields({
   } = useForm();
 
   return (
+    <main>
+      <section className={styles.outerSignin}>
+        <article className={styles.Signin}>
     <form onSubmit={handleSubmit(onSubmit)}>
-      <label>
+      <label className={styles.label}>
         Username
         <input
           type="text"
@@ -51,18 +55,22 @@ function LoginFields({
           <p>{errors.inviteCode.message}</p>
         )}
       </label>
-
-      <button
+    </form>
+     <section className={styles.outerLoginButton}>
+      <div className={styles.buttonLoginContainer}>
+      <button  className={styles.loginButton}
         type="submit"
         disabled={loading}
       >
-        {loading ? "Loading..." : "Login"}
+        {loading
+          ? "Loading..."
+          : "Login"}
       </button>
-
-      {errorMessage && (
-        <p>{errorMessage}</p>
-      )}
-    </form>
+      </div>
+      </section>
+    </article>
+    </section>
+    </main>
   );
 }
 

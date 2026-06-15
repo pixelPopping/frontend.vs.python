@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import LoginFields from "../components/LoginFields";
 import { AuthContext } from "../context/AuthContext";
+import styles from "./SignIn.module.css";
 
 const API = "http://localhost:5000";
 
@@ -68,9 +69,13 @@ function SignIn() {
   }
 
   return (
-    <main>
+    <>
+    <header className={styles.signinheader}>
       <h1>Sign In</h1>
-
+    </header>
+      <main className={styles.signinmain}>
+        <section className={styles.signsection}>
+          <article className={styles.signarticle}>
       <LoginFields
         onSubmit={handleSubmit}
         loading={loading}
@@ -78,7 +83,15 @@ function SignIn() {
           errorMessage
         }
       />
+        </article>
+      </section>
     </main>
+    <div className={styles.footerContainer}>
+    <footer className={styles.footer}>
+       <p>PixelPopping@Productions</p>
+    </footer>
+    </div>
+    </>
   );
 }
 

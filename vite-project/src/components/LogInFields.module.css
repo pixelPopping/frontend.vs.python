@@ -1,0 +1,36 @@
+
+.outerSignin{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+}
+
+.Signin{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+.outerLoginButton{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    margin-top: 100px;
+    justify-content: center;
+}
+
+
+.buttonLoginContainer{
+    display: flex;
+    flex-direction: row;
+    width: 150px;
+    align-items: center;
+}
+
+.loginButton{
+    width: 100%;
+    padding: 20px;
+    flex-shrink: 0;
+}
