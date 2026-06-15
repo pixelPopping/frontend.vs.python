@@ -13,64 +13,68 @@ function LoginFields({
   } = useForm();
 
   return (
-    <main>
-      <section className={styles.outerSignin}>
-        <article className={styles.Signin}>
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <label className={styles.label}>
-        Username
-        <input
-          type="text"
-          {...register("username", {
-            required: "Username required",
-          })}
-        />
-        {errors.username && (
-          <p>{errors.username.message}</p>
-        )}
-      </label>
+    <section className={styles.formOuter}>
+      <article className={styles.signin}>
+        <form
+          className={styles.form}
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <label className={styles.label}>
+            <span>Username</span>
+            <input
+              type="text"
+              {...register("username", {
+                required: "Username required",
+              })}
+            />
+          </label>
 
-      <label>
-        Password
-        <input
-          type="password"
-          {...register("password", {
-            required: "Password required",
-          })}
-        />
-        {errors.password && (
-          <p>{errors.password.message}</p>
-        )}
-      </label>
+          {errors.username && (
+            <p>{errors.username.message}</p>
+          )}
 
-      <label>
-        Invite Code
-        <input
-          type="text"
-          {...register("inviteCode", {
-            required: "Invite code required",
-          })}
-        />
-        {errors.inviteCode && (
-          <p>{errors.inviteCode.message}</p>
-        )}
-      </label>
-    </form>
-     <section className={styles.outerLoginButton}>
-      <div className={styles.buttonLoginContainer}>
-      <button  className={styles.loginButton}
-        type="submit"
-        disabled={loading}
-      >
-        {loading
-          ? "Loading..."
-          : "Login"}
-      </button>
-      </div>
-      </section>
-    </article>
+          <label className={styles.label}>
+            <span>Password</span>
+            <input
+              type="password"
+              {...register("password", {
+                required: "Password required",
+              })}
+            />
+          </label>
+
+          {errors.password && (
+            <p>{errors.password.message}</p>
+          )}
+
+          <label className={styles.label}>
+            <span>Invite Code</span>
+            <input
+              type="text"
+              {...register("inviteCode", {
+                required: "Invite code required",
+              })}
+            />
+          </label>
+
+          {errors.inviteCode && (
+            <p>{errors.inviteCode.message}</p>
+          )}
+
+          {errorMessage && (
+            <p>{errorMessage}</p>
+          )}
+
+          <button
+            className={styles.loginButton}
+            type="submit"
+            disabled={loading}
+          >
+            {loading ? "Loading..." : "Login"}
+          </button>
+        </form>
+      </article>
     </section>
-    </main>
   );
 }
 

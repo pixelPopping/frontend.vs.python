@@ -13,69 +13,72 @@ function RegisterFields({
   } = useForm();
 
   return (
-    <main className={styles.outerRegisterContainer}>
-      <section className={styles.innerRegisterContainer}>
-        <article className={styles.formContainer}>
-    <form className={styles.registerFields}onSubmit={handleSubmit(onSubmit)}>
-      <label className={styles.label}>
-        Username
-        <input
-          type="text"
-          {...register("username", {
-            required: "Username required",
-          })}
-        />
-        {errors.username && (
-          <p>{errors.username.message}</p>
-        )}
-      </label>
+    <section className={styles.outerRegisterContainer}>
+      <article className={styles.formContainer}>
+        <form
+          className={styles.registerFields}
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <label className={styles.label}>
+            <span>Username</span>
+            <input
+              type="text"
+              {...register("username", {
+                required: "Username required",
+              })}
+            />
+          </label>
 
-      <label className={styles.label}>
-        Password
-        <input
-          type="password"
-          {...register("password", {
-            required: "Password required",
-            minLength: 8,
-          })}
-        />
-        {errors.password && (
-          <p>Minimum 8 characters</p>
-        )}
-      </label>
+          {errors.username && (
+            <p>{errors.username.message}</p>
+          )}
 
-      <label className={styles.label}>
-        Invite Code
-        <input
-          type="text"
-          {...register("inviteCode", {
-            required: "Invite code required",
-          })}
-        />
-        {errors.inviteCode && (
-          <p>{errors.inviteCode.message}</p>
-        )}
-      </label>
-    </form>
-     <section className={styles.outerButton}>
-      <div className={styles.buttonContainer}>
-      <button  className={styles.registerButton}
-        type="submit"
-        disabled={loading}
-      >
-        {loading
-          ? "Loading..."
-          : "Register"}
-      </button>
-      </div>
-      </section>
+          <label className={styles.label}>
+            <span>Password</span>
+            <input
+              type="password"
+              {...register("password", {
+                required: "Password required",
+                minLength: {
+                  value: 8,
+                  message: "Minimum 8 characters",
+                },
+              })}
+            />
+          </label>
 
-      {errorMessage && (
-        <p>{errorMessage}</p>
-      )}
-    </article>
+          {errors.password && (
+            <p>{errors.password.message}</p>
+          )}
+
+          <label className={styles.label}>
+            <span>Invite Code</span>
+            <input
+              type="text"
+              {...register("inviteCode", {
+                required: "Invite code required",
+              })}
+            />
+          </label>
+
+          {errors.inviteCode && (
+            <p>{errors.inviteCode.message}</p>
+          )}
+
+          {errorMessage && (
+            <p>{errorMessage}</p>
+          )}
+
+          <button
+            className={styles.registerButton}
+            type="submit"
+            disabled={loading}
+          >
+            {loading ? "Loading..." : "Register"}
+          </button>
+        </form>
+      </article>
     </section>
-    </main>
   );
 }
 
