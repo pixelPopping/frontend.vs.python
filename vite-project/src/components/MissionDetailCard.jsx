@@ -1,6 +1,6 @@
 import getStrategyFromCity from "../Helpers/getStrategyFromCity";
 
-import "./MissionDetailCard.css";
+import styles from"./MissionDetailCard.module.css";
 
 function MissionDetailCard({
   mission,
@@ -13,7 +13,7 @@ function MissionDetailCard({
 }) {
   if (!mission) {
     return (
-      <article className="mission-card">
+      <article className={styles.missionCard}>
         <p>Loading mission...</p>
       </article>
     );
@@ -43,10 +43,10 @@ function MissionDetailCard({
 
   return (
     <section>
-      <article className="mission-card">
+      <article className={styles.missionCard}>
         <h3>Mission {index + 1}</h3>
 
-        <div className="card-text">
+        <div className={styles.cardText}>
           <p>
             <strong>Status:</strong> {status}
           </p>

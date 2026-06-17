@@ -1,15 +1,7 @@
-.formOuter {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-}
-
-.signin {
-    width: 100%;
-    max-width: 1000px;
-}
+@import url("https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap");
 
 .form {
+    width: 800px;
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -26,14 +18,28 @@
     flex-shrink: 0;
 }
 
-.form input {
-    width: 800px;
+.label input {
+    flex: 1;
     padding: 20px;
     box-sizing: border-box;
 }
 
+.outerLogin{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+    padding-top: 100px;
+}
+
+.innerLogin{
+    display: flex;
+    flex-direction: column;
+    width: 150px;
+}
+
 .loginButton {
-    width: 800px;
+    width: 100%;
     padding: 20px;
-    align-self: flex-end;
+    box-sizing: border-box;
 }

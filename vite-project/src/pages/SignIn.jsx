@@ -71,7 +71,7 @@ function SignIn() {
   return (
     <>
     <header className={styles.signinheader}>
-      <h1>Sign In</h1>
+      <h1 className={styles.archivoBlackRegular }>Sign In</h1>
     </header>
       <main className={styles.signinmain}>
         <section className={styles.signsection}>

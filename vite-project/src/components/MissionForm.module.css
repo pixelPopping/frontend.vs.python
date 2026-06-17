@@ -1,38 +1,32 @@
 @import url("https://fonts.googleapis.com/css2?family=Unbounded:wght@200..900&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Archivo+Black&family=Pixelify+Sans:wght@400..700&family=Unbounded:wght@200..900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap");
 
 /* ================================================= */
 /* TITLE */
 /* ================================================= */
 
-header .unbounded-title-mission {
+.unboundedTitleMission {
   font-family: "Unbounded", sans-serif;
-
   font-weight: 700;
-
   font-size: clamp(2rem, 10vw, 120px);
-
   color: red;
-
   -webkit-text-stroke: 5px #0b3d91;
-
   margin: 0;
-
   padding: 20px;
 }
 
 /* ================================================= */
 /* FORM */
 /* ================================================= */
-.archivo-black-regular {
+
+.archivoBlackRegular {
   font-family: "Archivo Black", sans-serif;
   font-weight: 400;
   font-style: normal;
   font-size: clamp(1.5rem, 5vw, 400px);
 }
 
-.inner-form-mission {
+.innerFormMission {
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -40,16 +34,13 @@ header .unbounded-title-mission {
 }
 
 /* ================================================= */
-/* ALL FORM FIELDS */
+/* FORM FIELDS */
 /* ================================================= */
 
-.mission-fields {
+.missionFields {
   display: flex;
-
   flex-direction: column;
-
   gap: 20px;
-
   width: 100%;
 }
 
@@ -57,53 +48,21 @@ header .unbounded-title-mission {
 /* LABELS */
 /* ================================================= */
 
-label {
+.missionFields label {
   text-align: start;
-
   font-size: clamp(1rem, 3vw, 20px);
-
   font-family: "Unbounded", sans-serif;
-}
-
-/* ================================================= */
-/* TEXT CONTAINER */
-/* ================================================= */
-
-.text-container {
-  display: flex;
-
-  flex-direction: column;
-
-  width: 100%;
-}
-
-/* ================================================= */
-/* FORM INPUT OUTER */
-/* ================================================= */
-
-.form-input-outer {
-  display: flex;
-
-  flex-direction: column;
-
-  padding: 40px;
-
-  width: 100%;
 }
 
 /* ================================================= */
 /* INPUTS */
 /* ================================================= */
 
-input {
+.missionFields input {
   width: 100%;
-
   padding: 20px;
-
   border: solid black 4px;
-
   border-radius: 10px;
-
   box-sizing: border-box;
 }
 
@@ -111,31 +70,46 @@ input {
 /* SELECTS */
 /* ================================================= */
 
-select {
+.missionFields select {
   width: 100%;
-
   padding: 20px;
-
   border: solid black 4px;
-
   border-radius: 10px;
-
   box-sizing: border-box;
 }
 
-option {
+.missionFields option {
   padding: 20px;
+}
+
+/* ================================================= */
+/* TEXT CONTAINER */
+/* ================================================= */
+
+.textContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* ================================================= */
+/* FORM INPUT OUTER */
+/* ================================================= */
+
+.formInputOuter {
+  display: flex;
+  flex-direction: column;
+  padding: 40px;
+  width: 100%;
 }
 
 /* ================================================= */
 /* CONTAINER POSITION */
 /* ================================================= */
 
-.container-position {
+.containerPosition {
   display: flex;
-
   flex-direction: column;
-
   width: 100%;
 }
 
@@ -145,11 +119,8 @@ option {
 
 .outer {
   display: flex;
-
   flex-direction: row;
-
   justify-content: center;
-
   width: 100%;
 }
 
@@ -157,43 +128,40 @@ option {
 /* BUTTON SECTION */
 /* ================================================= */
 
-.button-section {
+.buttonSection {
   display: flex;
-
   flex-direction: row;
-
   justify-content: center;
-
   gap: 40px;
-
   width: 100%;
-
   margin: 20px 0;
 }
 
 /* ================================================= */
-/* BUTTONS */
+/* CREATE BUTTON */
 /* ================================================= */
 
-
-
-.create-button-cotainer {
+.createButtonContainer {
   display: flex;
-  flex-direction: row;
+  justify-content: center;
   width: 350px;
+  margin: 20px 0;
 }
 
-.create-btn {
+.createbtn {
   width: 100%;
   padding: 20px;
+  margin: 20px 0;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
 }
 
 /* ================================================= */
 /* CREW TITLE */
 /* ================================================= */
 
-h3 {
+.missionFields h3 {
   margin-top: 20px;
-
   font-family: "Unbounded", sans-serif;
 }

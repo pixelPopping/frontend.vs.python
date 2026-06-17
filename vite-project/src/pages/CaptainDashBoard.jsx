@@ -2,7 +2,7 @@ import { useContext } from "react";
 import MissionForm from "../components/MissionForm";
 import MissionDetailCard from "../components/MissionDetailCard";
 
-import "./CaptainDashBoard.css";
+import styles from "./CaptainDashBoard.module.css";
 import "../App.css";
 
 import { CaptainContext } from "../context/CaptainContext";
@@ -19,18 +19,18 @@ function CaptainDashboard() {
   } = useContext(CaptainContext);
 
   return (
-    <div className="dashboard">
-      <div className="header-container">
-        <div className="novilogo"></div>
+    <div className={styles.dashboard}>
+      <div className={styles.headerContainer}>
+        <div className={styles.novilogo}></div>
       </div>
 
-      <header className="captain-title">
+      <header className={styles.captainTitle}>
         <h1>Captain Dashboard</h1>
       </header>
 
-      <main className="mission-page">
-        <section className="outer-mission">
-          <article className="mission-outer-form">
+      <main className={styles.missionPage}>
+        <section className={styles.outerMission}>
+          <article className={styles.missionOuterForm}>
             <MissionForm
               onSubmit={handleCreateMission}
               users={users}
@@ -42,8 +42,8 @@ function CaptainDashboard() {
 
           {(!missions || missions.length === 0) && <p>No missions yet 🚀</p>}
 
-          <div className="outer-card-list">
-            <div className="mission-list">
+          <div className={styles.outerCardList}>
+            <div className={styles.missionList}>
               {Array.isArray(missions) &&
                 missions
                   .filter(Boolean)
@@ -60,6 +60,13 @@ function CaptainDashboard() {
           </div>
         </section>
       </main>
+      <div className={styles.outerFooter}>
+        <section className={styles.Footer}>
+      <footer className={styles.innerFooter}>
+        <p>pixelpopper@productions</p>
+      </footer>
+       </section>
+      </div>
     </div>
   );
 }

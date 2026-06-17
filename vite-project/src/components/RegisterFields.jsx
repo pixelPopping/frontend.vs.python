@@ -68,7 +68,8 @@ function RegisterFields({
           {errorMessage && (
             <p>{errorMessage}</p>
           )}
-
+          <div className={styles.outerbuttonContainer}>
+          <section className={styles.buttonContainer}>
           <button
             className={styles.registerButton}
             type="submit"
@@ -76,6 +77,8 @@ function RegisterFields({
           >
             {loading ? "Loading..." : "Register"}
           </button>
+          </section>
+          </div>
         </form>
       </article>
     </section>

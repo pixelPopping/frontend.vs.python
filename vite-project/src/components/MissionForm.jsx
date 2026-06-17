@@ -3,7 +3,7 @@ import { useContext } from "react";
 
 import { AuthContext } from "../context/AuthContext";
 
-import "./MissionForm.css";
+import styles from  "./MissionForm.module.css";
 
 function MissionForm({
   onSubmit,
@@ -116,16 +116,16 @@ console.log(users);
 
   return (
     <form
-      className="inner-form-mission"
+      className={styles.innerFormMission}
       onSubmit={handleSubmit(
         submitForm
       )}
     >
-      <h2 className="archivo-black-regular">
+      <h2 className={styles.archivoBlackRegular}>
         Create Mission
       </h2>
 
-      <div className="mission-fields">
+      <div className={styles.missionFields}>
 
         <input
           type="text"
@@ -309,11 +309,11 @@ console.log(users);
 
       </div>
 
-      <section className="create-button-container">
+      <section className={styles.createButtonContainer}>
 
         <button
           type="submit"
-          className="create-btn"
+          className={styles.createbtn}
           disabled={loading}
         >
           {loading

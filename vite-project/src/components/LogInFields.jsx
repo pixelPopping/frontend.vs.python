@@ -64,14 +64,16 @@ function LoginFields({
           {errorMessage && (
             <p>{errorMessage}</p>
           )}
-
-          <button
-            className={styles.loginButton}
+          <div className={styles.outerLogin}>
+          <section className={styles.innerLogin}>
+          <button className={styles.loginButton}
             type="submit"
             disabled={loading}
           >
             {loading ? "Loading..." : "Login"}
           </button>
+          </section>
+          </div>
         </form>
       </article>
     </section>

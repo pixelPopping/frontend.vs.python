@@ -44,7 +44,7 @@ function SignUp() {
   return (
     <>
      <header className={styles.header}>
-       <h1>Register</h1>
+       <h1 className={styles.archivoBlackRegular}>Register</h1>
     </header>
     <main className={styles.registerContainer}>
       <section className={styles.innerRegisterContainer}>
