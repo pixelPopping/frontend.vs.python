@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import { CrewContext } from "../context/CrewContext";
 
-import "./ContactForm.css";
+import styles from "./ContactForm.module.css";
 
 const ContactForm = () => {
   const navigate = useNavigate();
@@ -53,41 +53,47 @@ const ContactForm = () => {
   }
 
   return (
-    <main className="contact-container">
-      <header>
-        <h1 className="contact-title">
+    <div className={styles.outercontainer}>
+      <header className={styles.headercontainer}>
+        <h1 className={styles.contactTitle}>
           Dear Crewmember,
-          <br />
-          Your mission has been launched 🚀
         </h1>
       </header>
 
-      <section className="contact-content">
+      <main>
+        <section className={styles.contentouter}>
+          <article className={styles.contentinner}>
+      <h2>Your mission has been launched 🚀</h2>
         <p>
           You can return to your dashboard
           to monitor your active mission
           and future assignments.
         </p>
+           </article>
+        </section>
 
-        <div className="button-group">
-          <button
+        
+        <div className={styles.buttongroup}>
+          <section className={styles.innerbutton}>
+          <button className={styles.crewDashboard}
             type="button"
             onClick={() =>
               navigate("/crew-dashboard")
             }
           >
-            Crew Dashboard
+            Dashboard
           </button>
 
-          <button
+          <button className={styles.remove}
             type="button"
             onClick={endMission}
           >
-            Remove From Dashboard 🚀
+            Delete
           </button>
+          </section>
         </div>
-      </section>
-    </main>
+        </main>
+    </div>
   );
 };
 

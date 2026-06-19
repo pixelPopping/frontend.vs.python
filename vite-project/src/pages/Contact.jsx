@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import ContactForm from "../components/ContactForm";
-import "./Contact.css";
+import styles from "./Contact.module.css";
 
 function SignUp() {
   const [loading, setLoading] = useState(false);
@@ -37,8 +37,9 @@ function SignUp() {
   };
 
   return (
-    <main className="contact-page">
-      <section className="contact-wrapper">
+    <>
+    <main className={styles.outerContactContainer}>
+      <section className={styles.innercontainer}>
         <ContactForm
           onSubmit={handleFormSubmit}
           loading={loading}
@@ -46,6 +47,10 @@ function SignUp() {
         />
       </section>
     </main>
+    <footer>
+      <p>Pixelpopping@productions</p>
+    </footer>
+    </>
   );
 }
 

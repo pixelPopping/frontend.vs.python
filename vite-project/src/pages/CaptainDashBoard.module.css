@@ -13,9 +13,10 @@
 .outerMission {
   display: flex;
   flex-direction: column;
-  padding-bottom: 100px;
+   margin-bottom: 100px;
   width: 100%;
   align-items: center;
+  flex-basis: auto;
 }
 
 .dashboard {
@@ -49,8 +50,8 @@
   left: 50%;
   transform: translateX(-50%);
 
-  width: 500px;
-  height: 500px;
+  width: clamp(180px, 40vw, 500px);
+  aspect-ratio: 1 / 1;
 
   background-image: url("/src/assets/Images/Novilogo.png");
   background-size: contain;
@@ -110,11 +111,10 @@
 
 .captainTitle h1 {
   font-family: var(--font-title);
-  font-size: var(--header-size);
+  font-size: clamp(2.5rem, 6vw, var(--header-size));
   font-weight: var(--header-weight);
   color: var(--color-secondary);
   -webkit-text-stroke: var(--header-stroke);
-  --header-clamp: var(--header-size);
 }
 
 .cardlist{
