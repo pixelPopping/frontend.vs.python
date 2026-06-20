@@ -1,12 +1,16 @@
 import { NavLink } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
+import styles from './Navigation.module.css';
 
 function Navigation() {
   const { isAuth, user, logout } = useContext(AuthContext);
 
   return (
-    <nav className="navbar">
+    <div className={styles.body}>
+    <header className={styles.outernavigation}>
+    <div className={styles.innernavigation}>
+    <nav className={styles.navlinks}>
       <NavLink to="/">Home</NavLink>
 
       {isAuth && user?.role === "captain" && (
@@ -28,6 +32,9 @@ function Navigation() {
 
       {isAuth && <button onClick={logout}>Logout</button>}
     </nav>
+    </div>
+    </header>
+    </div>
   );
 }
 
