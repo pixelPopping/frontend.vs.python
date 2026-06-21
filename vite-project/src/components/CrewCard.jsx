@@ -1,4 +1,4 @@
-import "./CrewCard.css";
+import  './CrewCard.css';
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
@@ -61,39 +61,11 @@ function CrewCard({ mission, onAccept }) {
     crewList.find(
       (member) =>
         member.name ===
-        user?.firstname
+        user?.username
     );
 
   const hasAccepted =
     myCrewMember?.accepted || false;
-
-  // =================================================
-  // DEBUG
-  // =================================================
-  console.log(
-    "================================"
-  );
-
-  console.log("FULL USER:", user);
-
-  console.log(
-    "CREW LIST:",
-    crewList
-  );
-
-  console.log(
-    "MY CREW MEMBER:",
-    myCrewMember
-  );
-
-  console.log(
-    "HAS ACCEPTED:",
-    hasAccepted
-  );
-
-  console.log(
-    "================================"
-  );
 
   const rocket =
     mission.rocket || "Unknown";
@@ -125,7 +97,9 @@ function CrewCard({ mission, onAccept }) {
     <section className="crewCard">
       <article className="crew-card-detail">
         <div className="card-header">
-          <h3 className="titel-header">{title}</h3>
+          <h3 className="titel-header">
+            {title}
+          </h3>
         </div>
 
         <p className="crew-text">
@@ -184,9 +158,6 @@ function CrewCard({ mission, onAccept }) {
           {destination}
         </p>
 
-        {/* ================================================= */}
-        {/* ACCEPT BUTTON */}
-        {/* ================================================= */}
         {!hasAccepted && (
           <button
             onClick={() =>
@@ -199,15 +170,11 @@ function CrewCard({ mission, onAccept }) {
           </button>
         )}
 
-        {/* ================================================= */}
-        {/* ACCEPTED */}
-        {/* ================================================= */}
         {hasAccepted && (
           <>
-            <p>
-              🚀 You accepted this
-              mission
-            </p>
+            <div className="mission-active">
+              🚀 Mission Active
+            </div>
 
             <button
               onClick={() => {
@@ -229,3 +196,4 @@ function CrewCard({ mission, onAccept }) {
 }
 
 export default CrewCard;
+

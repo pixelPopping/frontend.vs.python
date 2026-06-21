@@ -1,9 +1,10 @@
 .crewCard {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   border: solid black 4px;
   width: 100%;
   max-width: 400px;
+  flex-wrap: wrap;
   justify-content: space-between;
   height: fit-content;
 }
@@ -11,6 +12,7 @@
 .crew-card-detail {
   display: flex;
   flex-direction: column;
+  flex-wrap: wrap;
 }
 
 .titel-header{

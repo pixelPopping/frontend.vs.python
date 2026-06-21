@@ -95,11 +95,13 @@ function MissionDetailCard({
         </div>
 
         {isCaptain && (
-          <section className="delete-button-container">
-            <button onClick={() => onDelete?.(mission._id)} className="delete">
+          <div className={styles.deletebuttoncontainer}>
+          <section className={styles.innerbuttoncontainer}>
+            <button className={styles.deletebutton}onClick={() => onDelete?.(mission._id)} className="delete">
               Delete
             </button>
           </section>
+          </div>
         )}
       </article>
     </section>

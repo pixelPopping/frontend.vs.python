@@ -1,7 +1,14 @@
 @import url("https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap");
 
+main{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 15px;
+}
 
-header{
+.crewheader{
     display: flex;
     flex-direction: row;
     width: 100%;
@@ -9,7 +16,7 @@ header{
     margin-top: 100px;
 }
 
-h1 {
+.archivoBlack {
   font-family: "Archivo Black", sans-serif;
   font-weight: 400;
   font-style: normal;

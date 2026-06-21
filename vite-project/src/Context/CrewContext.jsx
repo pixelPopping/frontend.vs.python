@@ -1,8 +1,10 @@
 import React, { createContext, useEffect, useState } from "react";
-
 import { useNavigate } from "react-router-dom";
 
-import { getMissions, acceptMission } from "../api/missions";
+import {
+  getMissions,
+  acceptMission,
+} from "../api/missions";
 
 export const CrewContext = createContext(null);
 
@@ -27,7 +29,6 @@ function CrewContextProvider({ children }) {
       setMissions(data || []);
     } catch (error) {
       console.error("MISSIONS ERROR:", error);
-
       setError(error.message);
     } finally {
       setLoading(false);
@@ -41,17 +42,16 @@ function CrewContextProvider({ children }) {
 
       await acceptMission(id);
 
-      // ==========================================
-      // SAVE ACTIVE MISSION
-      // ==========================================
-      localStorage.setItem("activeMissionId", id);
+      localStorage.setItem(
+        "activeMissionId",
+        id
+      );
 
       await loadMissions();
 
       navigate(`/rocketlaunch/${id}`);
     } catch (error) {
       console.error("ACCEPT ERROR:", error);
-
       setError(error.message);
     } finally {
       setLoading(false);
@@ -59,11 +59,19 @@ function CrewContextProvider({ children }) {
   }
 
   function getActiveMissionId() {
-    return localStorage.getItem("activeMissionId");
+    return localStorage.getItem(
+      "activeMissionId"
+    );
   }
 
   function clearActiveMission() {
-    localStorage.removeItem("activeMissionId");
+    localStorage.removeItem(
+      "activeMissionId"
+    );
+  }
+
+  function isMissionActive(id) {
+    return getActiveMissionId() === id;
   }
 
   return (
@@ -77,7 +85,10 @@ function CrewContextProvider({ children }) {
 
         acceptMission: handleAcceptMission,
 
-        activeMissionId: getActiveMissionId(),
+        activeMissionId:
+          getActiveMissionId(),
+
+        isMissionActive,
 
         clearActiveMission,
       }}
@@ -88,3 +99,5 @@ function CrewContextProvider({ children }) {
 }
 
 export default CrewContextProvider;
+
+

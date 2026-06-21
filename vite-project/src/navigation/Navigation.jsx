@@ -30,7 +30,7 @@ function Navigation() {
         </>
       )}
 
-      {isAuth && <button onClick={logout}>Logout</button>}
+      {isAuth && <button className={styles.logout} onClick={logout}>Logout</button>}
     </nav>
     </div>
     </header>

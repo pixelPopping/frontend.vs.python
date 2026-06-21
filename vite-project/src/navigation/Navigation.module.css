@@ -37,6 +37,7 @@
 /* LINKS */
 .navlinks a {
   text-decoration: none;
+  text-align: center;
 
   color: white;
   font-weight: 600;
@@ -61,4 +62,23 @@
 
   box-shadow:
     0 0 15px rgba(173, 216, 230, 0.5);
+}
+
+.logout{
+  border-radius: 50px;
+  border: transparent;
+  
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  width: 100%;
+  max-width: 200px;
+
+  padding: 12px 24px;
+
+  border-radius: 999px;
+
+  background: rgba(255, 255, 255, 0.08);
+
+  transition: all 0.3s ease;
 }

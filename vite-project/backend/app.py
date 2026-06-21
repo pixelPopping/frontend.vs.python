@@ -882,18 +882,6 @@ def delete_mission(id):
 
     try:
 
-        print("\n================================")
-        print("DELETE MISSION")
-        print("================================")
-
-        print("DATABASE:", db.name)
-        print("COLLECTION:", missions.name)
-
-        print("MISSION ID:", id)
-
-        # =====================================
-        # FIND MISSION
-        # =====================================
         mission = missions.find_one(
             {
                 "_id": ObjectId(id)
@@ -901,69 +889,30 @@ def delete_mission(id):
         )
 
         if not mission:
-
             return jsonify({
                 "error": "Mission not found"
             }), 404
 
-        print(
-            "\nMISSION BEFORE DELETE:"
-        )
-
-        print(mission)
-
-        return jsonify(
-    {
-        "message": "Mission accepted"
-    }
-)
-
-        # =====================================
-        # DELETE
-        # =====================================
         result = missions.delete_one(
             {
                 "_id": ObjectId(id)
             }
         )
 
-        print(
-            "\nDELETED:",
-            result.deleted_count
-        )
+        if result.deleted_count == 0:
+            return jsonify({
+                "error": "Delete failed"
+            }), 400
 
-        mission_after = missions.find_one(
-            {
-                "_id": ObjectId(id)
-            }
-        )
-
-        print(
-            "\nMISSION AFTER DELETE:"
-        )
-
-        print(mission_after)
-
-        print("\n================================")
-
-        return jsonify(
-            {
-                "message": "Mission deleted"
-            }
-        )
+        return jsonify({
+            "message": "Mission deleted"
+        }), 200
 
     except Exception as e:
 
-        print(
-            "\nDELETE ERROR:",
-            str(e)
-        )
-
-        return jsonify(
-            {
-                "error": str(e)
-            }
-        ), 500
+        return jsonify({
+            "error": str(e)
+        }), 500
 # =========================================================
 # START SERVER
 # =========================================================
