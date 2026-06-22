@@ -12,11 +12,8 @@
   z-index: -1;
 }
 
-.novilogo{
-  background-image: url('/src/assets/Images/Novilogo.png');
-  
-}
-.header-container{
+
+.headerContainer{
     display: flex;
     flex-direction: row;
     width: 100%;
@@ -30,7 +27,7 @@ header h1{
     margin-top: 100px;
 }
 
-header .unbounded-title {
+header .unboundedTitle {
   font-family: "Unbounded", sans-serif;
   font-weight: 700;
   font-size: 120px;
@@ -38,7 +35,7 @@ header .unbounded-title {
   -webkit-text-stroke: 5px #0B3D91;
 }
 
-.outer-layout{
+.outerLayout{
   display: flex;
   flex-direction: row;
   margin-top: 20px;
@@ -46,34 +43,47 @@ header .unbounded-title {
   padding: 70px;
 }
 
-.main-outer-form{
+.mainOuterForm{
     display: flex;
     flex-direction: row;
     width: 100%;
-    justify-content: flex-start;
+    justify-content: center;
 }
 
-.inner-form{
+.content{
+  display: flex;
+  width: 100%;
+  max-width: 800px;
+}
+
+.innerForm{
     display: flex;
     flex-direction: column;
 }
 
-.text-container{
+.textContainer{
     display: flex;
     flex-direction: column;
     width: 100%;
     margin-top: 100px;
-    margin-bottom: 100px;
 }
 
-.outer-calender{
+.headercolor{
+  font-size: 50px;
+  font-size: clamp(minimum, voorkeur, maximum);
+  color: greenyellow;
+  text-shadow:2px 2px 8px rgba(0, 0, 0, 0.4);
+  -webkit-text-stroke: 2px black;
+}
+
+.outerContent{
    display: flex;
    flex-direction: row;
    width: 100%;
    justify-content: center;
 }
 
-.inner-calendar{
+.innerContent{
    display: grid;
    grid-template-columns: 1fr;
    place-items: center;
@@ -81,59 +91,11 @@ header .unbounded-title {
    width: 100%;
 }
 
-.calendar-wrapper {
+.contenWrapper {
     display: flex;
     flex-direction: row;
     width: 100%;
     justify-content: center;
-}
-
-.react-calendar{
-    width: 600px;
-    padding: 20px;
-}
-
-.react-calendar__navigation button {
-  font-size: 1.4rem;
-  padding: 10px;
-}
-
-.react-calendar__month-view__weekdays {
-  font-size: 1.1rem;
-  text-align: center;
-}
-
-.button-container{
-  display: flex;
-  flex-direction: row;
-  width: 100px;
-}
-
-.submit-next{
-    width: 100%;
-    padding: 20px;
-}
-
-.react-calendar__tile {
-  width: 70px;
-  height: 70px;
-  font-size: 1.2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.react-calendar__tile:hover {
-  background-color: #e6e6e6;
-  border-radius: 8px;
-}
-
-.react-calendar__tile--active,
-.react-calendar__tile--rangeStart,
-.react-calendar__tile--rangeEnd {
-  background: #007bff;
-  color: white;
-  border-radius: 8px;
 }
 
 .inner-form,
@@ -160,11 +122,12 @@ footer {
 }
 
 /* HEADER */
-.header-container {
+.headerContainer {
   position: relative;
   display: flex;
   justify-content: center;
   width: 100%;
+  margin-top: 100px;
 }
 
 /* LOGO ACHTER TITEL */
@@ -174,8 +137,8 @@ footer {
   left: 50%;
   transform: translateX(-50%);
 
-  width: 500px;
-  height: 500px;
+  width: clamp(150px, 25vw, 450px);
+  height: clamp(150px, 25vw, 450px);
 
   background-image: url('/src/assets/Images/Novilogo.png');
   background-size: contain;
@@ -242,7 +205,7 @@ header h1 {
 }
 
 /* TEXT */
-.text-container {
+.textContainer {
   display: flex;
   flex-direction: column;
   width: 100%;

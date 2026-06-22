@@ -9,19 +9,31 @@
   height: fit-content;
 }
 
-.crew-card-detail {
+.crewCardDetail {
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
 }
 
-.titel-header{
+.titelHeader{
   text-align: center;
   padding: 40px;
 }
 
-.crew-text {
+.crewtext {
   white-space: pre-line;
   text-align: start;
   padding: 15px;
+}
+
+.missioncontrol{
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: center;
+}
+
+.controlButton{
+  width: 100%;
+  padding: 20px;
 }

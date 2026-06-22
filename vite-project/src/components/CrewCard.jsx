@@ -1,4 +1,5 @@
-import  './CrewCard.css';
+
+import styles from "./CrewCard.module.css";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
@@ -13,8 +14,8 @@ function CrewCard({ mission, onAccept }) {
   // =================================================
   if (!mission) {
     return (
-      <section className="crewCard">
-        <article className="crew-card-detail">
+      <section className={styles.crewCard}>
+        <article className={styles.crewCardDetail}>
           <p>Loading mission...</p>
         </article>
       </section>
@@ -48,21 +49,16 @@ function CrewCard({ mission, onAccept }) {
     mission.description ||
     "No mission briefing available.";
 
-  const captain =
-    mission.captain || "Unknown";
+  const captain = mission.captain || "Unknown";
 
-  const crewList = Array.isArray(
-    mission.crew
-  )
+  const crewList = Array.isArray(mission.crew)
     ? mission.crew
     : [];
 
-  const myCrewMember =
-    crewList.find(
-      (member) =>
-        member.name ===
-        user?.username
-    );
+  const myCrewMember = crewList.find(
+    (member) =>
+      member.name === user?.username
+  );
 
   const hasAccepted =
     myCrewMember?.accepted || false;
@@ -94,34 +90,34 @@ function CrewCard({ mission, onAccept }) {
   // RENDER
   // =================================================
   return (
-    <section className="crewCard">
-      <article className="crew-card-detail">
-        <div className="card-header">
-          <h3 className="titel-header">
+    <section className={styles.crewCard}>
+      <article className={styles.crewCardDetail}>
+        <div className={styles.cardheader}>
+          <h3 className={styles.titelHeader}>
             {title}
           </h3>
         </div>
 
-        <p className="crew-text">
+        <p className={styles.crewtext}>
           {description}
         </p>
 
-        <p className="crew-text">
+        <p className={styles.crewtext}>
           <strong>Launch Date:</strong>{" "}
           {launchDate}
         </p>
 
-        <p className="crew-text">
+        <p className={styles.crewtext}>
           <strong>Return Date:</strong>{" "}
           {returnDate}
         </p>
 
-        <p className="crew-text">
+        <p className={styles.crewtext}>
           <strong>Captain:</strong>{" "}
           {captain}
         </p>
 
-        <p className="crew-text">
+        <p className={styles.crewtext}>
           <strong>Crew:</strong>{" "}
           {crewList.length > 0
             ? crewList
@@ -133,33 +129,34 @@ function CrewCard({ mission, onAccept }) {
             : "No crew assigned"}
         </p>
 
-        <p className="crew-text">
+        <p className={styles.crewtext}>
           <strong>Rocket:</strong>{" "}
           {rocket}
         </p>
 
-        <p className="crew-text">
+        <p className={styles.crewtext}>
           <strong>Ship:</strong>{" "}
           {ship}
         </p>
 
-        <p className="crew-text">
+        <p className={styles.crewtext}>
           <strong>Launch Pad:</strong>{" "}
           {launchPad}
         </p>
 
-        <p className="crew-text">
+        <p className={styles.crewtext}>
           <strong>Landing Pad:</strong>{" "}
           {landingPad}
         </p>
 
-        <p className="crew-text">
+        <p className={styles.crewtext}>
           <strong>Destination:</strong>{" "}
           {destination}
         </p>
 
         {!hasAccepted && (
           <button
+            className={styles.acceptButton}
             onClick={() =>
               onAccept?.(
                 mission._id
@@ -172,22 +169,43 @@ function CrewCard({ mission, onAccept }) {
 
         {hasAccepted && (
           <>
-            <div className="mission-active">
+            <div
+              className={
+                styles.missionactive
+              }
+            >
               🚀 Mission Active
             </div>
 
-            <button
-              onClick={() => {
-                localStorage.setItem(
-                  "activeMissionId",
-                  mission._id
-                );
-
-                navigate("/contact");
-              }}
+            <div
+              className={
+                styles.buttoncontainer
+              }
             >
-              Mission Control 🚀
-            </button>
+              <section
+                className={
+                  styles.missioncontrol
+                }
+              >
+                <button
+                  className={
+                    styles.controlButton
+                  }
+                  onClick={() => {
+                    localStorage.setItem(
+                      "activeMissionId",
+                      mission._id
+                    );
+
+                    navigate(
+                      "/contact"
+                    );
+                  }}
+                >
+                  Mission Control 🚀
+                </button>
+              </section>
+            </div>
           </>
         )}
       </article>
