@@ -5,14 +5,15 @@
   width: 100%;
   max-width: 400px;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: space-around;
   height: fit-content;
 }
 
 .crewCardDetail {
   display: flex;
   flex-direction: column;
-  flex-wrap: wrap;
+  width: 100%;
+  padding: 30px;
 }
 
 .titelHeader{
@@ -26,7 +27,7 @@
   padding: 15px;
 }
 
-.missioncontrol{
+.outerbutton{
   display: flex;
   flex-direction: row;
   width: 100%;
@@ -36,4 +37,9 @@
 .controlButton{
   width: 100%;
   padding: 20px;
+  margin-bottom: 15px;
+}
+
+.missionactive{
+  margin-bottom: 15px;
 }

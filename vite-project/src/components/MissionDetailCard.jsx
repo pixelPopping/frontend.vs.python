@@ -1,5 +1,5 @@
+import React from "react";
 import getStrategyFromCity from "../Helpers/getStrategyFromCity";
-
 import styles from"./MissionDetailCard.module.css";
 
 function MissionDetailCard({

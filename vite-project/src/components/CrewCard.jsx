@@ -1,4 +1,4 @@
-
+import React from "react";
 import styles from "./CrewCard.module.css";
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
@@ -6,7 +6,6 @@ import { AuthContext } from "../context/AuthContext";
 
 function CrewCard({ mission, onAccept }) {
   const { user } = useContext(AuthContext);
-
   const navigate = useNavigate();
 
   // =================================================
@@ -56,8 +55,7 @@ function CrewCard({ mission, onAccept }) {
     : [];
 
   const myCrewMember = crewList.find(
-    (member) =>
-      member.name === user?.username
+    (member) => member.name === user?.username
   );
 
   const hasAccepted =
@@ -168,50 +166,40 @@ function CrewCard({ mission, onAccept }) {
         )}
 
         {hasAccepted && (
-          <>
-            <div
-              className={
-                styles.missionactive
-              }
-            >
-              🚀 Mission Active
-            </div>
-
-            <div
-              className={
-                styles.buttoncontainer
-              }
-            >
-              <section
-                className={
-                  styles.missioncontrol
-                }
-              >
-                <button
-                  className={
-                    styles.controlButton
-                  }
-                  onClick={() => {
-                    localStorage.setItem(
-                      "activeMissionId",
-                      mission._id
-                    );
-
-                    navigate(
-                      "/contact"
-                    );
-                  }}
-                >
-                  Mission Control 🚀
-                </button>
-              </section>
-            </div>
-          </>
+          <div
+            className={
+              styles.missionactive
+            }
+          >
+            🚀 Mission Active
+          </div>
         )}
       </article>
+
+      {/* Buiten de kaart */}
+      <div className={styles.outerbutton}>
+      <section className={styles.innerbutton}>
+      {hasAccepted && (
+        <button
+          className={
+            styles.controlButton
+          }
+          onClick={() => {
+            localStorage.setItem(
+              "activeMissionId",
+              mission._id
+            );
+
+            navigate("/contact");
+          }}
+        >
+          Mission Control 🚀
+        </button>
+      )}
+      </section>
+      </div>
     </section>
   );
 }
 
 export default CrewCard;
-

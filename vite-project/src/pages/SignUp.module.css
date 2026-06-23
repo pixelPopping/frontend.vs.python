@@ -36,9 +36,5 @@ main{
 }
 
 .footerContainer{
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    border: solid black 3px;
     margin-top: 200px;
 }
