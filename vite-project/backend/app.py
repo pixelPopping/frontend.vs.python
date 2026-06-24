@@ -1,219 +1,109 @@
-from flask import Flask, jsonify, request
+from flask import (
+    Flask,
+    jsonify,
+    request,
+)
+
 from flask_cors import CORS
+
 from pymongo import MongoClient
+
 from bson import ObjectId
-from bson.errors import InvalidId
+
 from werkzeug.security import (
     generate_password_hash,
     check_password_hash,
 )
-from functools import wraps, lru_cache
-from dotenv import load_dotenv
-from datetime import datetime, timedelta, UTC
+
+from functools import wraps
+
+from datetime import (
+    datetime,
+    timedelta,
+    UTC,
+)
 
 import jwt
-import os
 import requests
 
-# ---------------- ENV ----------------
-load_dotenv()
-
-MONGO_URI = os.getenv(
-    "MONGO_URI",
-    "mongodb://127.0.0.1:27017/"
-)
-
-SECRET_KEY = os.getenv(
-    "SECRET_KEY",
-    "super_secret_key_123456789_secure"
-)
-
-# ---------------- APP ----------------
+# =========================================================
+# APP
+# =========================================================
 app = Flask(__name__)
 
-# ---------------- CORS ----------------
+# =========================================================
+# CONFIG
+# =========================================================
+SECRET_KEY = "super_secret_key_123"
+
+MONGO_URI = "mongodb://127.0.0.1:27017/"
+
+# =========================================================
+# CORS
+# =========================================================
 CORS(
+
     app,
+
     resources={
+
         r"/api/*": {
-            "origins": "http://localhost:5173"
+
+            "origins": [
+                "http://localhost:5173"
+            ]
         }
     },
-    supports_credentials=True,
+
+    supports_credentials=True
 )
 
-# ---------------- MONGO ----------------
+@app.after_request
+def after_request(response):
+
+    response.headers[
+        "Access-Control-Allow-Origin"
+    ] = "http://localhost:5173"
+
+    response.headers[
+        "Access-Control-Allow-Headers"
+    ] = "Content-Type,Authorization"
+
+    response.headers[
+        "Access-Control-Allow-Methods"
+    ] = "GET,POST,PUT,DELETE,OPTIONS"
+
+    return response
+
+# =========================================================
+# MONGO
+# =========================================================
 client = MongoClient(MONGO_URI)
 
 db = client["space_app"]
 
 users = db["users"]
+
 missions = db["missions"]
+print("DATABASE:", db.name)
+print("COLLECTION:", missions.name)
 
-# ---------------- HELPERS ----------------
-def is_valid(value):
+print("✅ MongoDB Connected")
 
-    return (
-        value is not None
-        and str(value).strip() != ""
-    )
-
-# ---------------- SPACEX ----------------
-BASE = "https://api.spacexdata.com/v4"
-
-@lru_cache(maxsize=1)
-def get_rockets():
-
-    return requests.get(
-        f"{BASE}/rockets"
-    ).json()
-
-@lru_cache(maxsize=1)
-def get_launchpads():
-
-    return requests.get(
-        f"{BASE}/launchpads"
-    ).json()
-
-@lru_cache(maxsize=1)
-def get_landpads():
-
-    return requests.get(
-        f"{BASE}/landpads"
-    ).json()
-
-def build_maps():
-
-    rockets = {
-        r["id"]: r
-        for r in get_rockets()
-    }
-
-    launchpads = {
-        l["id"]: l
-        for l in get_launchpads()
-    }
-
-    landpads = {
-        l["id"]: l
-        for l in get_landpads()
-    }
-
-    return rockets, launchpads, landpads
-
-# ---------------- ENRICH ----------------
-def enrich_mission(
-    mission,
-    users_collection
-):
-
-    rockets_map, launchpads_map, landpads_map = (
-        build_maps()
-    )
-
-    mission = dict(mission)
-
-    mission["_id"] = str(
-        mission["_id"]
-    )
-
-    users_map = {
-
-        str(u["_id"]): u
-
-        for u in users_collection.find()
-    }
-
-    # ---------------- CAPTAIN ----------------
-    captain_id = str(
-        mission.get("captain", "")
-    )
-
-    captain_user = users_map.get(
-        captain_id
-    )
-
-    mission["captain"] = (
-
-        f"{captain_user.get('firstname', '')} "
-        f"{captain_user.get('lastname', '')}"
-
-    ).strip() if captain_user else "Unknown"
-
-    # ---------------- CREW ----------------
-    crew_ids = [
-
-        str(c)
-
-        for c in mission.get(
-            "crew",
-            []
-        )
-    ]
-
-    mission["crew"] = [
-
-        f"{users_map.get(uid, {}).get('firstname', '')} "
-        f"{users_map.get(uid, {}).get('lastname', '')}".strip()
-
-        for uid in crew_ids
-
-        if users_map.get(uid)
-    ]
-
-    # ---------------- SPACEX ----------------
-    mission["rocket"] = rockets_map.get(
-        mission.get("rocket")
-    )
-
-    mission["launchPad"] = launchpads_map.get(
-        mission.get("launchPad")
-    )
-
-    mission["landingPad"] = landpads_map.get(
-        mission.get("landingPad")
-    )
-
-    # ---------------- DEFAULTS ----------------
-    mission["title"] = (
-        mission.get("title")
-        or "Untitled Mission"
-    )
-
-    mission["description"] = (
-        mission.get("description")
-        or "No description"
-    )
-
-    mission["status"] = (
-        mission.get("status")
-        or "pending"
-    )
-
-    mission["city"] = (
-        mission.get("city")
-        or "Unknown"
-    )
-
-    mission["returnDate"] = (
-        mission.get("returnDate")
-        or "Unknown"
-    )
-
-    return mission
-
-# ---------------- AUTH ----------------
+# =========================================================
+# TOKEN REQUIRED
+# =========================================================
 def token_required(f):
 
     @wraps(f)
 
     def wrapper(*args, **kwargs):
 
-        auth = request.headers.get(
+        auth_header = request.headers.get(
             "Authorization"
         )
 
-        if not auth:
+        if not auth_header:
 
             return jsonify({
                 "error": "Token missing"
@@ -221,7 +111,9 @@ def token_required(f):
 
         try:
 
-            token = auth.split(" ")[1]
+            token = auth_header.split(
+                " "
+            )[1]
 
             decoded = jwt.decode(
 
@@ -234,143 +126,185 @@ def token_required(f):
 
             request.user = decoded
 
-        except Exception:
+        except Exception as e:
 
             return jsonify({
-                "error": "Invalid token"
+                "error": str(e)
             }), 401
 
         return f(*args, **kwargs)
 
     return wrapper
 
-# ---------------- TEST ----------------
+# =========================================================
+# TEST
+# =========================================================
 @app.route("/test")
 def test():
 
     return jsonify({
-        "message": "Backend OK 🚀"
+        "message": "Backend works 🚀"
     })
 
-# ---------------- REGISTER ----------------
+# =========================================================
+# REGISTER
+# =========================================================
 @app.route(
     "/api/register",
     methods=["POST"]
 )
 def register():
 
-    data = request.get_json() or {}
+    try:
 
-    user = {
+        data = request.get_json()
 
-        "firstname": data.get(
-            "firstname"
-        ),
+        existing_user = users.find_one({
+            "username":
+                data["username"]
+        })
 
-        "lastname": data.get(
-            "lastname"
-        ),
+        if existing_user:
 
-        "city": data.get(
-            "city"
-        ),
+            return jsonify({
+                "error":
+                    "Username already exists"
+            }), 400
 
-        "phone": data.get(
-            "phone"
-        ),
-
-        "email": data.get(
-            "email"
-        ),
-
-        "password": generate_password_hash(
-            data.get("password")
-        ),
-
-        "role":
-
+        role = (
             "captain"
-
-            if data.get("inviteCode")
+            if data["inviteCode"]
             == "CAPTAIN123"
+            else "crew"
+        )
 
-            else "crew",
+        new_user = {
+            "username":
+                data["username"],
 
-        "createdAt": datetime.now(UTC),
-    }
+            "password":
+                generate_password_hash(
+                    data["password"]
+                ),
 
-    users.insert_one(user)
+            "inviteCode":
+                data["inviteCode"],
 
-    return jsonify({
-        "message": "User created"
-    }), 201
+            "role":
+                role,
 
-# ---------------- LOGIN ----------------
+            "createdAt":
+                datetime.now(UTC),
+        }
+
+        users.insert_one(
+            new_user
+        )
+
+        return jsonify({
+            "message":
+                "User created"
+        })
+
+    except Exception as e:
+
+        return jsonify({
+            "error":
+                str(e)
+        }), 500
+
+# =========================================================
+# LOGIN
+# =========================================================
 @app.route(
     "/api/login",
     methods=["POST"]
 )
 def login():
 
-    data = request.get_json() or {}
+    try:
 
-    user = users.find_one({
+        data = request.get_json()
 
-        "email": data.get("email")
-    })
+        user = users.find_one({
+            "username":
+                data["username"]
+        })
 
-    if (
+        if not user:
 
-        not user
+            return jsonify({
+                "error":
+                    "User not found"
+            }), 401
 
-        or not check_password_hash(
+        if (
+            user["inviteCode"]
+            != data["inviteCode"]
+        ):
+            return jsonify({
+                "error":
+                    "Invalid invite code"
+            }), 401
 
-            user["password"],
-            data.get("password")
+        password_correct = (
+            check_password_hash(
+                user["password"],
+                data["password"]
+            )
         )
-    ):
+
+        if not password_correct:
+
+            return jsonify({
+                "error":
+                    "Wrong password"
+            }), 401
+
+        token = jwt.encode(
+            {
+                "userId":
+                    str(user["_id"]),
+
+                "role":
+                    user["role"],
+
+                "exp":
+                    datetime.now(UTC)
+                    + timedelta(hours=4),
+            },
+
+            SECRET_KEY,
+
+            algorithm="HS256",
+        )
 
         return jsonify({
-            "error": "Invalid credentials"
-        }), 401
+            "token":
+                token,
 
-    token = jwt.encode(
+            "user": {
+                "id":
+                    str(user["_id"]),
 
-        {
+                "username":
+                    user["username"],
 
-            "userId": str(user["_id"]),
+                "role":
+                    user["role"],
+            }
+        })
 
-            "role": user["role"],
+    except Exception as e:
 
-            "exp":
+        return jsonify({
+            "error":
+                str(e)
+        }), 500
 
-                datetime.now(UTC)
-
-                + timedelta(hours=4),
-        },
-
-        SECRET_KEY,
-
-        algorithm="HS256",
-    )
-
-    return jsonify({
-
-        "token": token,
-
-        "user": {
-
-            "id": str(user["_id"]),
-
-            "firstname": user["firstname"],
-
-            "lastname": user["lastname"],
-
-            "role": user["role"],
-        }
-    })
-
-# ---------------- ME ----------------
+# =========================================================
+# CURRENT USER
+# =========================================================
 @app.route(
     "/api/me",
     methods=["GET"]
@@ -378,31 +312,34 @@ def login():
 @token_required
 def me():
 
-    user = users.find_one({
+    try:
 
-        "_id": ObjectId(
-            request.user["userId"]
-        )
-    })
+        user = users.find_one({
+            "_id": ObjectId(
+                request.user["userId"]
+            )
+        })
 
-    if not user:
+        if not user:
+            return jsonify({
+                "error": "User not found"
+            }), 404
 
         return jsonify({
-            "error": "User not found"
-        }), 404
+            "id": str(user["_id"]),
+            "username": user["username"],
+            "role": user["role"],
+        })
 
-    return jsonify({
+    except Exception as e:
 
-        "id": str(user["_id"]),
+        return jsonify({
+            "error": str(e)
+        }), 500
 
-        "firstname": user["firstname"],
-
-        "lastname": user["lastname"],
-
-        "role": user["role"],
-    })
-
-# ---------------- USERS ----------------
+# =========================================================
+# GET USERS
+# =========================================================
 @app.route(
     "/api/users",
     methods=["GET"]
@@ -410,110 +347,183 @@ def me():
 @token_required
 def get_users():
 
-    role = request.args.get("role")
+    try:
 
-    query = (
-        {"role": role}
-        if role
-        else {}
-    )
+        all_users = list(
+            users.find()
+        )
 
-    data = users.find(query)
-
-    return jsonify([
-
-        {
-
-            "id": str(u["_id"]),
-
-            "firstname": u["firstname"],
-
-            "lastname": u["lastname"],
-
-            "role": u["role"],
-        }
-
-        for u in data
-    ])
-
-# ---------------- OPTIONS ----------------
-@app.route("/api/mission-options")
-def mission_options():
-
-    def clean(items):
-
-        return [
+        formatted_users = [
 
             {
-
-                "id": i.get("id"),
-
-                "name":
-
-                    i.get("name")
-
-                    or i.get("full_name"),
+                "id": str(user["_id"]),
+                "username":
+                    user.get(
+                        "username"
+                    ),
+                "role":
+                    user.get(
+                        "role"
+                    ),
             }
 
-            for i in items
-
-            if i.get("id")
+            for user in all_users
         ]
 
-    return jsonify({
+        return jsonify(
+            formatted_users
+        )
 
-        "rockets": clean(
-            get_rockets()
-        ),
+    except Exception as e:
 
-        "launchpads": clean(
-            get_launchpads()
-        ),
-
-        "landpads": clean(
-            get_landpads()
-        ),
-    })
-
-# ---------------- GET MISSIONS ----------------
+        return jsonify({
+            "error": str(e)
+        }), 500
+# =========================================================
+# SPACEX OPTIONS
+# =========================================================
 @app.route(
-    "/api/missions",
+    "/api/mission-options",
     methods=["GET"]
 )
-@token_required
-def get_missions():
+def mission_options():
 
-    user = request.user
+    fallback = {
 
-    user_id = str(
-        user["userId"]
-    )
-
-    # captain ziet alles
-    if user["role"] == "captain":
-
-        data = missions.find()
-
-    # crew ziet alleen assigned
-    else:
-
-        data = missions.find({
-
-            "crew": {
-                "$in": [user_id]
+        "rockets": [
+            {
+                "id": "falcon9",
+                "name": "Falcon 9"
+            },
+            {
+                "id": "falconheavy",
+                "name": "Falcon Heavy"
+            },
+            {
+                "id": "dragon",
+                "name": "Dragon"
             }
+        ],
+
+        "ships": [
+            {
+                "id": "jrti",
+                "name": "Just Read The Instructions"
+            },
+            {
+                "id": "ocisly",
+                "name": "Of Course I Still Love You"
+            }
+        ],
+
+        "launchpads": [
+            {
+                "id": "lc39a",
+                "name": "Launch Complex 39A"
+            },
+            {
+                "id": "slc40",
+                "name": "SLC-40"
+            },
+            {
+                "id": "slc4e",
+                "name": "SLC-4E"
+            },
+            {
+                "id": "starbase",
+                "name": "Starbase"
+            }
+        ],
+
+        "landpads": [
+            {
+                "id": "lz1",
+                "name": "Landing Zone 1"
+            },
+            {
+                "id": "lz2",
+                "name": "Landing Zone 2"
+            },
+            {
+                "id": "lz4",
+                "name": "Landing Zone 4"
+            }
+        ]
+    }
+
+    try:
+
+        rockets = requests.get(
+            "https://api.spacexdata.com/v4/rockets",
+            timeout=15
+        ).json()
+
+        dragons = requests.get(
+            "https://api.spacexdata.com/v4/dragons",
+            timeout=15
+        ).json()
+
+        ships = requests.get(
+            "https://api.spacexdata.com/v4/ships",
+            timeout=15
+        ).json()
+
+        launchpads = requests.get(
+            "https://api.spacexdata.com/v4/launchpads",
+            timeout=15
+        ).json()
+
+        landpads = requests.get(
+            "https://api.spacexdata.com/v4/landpads",
+            timeout=15
+        ).json()
+
+        return jsonify({
+
+            "rockets": [
+                {
+                    "id": x["id"],
+                    "name": x["name"]
+                }
+                for x in rockets + dragons
+            ],
+
+            "ships": [
+                {
+                    "id": x["id"],
+                    "name": x["name"]
+                }
+                for x in ships
+            ],
+
+            "launchpads": [
+                {
+                    "id": x["id"],
+                    "name": x["name"]
+                }
+                for x in launchpads
+            ],
+
+            "landpads": [
+                {
+                    "id": x["id"],
+                    "name": x["name"]
+                }
+                for x in landpads
+            ]
         })
 
-    enriched = [
+    except Exception as e:
 
-        enrich_mission(m, users)
+        print(
+            "SPACEX OFFLINE:",
+            str(e)
+        )
 
-        for m in data
-    ]
-
-    return jsonify(enriched)
-
-# ---------------- CREATE MISSION ----------------
+        return jsonify(fallback)
+# =========================================================
+# CREATE MISSION
+# =========================================================
 @app.route(
     "/api/missions",
     methods=["POST"]
@@ -521,109 +531,185 @@ def get_missions():
 @token_required
 def create_mission():
 
-    data = request.get_json() or {}
+    try:
 
-    required = [
+        data = request.get_json()
 
-        "title",
-        "description",
-        "city",
-        "launchDate",
-        "returnDate",
-    ]
-
-    missing = [
-
-        field
-
-        for field in required
-
-        if not is_valid(
-            data.get(field)
+        current_user = users.find_one(
+            {
+                "_id": ObjectId(
+                    request.user["userId"]
+                )
+            }
         )
-    ]
 
-    if missing:
+        if not current_user:
+
+            return jsonify({
+                "error":
+                    "User not found"
+            }), 404
+
+        mission = {
+
+            "title":
+                data.get("title"),
+
+            "city":
+                data.get("city"),
+
+            "launchDate":
+                data.get("launchDate"),
+
+            "returnDate":
+                data.get("returnDate"),
+
+            "rocket":
+                data.get("rocket"),
+
+            "ship":
+                data.get("ship"),
+
+            "launchPad":
+                data.get("launchPad"),
+
+            "landingPad":
+                data.get("landingPad"),
+
+            "captain":
+                current_user["username"],
+
+            "crew":
+                data.get("crew", []),
+
+            "status":
+                "pending",
+
+            "createdAt":
+                datetime.now(UTC),
+        }
+
+        result = missions.insert_one(
+            mission
+        )
 
         return jsonify({
 
-            "error": "Missing fields",
+            "message":
+                "Mission created",
 
-            "fields": missing,
-        }), 400
+            "id":
+                str(
+                    result.inserted_id
+                ),
+        })
 
-    mission = {
+    except Exception as e:
 
-        # ---------------- BASIC ----------------
-        "title": data.get(
-            "title"
-        ),
+        return jsonify({
+            "error":
+                str(e)
+        }), 500
+# =========================================================
+# GET MISSIONS
+# =========================================================
+@app.route(
+    "/api/missions",
+    methods=["GET"]
+)
+@token_required
+def get_missions():
 
-        "description": data.get(
-            "description"
-        ),
+    try:
 
-        # ---------------- STATUS ----------------
-        "status": "pending",
+        all_missions = list(
+            missions.find()
+        )
 
-        # ---------------- LOCATION ----------------
-        "city": data.get(
-            "city"
-        ),
+        formatted_missions = [
 
-        # ---------------- PEOPLE ----------------
-        "captain": request.user[
-            "userId"
-        ],
+            {
 
-        "crew": data.get(
-            "crew",
-            []
-        ),
+                "_id":
+                    str(
+                        mission["_id"]
+                    ),
 
-        # ---------------- SPACEX ----------------
-        "rocket": data.get(
-            "rocket"
-        ),
+                "title":
+                    mission.get(
+                        "title"
+                    ),
 
-        "launchPad": data.get(
-            "launchPad"
-        ),
+                "city":
+                    mission.get(
+                        "city"
+                    ),
 
-        "landingPad": data.get(
-            "landingPad"
-        ),
+                "launchDate":
+                    mission.get(
+                        "launchDate"
+                    ),
 
-        # ---------------- DATES ----------------
-        "launchDate": data.get(
-            "launchDate"
-        ),
+                "returnDate":
+                    mission.get(
+                        "returnDate"
+                    ),
 
-        "returnDate": data.get(
-            "returnDate"
-        ),
+                "rocket":
+                    mission.get(
+                        "rocket"
+                    ),
 
-        # ---------------- META ----------------
-        "createdAt": datetime.now(UTC),
-    }
+                "ship":
+                    mission.get(
+                        "ship"
+                    ),
 
-    result = missions.insert_one(
-        mission
-    )
+                "launchPad":
+                    mission.get(
+                        "launchPad"
+                    ),
 
-    created_mission = missions.find_one({
+                "landingPad":
+                    mission.get(
+                        "landingPad"
+                    ),
 
-        "_id": result.inserted_id
-    })
+                "captain":
+                    mission.get(
+                        "captain"
+                    ),
 
-    enriched = enrich_mission(
-        created_mission,
-        users
-    )
+                "crew":
+                    mission.get(
+                        "crew",
+                        []
+                    ),
 
-    return jsonify(enriched), 201
+                "status":
+                    mission.get(
+                        "status"
+                    ),
+            }
 
-# ---------------- ACCEPT ----------------
+            for mission in all_missions
+        ]
+
+        return jsonify(
+            formatted_missions
+        )
+
+    except Exception as e:
+
+        return jsonify({
+            "error": str(e)
+        }), 500
+# =========================================================
+# ACCEPT MISSION
+# =========================================================
+# =========================================================
+# ACCEPT MISSION
+# =========================================================
 @app.route(
     "/api/missions/<id>/accept",
     methods=["PUT"]
@@ -633,51 +719,160 @@ def accept_mission(id):
 
     try:
 
-        mission = missions.find_one({
+        print("\n================================")
+        print("ACCEPT MISSION")
+        print("================================")
 
-            "_id": ObjectId(id)
-        })
+        print("DATABASE:", db.name)
+        print("COLLECTION:", missions.name)
+        print("MISSION ID:", id)
+
+        # =====================================
+        # GET CURRENT USER
+        # =====================================
+        user = users.find_one(
+            {
+                "_id": ObjectId(
+                    request.user["userId"]
+                )
+            }
+        )
+
+        if not user:
+            return jsonify({
+                "error": "User not found"
+            }), 404
+
+        username = user["username"]
+
+        print(
+            "\nUsername:",
+            username
+        )
+
+        # =====================================
+        # FIND MISSION
+        # =====================================
+        mission = missions.find_one(
+            {
+                "_id": ObjectId(id)
+            }
+        )
 
         if not mission:
-
             return jsonify({
                 "error": "Mission not found"
             }), 404
 
-        missions.update_one(
+        print(
+            "\nMISSION BEFORE UPDATE:"
+        )
 
-            {"_id": ObjectId(id)},
+        print(mission)
 
+        # =====================================
+        # ACCEPT CURRENT CREW MEMBER
+        # =====================================
+        result = missions.update_one(
+            {
+                "_id": ObjectId(id),
+                "crew.name": username
+            },
             {
                 "$set": {
-
-                    "status": "accepted",
-
-                    "acceptedAt":
-                        datetime.now(UTC),
+                    "crew.$.accepted": True
                 }
             }
         )
 
-        updated = missions.find_one({
-
-            "_id": ObjectId(id)
-        })
-
-        enriched = enrich_mission(
-            updated,
-            users
+        print(
+            "\nMATCHED:",
+            result.matched_count
         )
 
-        return jsonify(enriched)
+        print(
+            "MODIFIED:",
+            result.modified_count
+        )
 
-    except InvalidId:
+        # =====================================
+        # GET UPDATED MISSION
+        # =====================================
+        updated_mission = missions.find_one(
+            {
+                "_id": ObjectId(id)
+            }
+        )
 
-        return jsonify({
-            "error": "Invalid mission id"
-        }), 400
+        # =====================================
+        # CHECK ALL CREW ACCEPTED
+        # =====================================
+        all_accepted = all(
+            member.get("accepted", False)
+            for member in updated_mission["crew"]
+        )
 
-# ---------------- DELETE ----------------
+        print(
+            "\nALL ACCEPTED:",
+            all_accepted
+        )
+
+        if all_accepted:
+
+            missions.update_one(
+                {
+                    "_id": ObjectId(id)
+                },
+                {
+                    "$set": {
+                        "status": "accepted"
+                    }
+                }
+            )
+
+            print(
+                "MISSION STATUS UPDATED TO ACCEPTED"
+            )
+
+        updated_mission = missions.find_one(
+            {
+                "_id": ObjectId(id)
+            }
+        )
+
+        print(
+            "\nMISSION AFTER UPDATE:"
+        )
+
+        print(updated_mission)
+
+        print(
+            "\n================================"
+        )
+
+        return jsonify(
+            {
+                "message": "Mission accepted"
+            }
+        )
+
+    except Exception as e:
+
+        print(
+            "\nACCEPT ERROR:",
+            str(e)
+        )
+
+        return jsonify(
+            {
+                "error": str(e)
+            }
+        ), 500
+# DELETE MISSION DEBUG
+# =========================================================
+# =========================================================
+# DELETE MISSION
+# =========================================================
 @app.route(
     "/api/missions/<id>",
     methods=["DELETE"]
@@ -687,25 +882,47 @@ def delete_mission(id):
 
     try:
 
-        missions.delete_one({
+        mission = missions.find_one(
+            {
+                "_id": ObjectId(id)
+            }
+        )
 
-            "_id": ObjectId(id)
-        })
+        if not mission:
+            return jsonify({
+                "error": "Mission not found"
+            }), 404
+
+        result = missions.delete_one(
+            {
+                "_id": ObjectId(id)
+            }
+        )
+
+        if result.deleted_count == 0:
+            return jsonify({
+                "error": "Delete failed"
+            }), 400
 
         return jsonify({
-            "message": "Deleted"
-        })
+            "message": "Mission deleted"
+        }), 200
 
-    except InvalidId:
+    except Exception as e:
 
         return jsonify({
-            "error": "Invalid mission id"
-        }), 400
-
-# ---------------- START ----------------
+            "error": str(e)
+        }), 500
+# =========================================================
+# START SERVER
+# =========================================================
 if __name__ == "__main__":
 
     app.run(
+
         debug=True,
-        port=5000
+
+        host="127.0.0.1",
+
+        port=5000,
     )

@@ -1,0 +1,128 @@
+@import url("https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap");
+
+/* ================================================= */
+/* FORM */
+/* ================================================= */
+
+.form {
+  width: var(--container-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+/* ================================================= */
+/* LABEL */
+/* ================================================= */
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.label span {
+  width: 120px;
+  flex-shrink: 0;
+}
+
+.label input {
+  flex: 1;
+  padding: var(--input-padding);
+  box-sizing: border-box;
+}
+
+/* ================================================= */
+/* LOGIN */
+/* ================================================= */
+
+.outerLogin {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  padding-top: var(--spacing-xl);
+}
+
+.innerLogin {
+  display: flex;
+  flex-direction: column;
+  width: 150px;
+}
+
+.loginButton {
+  width: 100%;
+  padding: var(--button-padding);
+  box-sizing: border-box;
+}
+
+/* ================================================= */
+/* SMARTPHONE */
+/* ================================================= */
+
+@media screen and (max-width: 768px) {
+
+  .form {
+    width: 100%;
+    padding: var(--spacing-md);
+  }
+
+  .label {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .label span {
+    width: 100%;
+  }
+
+  .label input {
+    width: 100%;
+  }
+
+  .outerLogin {
+    padding-top: 50px;
+  }
+
+  .innerLogin {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .loginButton {
+    padding: 15px;
+  }
+}
+
+/* ================================================= */
+/* DESKTOP */
+/* ================================================= */
+
+@media screen and (min-width: 1024px) {
+
+  .form {
+    width: var(--container-md);
+  }
+
+  .label {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .label span {
+    width: 120px;
+  }
+
+  .outerLogin {
+    padding-top: var(--spacing-xl);
+  }
+
+  .innerLogin {
+    width: 150px;
+  }
+
+  .loginButton {
+    padding: var(--button-padding);
+  }
+}

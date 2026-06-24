@@ -1,16 +1,45 @@
-import client from "./client";
+import axios from "axios";
 
-export const loginUser = async (credentials) => {
-    const response = await client.post("/login", credentials);
-    return response.data;
-};
+const client = axios.create({
+  baseURL: "http://localhost:5000/api",
 
-export const registerUser = async (userData) => {
-    const response = await client.post("/register", userData);
-    return response.data;
-};
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
 
-export const getMe = async () => {
-    const response = await client.get("/me");
-    return response.data;
-};
+// ---------------- REQUEST INTERCEPTOR ----------------
+client.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
+
+    // Voeg token toe indien aanwezig
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    return config;
+  },
+
+  (error) => {
+    return Promise.reject(error);
+  },
+);
+
+// ---------------- RESPONSE INTERCEPTOR ----------------
+client.interceptors.response.use(
+  (response) => response,
+
+  (error) => {
+    // Auto logout bij 401
+    if (error.response?.status === 401) {
+      console.error("401 UNAUTHORIZED");
+
+      localStorage.removeItem("token");
+    }
+
+    return Promise.reject(error);
+  },
+);
+
+export default client;

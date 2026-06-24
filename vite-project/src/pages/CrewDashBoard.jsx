@@ -1,20 +1,21 @@
+import React from "react";
 import { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import CrewCard from "../components/CrewCard";
 import { CrewContext } from "../context/CrewContext";
+import styles from "./CrewDashBoard.module.css";
 
 function CrewDashboard() {
-
      const { missions, loading, acceptMission} = useContext(CrewContext);
 
-    // ---------------- UI ----------------
     return (
-
-        <main className="crew-dashboard">
-
-            <h1>
+        <div className={styles.crewdashboard}>
+        <main>
+           <header className={styles.crewheader}>
+            <h1 className={styles.archivoBlack}>
                 Crew Dashboard
             </h1>
+            </header>
 
             {loading && (
 
@@ -23,8 +24,6 @@ function CrewDashboard() {
                 </p>
 
             )}
-
-            {/* ---------------- EMPTY ---------------- */}
 
             {!loading &&
                 missions.length === 0 && (
@@ -35,7 +34,6 @@ function CrewDashboard() {
 
             )}
 
-            {/* ---------------- MISSIONS ---------------- */}
 
             {!loading &&
                 missions.length > 0 && (
@@ -55,6 +53,10 @@ function CrewDashboard() {
             )}
 
         </main>
+        <footer>
+            <p>PixelPopping@productions</p>
+        </footer>
+        </div>
     );
 }
 

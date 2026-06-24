@@ -1,138 +1,201 @@
-import "./CrewCard.css";
+import React from "react";
+import styles from "./CrewCard.module.css";
+import { useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
-function CrewCard({
-    mission,
-    onAccept,
-}) {
+function CrewCard({ mission, onAccept }) {
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
 
-    // ---------------- SAFETY ----------------
-    if (!mission) {
+  // =================================================
+  // SAFETY
+  // =================================================
+  if (!mission) {
+    return (
+      <section className={styles.crewCard}>
+        <article className={styles.crewCardDetail}>
+          <p>Loading mission...</p>
+        </article>
+      </section>
+    );
+  }
 
-        return (
-
-            <section className="crewCard">
-
-                <article className="crew-card-detail">
-
-                    <p>Loading mission...</p>
-
-                </article>
-
-            </section>
-        );
+  // =================================================
+  // DATE FORMATTER
+  // =================================================
+  function formatDate(date) {
+    if (!date) {
+      return "Unknown";
     }
 
-    // ---------------- DATA ----------------
-    const title =
-        mission.title ||
-        `Mission ${mission._id?.slice(-4)}` ||
-        "Untitled Mission";
+    return new Date(date).toLocaleDateString("nl-NL", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  }
 
-    const description =
-        mission.description ||
-        "No mission briefing available.";
+  // =================================================
+  // DATA
+  // =================================================
+  const title =
+    mission.title ||
+    `Mission ${mission._id?.slice(-4)}` ||
+    "Untitled Mission";
 
-    const status =
-        mission.status || "pending";
+  const description =
+    mission.description ||
+    "No mission briefing available.";
 
-    const captain =
-        mission.captain || "Unknown";
+  const captain = mission.captain || "Unknown";
 
-    const crewList = Array.isArray(mission.crew)
-        ? mission.crew
-        : [];
+  const crewList = Array.isArray(mission.crew)
+    ? mission.crew
+    : [];
 
-    const rocket =
-        mission.rocket?.name ||
-        "Unknown";
+  const myCrewMember = crewList.find(
+    (member) => member.name === user?.username
+  );
 
-    const destination =
-        mission.city || "Unknown";
+  const hasAccepted =
+    myCrewMember?.accepted || false;
 
-    // ---------------- RENDER ----------------
-    return (
+  const rocket =
+    mission.rocket || "Unknown";
 
-        <section className="crewCard">
+  const ship =
+    mission.ship || "Unknown";
 
-            <article className="crew-card-detail">
+  const launchPad =
+    mission.launchPad || "Unknown";
 
-                <div className="card-header">
+  const landingPad =
+    mission.landingPad || "Unknown";
 
-                    <h3>
-                        {title}
-                    </h3>
+  const destination =
+    mission.city || "Unknown";
 
-                </div>
+  const launchDate = formatDate(
+    mission.launchDate
+  );
 
-                <p className="crew-text">
+  const returnDate = formatDate(
+    mission.returnDate
+  );
 
-                    {description}
+  return (
+    <section className={styles.crewCard}>
+      <article className={styles.crewCardDetail}>
+        <div className={styles.cardheader}>
+          <h3 className={styles.titelHeader}>
+            {title}
+          </h3>
+        </div>
 
-                </p>
+        <p className={styles.crewtext}>
+          {description}
+        </p>
 
-                <p className="crew-text">
+        <p className={styles.crewtext}>
+          <strong>Launch Date:</strong>{" "}
+          {launchDate}
+        </p>
 
-                    <strong>Status:</strong>{" "}
-                    {status}
+        <p className={styles.crewtext}>
+          <strong>Return Date:</strong>{" "}
+          {returnDate}
+        </p>
 
-                </p>
+        <p className={styles.crewtext}>
+          <strong>Captain:</strong>{" "}
+          {captain}
+        </p>
 
-                <p className="crew-text">
+        <p className={styles.crewtext}>
+          <strong>Crew:</strong>{" "}
+          {crewList.length > 0
+            ? crewList
+                .map(
+                  (member) =>
+                    member.name
+                )
+                .join(" & ")
+            : "No crew assigned"}
+        </p>
 
-                    <strong>Captain:</strong>{" "}
-                    {captain}
+        <p className={styles.crewtext}>
+          <strong>Rocket:</strong>{" "}
+          {rocket}
+        </p>
 
-                </p>
+        <p className={styles.crewtext}>
+          <strong>Ship:</strong>{" "}
+          {ship}
+        </p>
 
-                <p className="crew-text">
+        <p className={styles.crewtext}>
+          <strong>Launch Pad:</strong>{" "}
+          {launchPad}
+        </p>
 
-                    <strong>Crew:</strong>{" "}
-                    {crewList.length > 0
-                        ? crewList.join(" & ")
-                        : "No crew assigned"}
+        <p className={styles.crewtext}>
+          <strong>Landing Pad:</strong>{" "}
+          {landingPad}
+        </p>
 
-                </p>
+        <p className={styles.crewtext}>
+          <strong>Destination:</strong>{" "}
+          {destination}
+        </p>
 
-                <p className="crew-text">
+        {!hasAccepted && (
+          <button
+            className={styles.acceptButton}
+            onClick={() =>
+              onAccept?.(
+                mission._id
+              )
+            }
+          >
+            Accept Mission 🚀
+          </button>
+        )}
 
-                    <strong>Rocket:</strong>{" "}
-                    {rocket}
+        {hasAccepted && (
+          <div
+            className={
+              styles.missionactive
+            }
+          >
+            🚀 Mission Active
+          </div>
+        )}
+      </article>
+      
+      <div className={styles.outerbutton}>
+      <section className={styles.innerbutton}>
+      {hasAccepted && (
+        <button
+          className={
+            styles.controlButton
+          }
+          onClick={() => {
+            localStorage.setItem(
+              "activeMissionId",
+              mission._id
+            );
 
-                </p>
-
-                <p className="crew-text">
-
-                    <strong>Destination:</strong>{" "}
-                    {destination}
-
-                </p>
-
-                {status !== "accepted" && (
-
-                    <button
-                        onClick={() =>
-                            onAccept?.(mission._id)
-                        }
-                    >
-                        Accept Mission 🚀
-                    </button>
-
-                )}
-
-                {status === "accepted" && (
-
-                    <p>
-
-                        🚀 Mission in progress
-
-                    </p>
-
-                )}
-
-            </article>
-
-        </section>
-    );
+            navigate("/contact");
+          }}
+        >
+          Mission Control 🚀
+        </button>
+      )}
+      </section>
+      </div>
+    </section>
+  );
 }
 
 export default CrewCard;

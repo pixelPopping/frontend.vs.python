@@ -2,113 +2,38 @@ import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import './Home.css';
+import styles from './Home.module.css';
 import '../App.css';
 
-import { AuthContext } from '../context/AuthContext';
-
 function Home() {
-  const [dateRange, setDateRange] = useState([new Date(), new Date()]);
-  const navigate = useNavigate();
-
-  const { isAuth, user } = useContext(AuthContext);
-
-  const handleNext = () => {
-
-    // -----------------------------------
-    // SAFETY CHECK (no crash)
-    // -----------------------------------
-    if (!dateRange?.[0] || !dateRange?.[1]) return;
-
-    const start = dateRange[0].toLocaleDateString('nl-NL');
-    const end = dateRange[1].toLocaleDateString('nl-NL');
-
-    // -----------------------------------
-    // NOT AUTHENTICATED → SAVE STATE
-    // -----------------------------------
-    if (!isAuth) {
-      localStorage.setItem(
-        'pendingMission',
-        JSON.stringify({
-          departure: start,
-          returnDate: end
-        })
-      );
-
-      navigate('/signin');
-      return;
-    }
-
-    // -----------------------------------
-    // ROLE BASED ROUTING
-    // -----------------------------------
-    const routes = {
-      captain: '/captain',
-      crew: '/crew'
-    };
-
-    navigate(routes[user?.role] || '/mission', {
-      state: {
-        departure: start,
-        returnDate: end
-      }
-    });
-  };
-
+ 
   return (
     <>
-      {/* BACKGROUND */}
-      <div className="backgroundimg" aria-hidden="true"></div>
-
-      {/* HEADER */}
-      <div className="header-container">
-        <div className="novilogo"></div>
+      <div className={styles.backgroundimg} aria-hidden="true"></div>
+      <div className={styles.headerContainer}>
+        <div className={styles.novilogo}></div>
 
         <header>
-          <h1 className="unbounded-title">Novi-Naut in Space</h1>
+          <h1 className={styles.unboundedTitle}>Novi-Naut in Space</h1>
         </header>
       </div>
-
-      {/* MAIN */}
-      <div className="outer-layout">
-        <main className="main-outer-form">
-          <div className="inner-form">
-
-            <div className="text-container">
-              <h2>Plan je reis</h2>
-              <p>Selecteer je vertrek- en terugkomstdatum</p>
-            </div>
-
-            <section className="outer-calender">
-              <section className="inner-calendar">
-
-                <article className="calendar-wrapper">
-                  <Calendar
-                    onChange={setDateRange}
-                    value={dateRange}
-                    selectRange={true}
-                  />
-                </article>
-
-                <div className="button-container">
-                  <button
-                    onClick={handleNext}
-                    className="submit-next"
-                  >
-                    Volgende
-                  </button>
-                </div>
-
-              </section>
+      
+      <div className={styles.outerLayout}>
+        <main className={styles.mainOuterForm}>
+          <div className={styles.innerForm}>
+            
+            <div className={styles.content}>
+            <section className={styles.textContainer}>
+              <h2 className={styles.headercolor}>Welcom to NoviNaut</h2>
+              <p className={styles.headercolor}>Name Your captain choose your crew Your journey and Space adventure.</p>
+              <p className={styles.headercolor}>Register and Login to start</p>
             </section>
-
+            </div>
           </div>
         </main>
       </div>
-
-      {/* FOOTER */}
       <footer>
-        <h2>PixelPopping@Productions</h2>
+        <p>PixelPopping@Productions</p>
       </footer>
     </>
   );

@@ -1,0 +1,106 @@
+/* ================================================= */
+/* PAGE */
+/* ================================================= */
+
+html {
+  background-color: var(--color-background);
+}
+
+/* ================================================= */
+/* TITLE */
+/* ================================================= */
+
+.archivoBlackRegular {
+  font-family: var(--font-subtitle);
+  font-weight: 400;
+  font-style: normal;
+  font-size: clamp(1.5rem, 5vw, 400px);
+}
+
+/* ================================================= */
+/* HEADER */
+/* ================================================= */
+
+.signinheader {
+  text-align: center;
+  margin-top: var(--spacing-xl);
+}
+
+/* ================================================= */
+/* MAIN */
+/* ================================================= */
+
+.signinmain {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* ================================================= */
+/* SECTION */
+/* ================================================= */
+
+.signsection {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+}
+
+/* ================================================= */
+/* ARTICLE */
+/* ================================================= */
+
+.signarticle {
+  display: flex;
+  flex-direction: row;
+  width: var(--container-md);
+}
+
+/* ================================================= */
+/* FOOTER */
+/* ================================================= */
+
+.footerContainer {
+  margin-top: 200px;
+}
+
+/* ================================================= */
+/* SMARTPHONE */
+/* ================================================= */
+
+@media screen and (max-width: 768px) {
+
+  .signinheader {
+    margin-top: var(--spacing-lg);
+  }
+
+  .signarticle {
+    width: 100%;
+    padding: 0 var(--spacing-md);
+    box-sizing: border-box;
+  }
+
+  .footerContainer {
+    margin-top: var(--spacing-xl);
+  }
+}
+
+/* ================================================= */
+/* DESKTOP */
+/* ================================================= */
+
+@media screen and (min-width: 1024px) {
+
+  .signinheader {
+    margin-top: var(--spacing-xl);
+  }
+
+  .signarticle {
+    width: var(--container-md);
+  }
+
+  .footerContainer {
+    margin-top: 200px;
+  }
+}

@@ -1,0 +1,92 @@
+@import url("https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap");
+
+/* ================================================= */
+/* MAIN */
+/* ================================================= */
+
+main {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  gap: 15px;
+}
+
+/* ================================================= */
+/* HEADER */
+/* ================================================= */
+
+.crewheader {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: center;
+  margin-top: var(--spacing-xl);
+}
+
+.archivoBlack {
+  font-family: var(--font-subtitle);
+  font-weight: 400;
+  font-style: normal;
+  font-size: clamp(1.5rem, 5vw, 400px);
+}
+
+/* ================================================= */
+/* DASHBOARD */
+/* ================================================= */
+
+.crewDashBoard {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  flex-basis: auto;
+}
+
+/* ================================================= */
+/* CARD CONTAINER */
+/* ================================================= */
+
+.crewCardContainer {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  margin-top: 50px;
+  margin-bottom: var(--spacing-xl);
+  gap: 50px;
+}
+
+/* ================================================= */
+/* SMARTPHONE */
+/* ================================================= */
+
+@media screen and (max-width: 768px) {
+
+  .crewheader {
+    margin-top: var(--spacing-lg);
+  }
+
+  .crewCardContainer {
+    gap: var(--spacing-md);
+    margin-top: 25px;
+    margin-bottom: var(--spacing-lg);
+  }
+}
+
+/* ================================================= */
+/* DESKTOP */
+/* ================================================= */
+
+@media screen and (min-width: 1024px) {
+
+  .crewheader {
+    margin-top: var(--spacing-xl);
+  }
+
+  .crewCardContainer {
+    gap: 50px;
+    margin-top: 50px;
+    margin-bottom: var(--spacing-xl);
+  }
+}

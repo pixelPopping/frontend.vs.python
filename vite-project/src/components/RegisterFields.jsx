@@ -1,48 +1,89 @@
-import { useForm } from 'react-hook-form';
+import React from "react";
+import { useForm } from "react-hook-form";
+import styles from "./RegisterFields.module.css";
 
-function RegisterFields({ onSubmit, loading, errorMessage }) {
+function RegisterFields({
+  onSubmit,
+  loading,
+  errorMessage,
+}) {
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm();
 
-    const {
-        handleSubmit,
-        register,
-        formState: { errors },
-    } = useForm();
-
-    return (
-        <form onSubmit={handleSubmit(onSubmit)}>
-
-            <input placeholder="Firstname" {...register("firstname", { required: true })} />
-            {errors.firstname && <p>Required</p>}
-
-            <input placeholder="Lastname" {...register("lastname", { required: true })} />
-            {errors.lastname && <p>Required</p>}
-
-            <input placeholder="City" {...register("city", { required: true })} />
-            {errors.city && <p>Required</p>}
-
-            <input placeholder="Phone" {...register("phone", { required: true })} />
-            {errors.phone && <p>Required</p>}
-
-            <input placeholder="Email" {...register("email", { required: true })} />
-            {errors.email && <p>Required</p>}
-
+  return (
+    <section className={styles.outerRegisterContainer}>
+      <article className={styles.formContainer}>
+        <form
+          className={styles.registerFields}
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <label className={styles.label}>
+            <span>Username</span>
             <input
-                type="password"
-                placeholder="Password"
-                {...register("password", { required: true, minLength: 8 })}
+              type="text"
+              {...register("username", {
+                required: "Username required",
+              })}
             />
-            {errors.password && <p>Min 8 chars</p>}
+          </label>
 
-            <input placeholder="Invite Code" {...register("inviteCode", { required: true })} />
-            {errors.inviteCode && <p>Required</p>}
+          {errors.username && (
+            <p>{errors.username.message}</p>
+          )}
 
-            <button disabled={loading}>
-                {loading ? "Loading..." : "Login"}
-            </button>
+          <label className={styles.label}>
+            <span>Password</span>
+            <input
+              type="password"
+              {...register("password", {
+                required: "Password required",
+                minLength: {
+                  value: 8,
+                  message: "Minimum 8 characters",
+                },
+              })}
+            />
+          </label>
 
-            {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+          {errors.password && (
+            <p>{errors.password.message}</p>
+          )}
+
+          <label className={styles.label}>
+            <span>Invite Code</span>
+            <input
+              type="text"
+              {...register("inviteCode", {
+                required: "Invite code required",
+              })}
+            />
+          </label>
+
+          {errors.inviteCode && (
+            <p>{errors.inviteCode.message}</p>
+          )}
+
+          {errorMessage && (
+            <p>{errorMessage}</p>
+          )}
+          <div className={styles.outerbuttonContainer}>
+          <section className={styles.buttonContainer}>
+          <button
+            className={styles.registerButton}
+            type="submit"
+            disabled={loading}
+          >
+            {loading ? "Loading..." : "Register"}
+          </button>
+          </section>
+          </div>
         </form>
-    );
+      </article>
+    </section>
+  );
 }
 
 export default RegisterFields;

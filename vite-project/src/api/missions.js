@@ -1,42 +1,41 @@
-// src/api/missions.js
-
 import client from "./client";
 
-// ---------------- GET MISSIONS ----------------
+// =================================================
+// GET MISSIONS
+// =================================================
 export async function getMissions() {
+  const response = await client.get("/missions");
 
-    const response = await client.get("/missions");
-
-    return response.data;
+  return response.data;
 }
 
-// ---------------- CREATE ----------------
-export async function createMission(payload) {
+// =================================================
+// CREATE MISSION
+// =================================================
+export async function createMission(missionData) {
+  const response = await client.post(
+    "/missions",
 
-    const response = await client.post(
-        "/missions",
-        payload
-    );
+    missionData,
+  );
 
-    return response.data;
+  return response.data;
 }
 
-// ---------------- DELETE ----------------
+// =================================================
+// DELETE MISSION
+// =================================================
 export async function deleteMission(id) {
+  const response = await client.delete(`/missions/${id}`);
 
-    const response = await client.delete(
-        `/missions/${id}`
-    );
-
-    return response.data;
+  return response.data;
 }
 
-// ---------------- ACCEPT ----------------
+// =================================================
+// ACCEPT MISSION
+// =================================================
 export async function acceptMission(id) {
+  const response = await client.put(`/missions/${id}/accept`);
 
-    const response = await client.put(
-        `/missions/${id}/accept`
-    );
-
-    return response.data;
+  return response.data;
 }

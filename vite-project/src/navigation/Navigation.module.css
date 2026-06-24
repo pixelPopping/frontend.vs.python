@@ -1,0 +1,155 @@
+/* ================================================= */
+/* BODY */
+/* ================================================= */
+
+.body {
+  background: linear-gradient(
+    135deg,
+    rgba(90, 90, 90, 0.95),
+    rgba(120, 120, 120, 0.85)
+  );
+}
+
+/* ================================================= */
+/* NAVBAR */
+/* ================================================= */
+
+.outernavigation {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 2;
+
+  width: 100%;
+  padding: var(--spacing-md) 0;
+
+  background: linear-gradient(
+    135deg,
+    rgba(90, 90, 90, 0.95),
+    rgba(120, 120, 120, 0.85)
+  );
+
+  border-bottom: 2px solid rgba(173, 216, 230, 0.7);
+
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.25),
+    0 0 20px rgba(173, 216, 230, 0.2);
+}
+
+/* ================================================= */
+/* LINKS CONTAINER */
+/* ================================================= */
+
+.navlinks {
+  display: flex;
+  gap: var(--spacing-lg);
+}
+
+/* ================================================= */
+/* LINKS */
+/* ================================================= */
+
+.navlinks a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  text-decoration: none;
+  text-align: center;
+
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+
+  padding: 12px 24px;
+
+  border-radius: 999px;
+
+  background: rgba(255, 255, 255, 0.08);
+
+  transition: all 0.3s ease;
+}
+
+/* ================================================= */
+/* LINK HOVER */
+/* ================================================= */
+
+.navlinks a:hover {
+  transform: translateY(-2px);
+
+  background: rgba(173, 216, 230, 0.25);
+
+  color: #87ceeb;
+
+  box-shadow: var(--shadow-hover);
+}
+
+/* ================================================= */
+/* LOGOUT BUTTON */
+/* ================================================= */
+
+.logout {
+  border: transparent;
+
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+
+  width: 100%;
+  max-width: 200px;
+
+  padding: 12px 24px;
+
+  border-radius: 999px;
+
+  background: rgba(255, 255, 255, 0.08);
+
+  transition: all 0.3s ease;
+}
+
+/* ================================================= */
+/* SMARTPHONE */
+/* ================================================= */
+
+@media screen and (max-width: 768px) {
+
+  .outernavigation {
+    padding: 15px 10px;
+  }
+
+  .navlinks {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+  }
+
+  .navlinks a {
+    width: 100%;
+    max-width: 250px;
+  }
+
+  .logout {
+    max-width: 250px;
+  }
+}
+
+/* ================================================= */
+/* DESKTOP */
+/* ================================================= */
+
+@media screen and (min-width: 1024px) {
+
+  .navlinks {
+    flex-direction: row;
+    gap: var(--spacing-lg);
+  }
+
+  .navlinks a {
+    width: auto;
+  }
+
+  .logout {
+    max-width: 200px;
+  }
+}

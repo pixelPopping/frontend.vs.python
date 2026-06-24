@@ -1,47 +1,84 @@
+import React from "react";
+import { useForm } from "react-hook-form";
+import styles from "./LoginFields.module.css";
 
-import { useForm } from 'react-hook-form';
+function LoginFields({
+  onSubmit,
+  loading,
+  errorMessage,
+}) {
+  const {
+    handleSubmit,
+    register,
+    formState: { errors },
+  } = useForm();
 
-function LoginFields({ onSubmit, loading, errorMessage }) {
+  return (
+    <section className={styles.formOuter}>
+      <article className={styles.signin}>
+        <form
+          className={styles.form}
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <label className={styles.label}>
+            <span>Username</span>
+            <input
+              type="text"
+              {...register("username", {
+                required: "Username required",
+              })}
+            />
+          </label>
 
-    const {
-        handleSubmit,
-        register,
-        formState: { errors },
-    } = useForm();
+          {errors.username && (
+            <p>{errors.username.message}</p>
+          )}
 
-    return (
-        <form onSubmit={handleSubmit(onSubmit)}>
+          <label className={styles.label}>
+            <span>Password</span>
+            <input
+              type="password"
+              {...register("password", {
+                required: "Password required",
+              })}
+            />
+          </label>
 
-            <label>
-                Email
-                <input
-                    type="email"
-                    {...register('email', {
-                        required: 'Email required',
-                    })}
-                />
-                {errors.email && <p>{errors.email.message}</p>}
-            </label>
+          {errors.password && (
+            <p>{errors.password.message}</p>
+          )}
 
-            <label>
-                Password
-                <input
-                    type="password"
-                    {...register('password', {
-                        required: 'Password required',
-                    })}
-                />
-                {errors.password && <p>{errors.password.message}</p>}
-            </label>
+          <label className={styles.label}>
+            <span>Invite Code</span>
+            <input
+              type="text"
+              {...register("inviteCode", {
+                required: "Invite code required",
+              })}
+            />
+          </label>
 
-            <button type="submit" disabled={loading}>
-                {loading ? 'Loading...' : 'Login'}
-            </button>
+          {errors.inviteCode && (
+            <p>{errors.inviteCode.message}</p>
+          )}
 
-            {errorMessage && <p>{errorMessage}</p>}
-
+          {errorMessage && (
+            <p>{errorMessage}</p>
+          )}
+          <div className={styles.outerLogin}>
+          <section className={styles.innerLogin}>
+          <button className={styles.loginButton}
+            type="submit"
+            disabled={loading}
+          >
+            {loading ? "Loading..." : "Login"}
+          </button>
+          </section>
+          </div>
         </form>
-    );
+      </article>
+    </section>
+  );
 }
 
 export default LoginFields;

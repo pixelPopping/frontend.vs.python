@@ -1,58 +1,67 @@
-import { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import RegisterFields from '../components/RegisterFields';
+import { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import RegisterFields from "../components/RegisterFields";
+import styles from "./SignUp.module.css";
 
-const API = 'http://localhost:5000';
+const API = "http://localhost:5000";
 
 function SignUp() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    const [loading, setLoading] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-    async function handleSubmit(data) {
-        if (!data) return;
+  async function handleSubmit(data) {
+    if (!data) return;
 
-        setLoading(true);
-        setErrorMessage('');
+    setLoading(true);
+    setErrorMessage("");
 
-        console.log("🚀 SENDING DATA:", data);
+    console.log("🚀 SENDING DATA:", data);
 
-        try {
-            const response = await axios.post(`${API}/api/register`, data);
+    try {
+      const response = await axios.post(`${API}/api/register`, data);
 
-            console.log("✅ SUCCESS:", response.data);
+      console.log("✅ SUCCESS:", response.data);
 
-            // Na registratie → naar SignIn
-            navigate('/signin');
+      // Na registratie → naar SignIn
+      navigate("/signin");
+    } catch (error) {
+      console.log("❌ FULL ERROR:", error.response);
 
-        } catch (error) {
-            console.log("❌ FULL ERROR:", error.response);
+      const msg =
+        error?.response?.data?.error ||
+        error?.response?.data?.message ||
+        "Registration failed";
 
-            const msg =
-                error?.response?.data?.error ||
-                error?.response?.data?.message ||
-                'Registration failed';
-
-            setErrorMessage(msg);
-
-        } finally {
-            setLoading(false);
-        }
+      setErrorMessage(msg);
+    } finally {
+      setLoading(false);
     }
+  }
 
-    return (
-        <main>
-            <h1>Register</h1>
-
-            <RegisterFields
-                onSubmit={handleSubmit}
-                loading={loading}
-                errorMessage={errorMessage}
-            />
-        </main>
-    );
+  return (
+    <>
+     <header className={styles.header}>
+       <h1 className={styles.archivoBlackRegular}>Register</h1>
+    </header>
+    <main className={styles.registerContainer}>
+      <section className={styles.innerRegisterContainer}>
+      <RegisterFields
+        onSubmit={handleSubmit}
+        loading={loading}
+        errorMessage={errorMessage}
+      />
+      </section>
+    </main>
+    <div className={styles.footerContainer}>
+    <footer className={styles.footer}>
+      <p>Pixelpopping@Productions</p>
+    </footer>
+    </div>
+   </>
+  );
 }
 
 export default SignUp;

@@ -1,388 +1,290 @@
-import { useState } from "react";
-import "./MissionForm.css";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
+import styles from  "./MissionForm.module.css";
 
-export default function MissionForm({
-    onSubmit,
-    users,
-    options,
-    loading,
-    isSuccess
+function MissionForm({
+  onSubmit,
+  users = [],
+  options = {},
+  loading,
+  isSuccess,
 }) {
+  const { user } =
+    useContext(AuthContext);
 
-    // ---------------- CREW USERS ----------------
-    const crewUsers =
-        users?.filter(
-            (u) => u.role === "crew"
-        ) || [];
+  const {
+    register,
+    handleSubmit,
+    reset,
+  } = useForm();
 
-    // ---------------- FORM STATE ----------------
-    const [formData, setFormData] = useState({
+  async function submitForm(data) {
+    const payload = {
+      title: data.title,
 
-        departure: "",
+      city: data.city,
 
-        returnDate: "",
+      launchDate:
+        data.launchDate,
 
-        crewMember1: "",
+      returnDate:
+        data.returnDate,
 
-        crewMember2: "",
+      rocket:
+        data.rocket,
 
-        rocket: "",
+      ship:
+        data.ship,
 
-        launchPad: "",
+      launchPad:
+        data.launchPad,
 
-        landingPad: "",
+      landingPad:
+        data.landingPad,
 
-        city: ""
-    });
+      captain:
+        user.username,
 
-    // ---------------- HANDLE CHANGE ----------------
-    function handleChange(e) {
+      crew: [
+        data.crewMember1 && {
+          name:
+            data.crewMember1,
+          accepted: false,
+        },
 
-        const { name, value } = e.target;
+        data.crewMember2 && {
+          name:
+            data.crewMember2,
+          accepted: false,
+        },
+      ].filter(Boolean),
 
-        setFormData((prev) => ({
+      status: "pending",
+    };
 
-            ...prev,
+    await onSubmit(payload);
 
-            [name]: value
-        }));
-    }
+    reset();
+  }
 
-    // ---------------- SUBMIT ----------------
-    function handleSubmit(e) {
+  return (
+    <form
+      className={styles.innerFormMission}
+      onSubmit={handleSubmit(
+        submitForm
+      )}
+    >
+      <h2 className={styles.archivoBlackRegular}>
+        Create Mission
+      </h2>
 
-        e.preventDefault();
+      <div className={styles.missionFields}>
 
-        // crew validation
-        if (
-            !formData.crewMember1 ||
-            !formData.crewMember2
-        ) {
+        <input
+          type="text"
+          placeholder="Mission Title"
+          {...register("title")}
+        />
 
-            alert(
-                "Select exactly 2 crew members"
-            );
+        <input
+          type="text"
+          placeholder="Destination"
+          {...register("city")}
+        />
 
-            return;
-        }
+        <label>
+          Launch Date
+        </label>
 
-        // no duplicate users
-        if (
-            formData.crewMember1 ===
-            formData.crewMember2
-        ) {
+        <input
+          type="date"
+          {...register(
+            "launchDate"
+          )}
+        />
 
-            alert(
-                "Crew members must be different"
-            );
+        <label>
+          Return Date
+        </label>
 
-            return;
-        }
+        <input
+          type="date"
+          {...register(
+            "returnDate"
+          )}
+        />
 
-        // ---------------- PAYLOAD ----------------
-        const payload = {
-
-            title:
-                "Space Mission",
-
-            launchDate:
-                formData.departure,
-
-            returnDate:
-                formData.returnDate,
-
-            crewMember1:
-                formData.crewMember1,
-
-            crewMember2:
-                formData.crewMember2,
-
-            rocket:
-                formData.rocket,
-
-            launchPad:
-                formData.launchPad,
-
-            landingPad:
-                formData.landingPad,
-
-            city:
-                formData.city
-        };
-
-        console.log(
-            "MISSION PAYLOAD:",
-            payload
-        );
-
-        onSubmit(payload);
-    }
-
-    return (
-
-        <form
-            className="mission-form"
-            onSubmit={handleSubmit}
+        <select
+          {...register("rocket")}
         >
-
-            <h2>
-                Create Mission
-            </h2>
-
-            {/* ---------------- DEPARTURE ---------------- */}
-
-            <label>
-
-                Departure:
-
-                <input
-                    type="date"
-                    name="departure"
-                    value={formData.departure}
-                    onChange={handleChange}
-                    required
-                />
-
-            </label>
-
-            {/* ---------------- RETURN ---------------- */}
-
-            <label>
-
-                Return Date:
-
-                <input
-                    type="date"
-                    name="returnDate"
-                    value={formData.returnDate}
-                    onChange={handleChange}
-                    required
-                />
-
-            </label>
-
-            {/* ---------------- CREW 1 ---------------- */}
-
-            <label>
-
-                Crew Member 1:
-
-                <select
-                    name="crewMember1"
-                    value={formData.crewMember1}
-                    onChange={handleChange}
-                    required
-                >
-
-                    <option value="">
-                        Select Crew
-                    </option>
-
-                    {crewUsers.map((u) => (
-
-                        <option
-                            key={u.id}
-                            value={u.id}
-                            disabled={
-                                u.id ===
-                                formData.crewMember2
-                            }
-                        >
-
-                            {u.firstname}
-                            {" "}
-                            {u.lastname}
-
-                        </option>
-
-                    ))}
-
-                </select>
-
-            </label>
-
-            {/* ---------------- CREW 2 ---------------- */}
-
-            <label>
-
-                Crew Member 2:
-
-                <select
-                    name="crewMember2"
-                    value={formData.crewMember2}
-                    onChange={handleChange}
-                    required
-                >
-
-                    <option value="">
-                        Select Crew
-                    </option>
-
-                    {crewUsers.map((u) => (
-
-                        <option
-                            key={u.id}
-                            value={u.id}
-                            disabled={
-                                u.id ===
-                                formData.crewMember1
-                            }
-                        >
-
-                            {u.firstname}
-                            {" "}
-                            {u.lastname}
-
-                        </option>
-
-                    ))}
-
-                </select>
-
-            </label>
-
-            {/* ---------------- ROCKET ---------------- */}
-
-            <label>
-
-                Rocket:
-
-                <select
-                    name="rocket"
-                    value={formData.rocket}
-                    onChange={handleChange}
-                    required
-                >
-
-                    <option value="">
-                        Select Rocket
-                    </option>
-
-                    {options?.rockets?.map((r) => (
-
-                        <option
-                            key={r.id}
-                            value={r.id}
-                        >
-
-                            {r.name}
-
-                        </option>
-
-                    ))}
-
-                </select>
-
-            </label>
-
-            {/* ---------------- LAUNCHPAD ---------------- */}
-
-            <label>
-
-                Launch Pad:
-
-                <select
-                    name="launchPad"
-                    value={formData.launchPad}
-                    onChange={handleChange}
-                    required
-                >
-
-                    <option value="">
-                        Select Launch Pad
-                    </option>
-
-                    {options?.launchpads?.map((p) => (
-
-                        <option
-                            key={p.id}
-                            value={p.id}
-                        >
-
-                            {p.name}
-
-                        </option>
-
-                    ))}
-
-                </select>
-
-            </label>
-
-            {/* ---------------- LANDPAD ---------------- */}
-
-            <label>
-
-                Landing Pad:
-
-                <select
-                    name="landingPad"
-                    value={formData.landingPad}
-                    onChange={handleChange}
-                    required
-                >
-
-                    <option value="">
-                        Select Landing Pad
-                    </option>
-
-                    {options?.landpads?.map((p) => (
-
-                        <option
-                            key={p.id}
-                            value={p.id}
-                        >
-
-                            {p.name}
-
-                        </option>
-
-                    ))}
-
-                </select>
-
-            </label>
-
-            {/* ---------------- CITY ---------------- */}
-
-            <label>
-
-                Destination:
-
-                <input
-                    type="text"
-                    name="city"
-                    value={formData.city}
-                    onChange={handleChange}
-                    placeholder="Enter destination"
-                    required
-                />
-
-            </label>
-
-            {/* ---------------- BUTTON ---------------- */}
-
-            <button
-                type="submit"
-                disabled={loading}
-            >
-
-                {loading
-                    ? "Saving..."
-                    : "Create Mission"}
-
-            </button>
-
-            {/* ---------------- SUCCESS ---------------- */}
-
-            {isSuccess && (
-
-                <p className="success">
-                    Mission created successfully!
-                </p>
-
-            )}
-
-        </form>
-    );
+          <option value="">
+            Select Rocket
+          </option>
+
+          {options?.rockets?.map(
+            (rocket) => (
+              <option
+                key={rocket.id}
+                value={
+                  rocket.name
+                }
+              >
+                {rocket.name}
+              </option>
+            )
+          )}
+        </select>
+
+        <select
+          {...register("ship")}
+        >
+          <option value="">
+            Select Ship
+          </option>
+
+          {options?.ships?.map(
+            (ship) => (
+              <option
+                key={ship.id}
+                value={
+                  ship.name
+                }
+              >
+                {ship.name}
+              </option>
+            )
+          )}
+        </select>
+
+        <select
+          {...register(
+            "launchPad"
+          )}
+        >
+          <option value="">
+            Select Launch Pad
+          </option>
+
+          {options?.launchpads?.map(
+            (pad) => (
+              <option
+                key={pad.id}
+                value={
+                  pad.name
+                }
+              >
+                {pad.name}
+              </option>
+            )
+          )}
+        </select>
+
+        <select
+          {...register(
+            "landingPad"
+          )}
+        >
+          <option value="">
+            Select Landing Pad
+          </option>
+
+          {options?.landpads?.map(
+            (pad) => (
+              <option
+                key={pad.id}
+                value={
+                  pad.name
+                }
+              >
+                {pad.name}
+              </option>
+            )
+          )}
+        </select>
+
+        <h3>
+          Assigned Crew
+        </h3>
+
+        <select
+          {...register(
+            "crewMember1"
+          )}
+        >
+          <option value="">
+            Select Crew Member 1
+          </option>
+
+          {users
+            ?.filter(
+              (user) =>
+                user.role ===
+                "crew"
+            )
+            ?.map((user) => (
+              <option
+                key={user.id}
+                value={
+                  user.username
+                }
+              >
+                {user.username}
+              </option>
+            ))}
+        </select>
+
+        <select
+          {...register(
+            "crewMember2"
+          )}
+        >
+          <option value="">
+            Select Crew Member 2
+          </option>
+
+          {users
+            ?.filter(
+              (user) =>
+                user.role ===
+                "crew"
+            )
+            ?.map((user) => (
+              <option
+                key={user.id}
+                value={
+                  user.username
+                }
+              >
+                {user.username}
+              </option>
+            ))}
+        </select>
+
+      </div>
+
+      <section className={styles.createButtonContainer}>
+
+        <button
+          type="submit"
+          className={styles.createbtn}
+          disabled={loading}
+        >
+          {loading
+            ? "Creating..."
+            : "Create Mission"}
+        </button>
+
+        {isSuccess && (
+          <p>
+            Mission created 🚀
+          </p>
+        )}
+
+      </section>
+    </form>
+  );
 }
+
+export default MissionForm;

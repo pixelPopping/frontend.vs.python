@@ -1,120 +1,100 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from "react-router-dom";
-import './RocketLaunch.css';
-
-// Afbeeldingen
-import rocketImg from '../assets/Images/rocket.png';
-import ufoImg from '../assets/Images/ufo.png';
+import React, { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import "./RocketLaunch.css";
+import { AuthContext } from "../context/AuthContext";
+import rocketImg from "../assets/Images/rocket.png";
+import ufoImg from "../assets/Images/ufo.png";
 
 function RocketLaunch() {
-    const { id } = useParams();
-    const [launchReady, setLaunchReady] = useState(false);
-    const [countdown, setCountdown] = useState(5);
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
 
-    // ⭐ Countdown (stil)
-    useEffect(() => {
-        let i = 5;
-        const timer = setInterval(() => {
-            i--;
-            setCountdown(i);
+  const [countdown, setCountdown] = useState(5);
+  const [launchReady, setLaunchReady] = useState(false);
 
-            if (i === 0) {
-                clearInterval(timer);
-                setLaunchReady(true);
-            }
-        }, 1000);
+  useEffect(() => {
+    console.log("RocketLaunch mounted");
+    console.log("User:", user);
+  }, [user]);
 
-        return () => clearInterval(timer);
-    }, []);
+  // Countdown
+  useEffect(() => {
+  
+    let current = 5;
 
-    // 🚀 Redirect na launch
-    useEffect(() => {
-        if (launchReady) {
-            setTimeout(() => {
-                navigate(`/detailmission/${id}`);
-            }, 2500);
-        }
-    }, [launchReady, navigate, id]);
+    const timer = setInterval(() => {
+      current--;
 
-    return (
-        <main className="launch-container">
+      setCountdown(current);
 
-            {/* ⭐ Animated sterren achtergrond */}
-            <div className="starry-background">
-                {Array.from({ length: 80 }).map((_, i) => (
-                    <div 
-                        key={i} 
-                        className="star"
-                        style={{
-                            top: Math.random() * 100 + "%",
-                            left: Math.random() * 100 + "%",
-                            animationDelay: Math.random() * 2 + "s"
-                        }}
-                    />
-                ))}
-            </div>
+      if (current <= 0) {
+        console.log("Launch Ready!");
+        clearInterval(timer);
+        setLaunchReady(true);
+      }
+    }, 1000);
 
-            {/* 🪐 Planeet */}
-            <div className="planet"></div>
+    return () => clearInterval(timer);
+  }, []);
 
-            {/* 🌠 Meteoren */}
-            {Array.from({ length: 10 }).map((_, i) => (
-                <div 
-                    key={i}
-                    className="meteor"
-                    style={{
-                        top: Math.random() * 50 + "%",
-                        left: Math.random() * 100 + "%",
-                        animationDelay: Math.random() * 2 + "s"
-                    }}
-                />
-            ))}
+  // Kijk of launchReady verandert
+  useEffect(() => {
+    console.log("launchReady =", launchReady);
+  }, [launchReady]);
 
-            {/* 🔮 Wormhole */}
-            <div className="wormhole"></div>
+  // Fallback redirect na 8 seconden
+  useEffect(() => {
+    if (!launchReady) return;
 
-          
+  
 
-            {/* 🛸 UFO’s */}
-            <img src={ufoImg} className="ufo ufo1" alt="ufo" />
-            <img src={ufoImg} className="ufo ufo2" alt="ufo" />
-            <img src={ufoImg} className="ufo ufo3" alt="ufo" />
+    const timer = setTimeout(() => {
+      navigate("/contact");
+    }, 8000);
 
-            {/* 🔫 Laser */}
-            <div className="laser"></div>
+    return () => clearTimeout(timer);
+  }, [launchReady, navigate]);
 
-            {/* Countdown tekst */}
-            {countdown > 0 && (
-                <p className="countdown unbounded">Launch in: {countdown}</p>
-            )}
+  const handleAnimationEnd = (e) => {
 
-            {countdown === 0 && (
-                <p className="countdown unbounded">🚀 Launch!</p>
-            )}
+    navigate("/contact");
+  };
 
-            {/* Launch scene */}
-            <div className="launch-scene">
+  return (
+    <main className="launchc=-ontainer">
+      <div className="starry-background"></div>
 
-                {/* 🗼 Launch tower */}
-                <div className="launch-tower"></div>
+      <div className="planet"></div>
 
-                {/* 🚀 Raket */}
-                <img 
-                    src={rocketImg} 
-                    alt="rocket" 
-                    className={`rocket-img ${countdown === 0 ? "launch" : ""}`}
-                />
+      <div className="wormhole"></div>
 
-                {/* Rook + platform */}
-                <div className="smoke"></div>
-                <div className="platform"></div>
-            </div>
+      <img src={ufoImg} className="ufo ufo1" alt="ufo" />
+      <img src={ufoImg} className="ufo ufo2" alt="ufo" />
+      <img src={ufoImg} className="ufo ufo3" alt="ufo" />
 
-        </main>
-    );
+      <div className="laser"></div>
+
+      {countdown > 0 && (
+        <p className="countdown unbounded">Launch in: {countdown}</p>
+      )}
+
+      {countdown === 0 && <p className="countdown unbounded">🚀 Launch!</p>}
+
+      <div className="launch-scene">
+        <div className="launch-tower"></div>
+
+        <img
+          src={rocketImg}
+          alt="rocket"
+          className={`rocket-img ${launchReady ? "launch" : ""}`}
+          onAnimationEnd={handleAnimationEnd}
+        />
+
+        <div className="smoke"></div>
+        <div className="platform"></div>
+      </div>
+    </main>
+  );
 }
 
 export default RocketLaunch;
-
-

@@ -1,98 +1,102 @@
-import React, {
-    createContext,
-    useEffect,
-    useState,
-} from "react";
-
+import React, { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 import {
-    getMissions,
-    acceptMission,
+  getMissions,
+  acceptMission,
 } from "../api/missions";
 
 export const CrewContext = createContext(null);
 
 function CrewContextProvider({ children }) {
+  const [missions, setMissions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-    const [missions, setMissions] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
-    const navigate = useNavigate();
+  useEffect(() => {
+    loadMissions();
+  }, []);
 
-    useEffect(() => {
-        loadMissions();
-    }, []);
+  async function loadMissions() {
+    try {
+      setLoading(true);
+      setError(null);
 
-    async function loadMissions() {
+      const data = await getMissions();
 
-        try {
-
-            setLoading(true);
-            setError(null);
-
-            const data = await getMissions();
-
-            setMissions(data || []);
-
-        } catch (error) {
-
-            console.error(
-                "MISSIONS ERROR:",
-                error
-            );
-
-            setError(error.message);
-
-        } finally {
-
-            setLoading(false);
-        }
+      setMissions(data || []);
+    } catch (error) {
+      console.error("MISSIONS ERROR:", error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
     }
+  }
 
-    async function handleAcceptMission(id) {
+  async function handleAcceptMission(id) {
+    try {
+      setLoading(true);
+      setError(null);
 
-        try {
+      await acceptMission(id);
 
-            setLoading(true);
-            setError(null);
+      localStorage.setItem(
+        "activeMissionId",
+        id
+      );
 
-            await acceptMission(id);
+      await loadMissions();
 
-            await loadMissions();
-
-            navigate(`/rocketlaunch/${id}`);
-
-        } catch (error) {
-
-            console.error(
-                "ACCEPT ERROR:",
-                error
-            );
-
-            setError(error.message);
-
-        } finally {
-
-            setLoading(false);
-        }
+      navigate(`/rocketlaunch/${id}`);
+    } catch (error) {
+      console.error("ACCEPT ERROR:", error);
+      setError(error.message);
+    } finally {
+      setLoading(false);
     }
+  }
 
-    return (
-
-        <CrewContext.Provider
-            value={{
-                missions,
-                loading,
-                error,
-                refreshMissions: loadMissions,
-                acceptMission: handleAcceptMission,
-            }}
-        >
-            {children}
-        </CrewContext.Provider>
+  function getActiveMissionId() {
+    return localStorage.getItem(
+      "activeMissionId"
     );
+  }
+
+  function clearActiveMission() {
+    localStorage.removeItem(
+      "activeMissionId"
+    );
+  }
+
+  function isMissionActive(id) {
+    return getActiveMissionId() === id;
+  }
+
+  return (
+    <CrewContext.Provider
+      value={{
+        missions,
+        loading,
+        error,
+
+        refreshMissions: loadMissions,
+
+        acceptMission: handleAcceptMission,
+
+        activeMissionId:
+          getActiveMissionId(),
+
+        isMissionActive,
+
+        clearActiveMission,
+      }}
+    >
+      {children}
+    </CrewContext.Provider>
+  );
 }
 
 export default CrewContextProvider;
+
+

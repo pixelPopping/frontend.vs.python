@@ -1,0 +1,241 @@
+@import url("https://fonts.googleapis.com/css2?family=Unbounded:wght@200..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap");
+
+/* ================================================= */
+/* TITLE */
+/* ================================================= */
+
+.archivoBlackRegular {
+  font-family: var(--font-subtitle);
+  font-weight: 400;
+  font-style: normal;
+  font-size: clamp(1.5rem, 5vw, 400px);
+}
+
+.unboundedTitleMission {
+  font-family: var(--font-title);
+  font-weight: var(--header-weight);
+  font-size: clamp(2rem, 10vw, 120px);
+  color: var(--color-secondary);
+  -webkit-text-stroke: var(--header-stroke);
+  margin: 0;
+  padding: var(--spacing-md);
+}
+
+/* ================================================= */
+/* FORM */
+/* ================================================= */
+
+.innerFormMission {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: var(--container-md);
+  align-items: center;
+  margin: 0 auto;
+}
+
+/* ================================================= */
+/* FORM FIELDS */
+/* ================================================= */
+
+.missionFields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  width: 100%;
+}
+
+/* ================================================= */
+/* LABELS */
+/* ================================================= */
+
+.missionFields label {
+  text-align: start;
+  font-size: clamp(1rem, 3vw, 20px);
+  font-family: var(--font-title);
+}
+
+/* ================================================= */
+/* INPUTS */
+/* ================================================= */
+
+.missionFields input {
+  width: 100%;
+  padding: var(--input-padding);
+  border: var(--input-border);
+  border-radius: var(--input-radius);
+  box-sizing: border-box;
+}
+
+/* ================================================= */
+/* SELECTS */
+/* ================================================= */
+
+.missionFields select {
+  width: 100%;
+  padding: var(--input-padding);
+  border: var(--input-border);
+  border-radius: var(--input-radius);
+  box-sizing: border-box;
+}
+
+.missionFields option {
+  padding: var(--input-padding);
+}
+
+/* ================================================= */
+/* TEXT CONTAINER */
+/* ================================================= */
+
+.textContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* ================================================= */
+/* FORM INPUT OUTER */
+/* ================================================= */
+
+.formInputOuter {
+  display: flex;
+  flex-direction: column;
+  padding: var(--spacing-lg);
+  width: 100%;
+}
+
+/* ================================================= */
+/* CONTAINER POSITION */
+/* ================================================= */
+
+.containerPosition {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* ================================================= */
+/* OUTER */
+/* ================================================= */
+
+.outer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+}
+
+/* ================================================= */
+/* BUTTON SECTION */
+/* ================================================= */
+
+.buttonSection {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: var(--spacing-lg);
+  width: 100%;
+  margin: var(--spacing-md) 0;
+}
+
+/* ================================================= */
+/* CREATE BUTTON */
+/* ================================================= */
+
+.createButtonContainer {
+  display: flex;
+  justify-content: center;
+  width: 350px;
+  margin: var(--spacing-md) 0;
+}
+
+.createbtn {
+  width: 100%;
+  padding: var(--button-padding);
+  margin: var(--spacing-md) 0;
+  border: none;
+  border-radius: var(--button-radius);
+  cursor: pointer;
+}
+
+/* ================================================= */
+/* CREW TITLE */
+/* ================================================= */
+
+.missionFields h3 {
+  margin-top: var(--spacing-md);
+  font-family: var(--font-title);
+}
+
+/* SMARTPHONE */
+@media screen and (max-width: 768px) {
+
+  .archivoBlackRegular {
+    font-size: 2rem;
+    text-align: center;
+  }
+
+  .unboundedTitleMission {
+    font-size: 3rem;
+    -webkit-text-stroke: 2px #0b3d91;
+    text-align: center;
+  }
+
+  .formInputOuter {
+    padding: 20px;
+  }
+
+  .missionFields {
+    gap: 15px;
+  }
+
+  .missionFields input,
+  .missionFields select {
+    padding: 15px;
+  }
+
+  .outer {
+    flex-direction: column;
+  }
+
+  .buttonSection {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .createButtonContainer {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .createbtn {
+    padding: 15px;
+  }
+}
+
+/* DESKTOP */
+@media screen and (min-width: 1024px) {
+
+  .formInputOuter {
+    padding: 40px;
+  }
+
+  .outer {
+    flex-direction: row;
+  }
+
+  .buttonSection {
+    flex-direction: row;
+    gap: 40px;
+  }
+
+  .createButtonContainer {
+    width: 350px;
+  }
+
+  .createbtn {
+    padding: 20px;
+  }
+}
