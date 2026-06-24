@@ -1,57 +1,127 @@
-/* OUTER */
-.outercontainer{
+/* ================================================= */
+/* OUTER CONTAINER */
+/* ================================================= */
+
+.outercontainer {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
 }
 
-.headercontainer{
+/* ================================================= */
+/* HEADER */
+/* ================================================= */
+
+.headercontainer {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 100px;
+  margin-bottom: var(--spacing-xl);
 }
-/* TITLE */
+
 .contactTitle {
-  font-family: "Archivo Black", sans-serif;
+  font-family: var(--font-subtitle);
   font-weight: 400;
   font-style: normal;
   font-size: clamp(1.5rem, 5vw, 400px);
 }
 
-.contentouter{
+/* ================================================= */
+/* CONTENT */
+/* ================================================= */
+
+.contentouter {
   display: flex;
   flex-direction: column;
   width: 100%;
   align-items: center;
 }
 
-.contentinner{
-  margin-top: 50px;
+.contentinner {
+  margin-top: var(--spacing-lg);
 }
 
-h2{
+h2 {
   text-align: center;
 }
 
-.buttongroup{
+/* ================================================= */
+/* BUTTON GROUP */
+/* ================================================= */
+
+.buttongroup {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
-  margin-top: 100px;
+  margin-top: var(--spacing-xl);
 }
 
-.innerbutton{
+.innerbutton {
   display: flex;
   flex-direction: row;
-  width: 400px;
-  gap: 100px;
+  width: var(--container-sm);
+  gap: var(--spacing-xl);
 }
 
-.crewDashboard , .remove{
-  width: 100%;
-  padding: 20px;
+/* ================================================= */
+/* BUTTONS */
+/* ================================================= */
 
+.crewDashboard,
+.remove {
+  width: 100%;
+  padding: var(--button-padding);
+}
+
+/* ================================================= */
+/* DESKTOP */
+/* ================================================= */
+
+@media screen and (min-width: 1024px) {
+
+  .contactTitle {
+    font-size: clamp(4rem, 5vw, 8rem);
+  }
+
+  .innerbutton {
+    width: 600px;
+    gap: var(--spacing-xl);
+  }
+}
+
+/* ================================================= */
+/* SMARTPHONE */
+/* ================================================= */
+
+@media screen and (max-width: 768px) {
+
+  .headercontainer {
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .contactTitle {
+    font-size: 3rem;
+    text-align: center;
+  }
+
+  .contentinner {
+    margin-top: var(--spacing-md);
+  }
+
+  .buttongroup {
+    margin-top: var(--spacing-lg);
+  }
+
+  .innerbutton {
+    flex-direction: column;
+    width: 90%;
+    gap: var(--spacing-md);
+  }
+
+  .crewDashboard,
+  .remove {
+    padding: var(--spacing-sm);
+  }
 }

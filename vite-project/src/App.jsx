@@ -1,23 +1,15 @@
 import { Routes, Route } from "react-router-dom";
-
 import Navigation from "./navigation/Navigation";
-
 import Home from "./pages/Home";
 import Contact from "./pages/Contact";
 import Mission from "./pages/Mission";
-import SavedMissions from "./pages/SavedMissions";
 import RocketLaunch from "./pages/RocketLaunch";
-
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
-
-import ProfilePage from "./pages/ProfilePage";
-
 import CaptainDashboard from "./pages/CaptainDashboard";
 import CrewDashboard from "./pages/CrewDashboard";
+import ProtectedRoute from "./routes/ProtectedRoute";
 
-import ProtectedRoute from "./components/ProtectedRoute";
-import "./styles/vars.css";
 
 function App() {
   return (
@@ -33,14 +25,6 @@ function App() {
 
         <Route path="/signup" element={<SignUp />} />
 
-        <Route
-          path="/profilepage"
-          element={
-            <ProtectedRoute>
-              <ProfilePage />
-            </ProtectedRoute>
-          }
-        />
 
         <Route
           path="/mission"

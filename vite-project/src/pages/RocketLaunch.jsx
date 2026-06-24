@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import "./RocketLaunch.css";
 import { AuthContext } from "../context/AuthContext";
-
 import rocketImg from "../assets/Images/rocket.png";
 import ufoImg from "../assets/Images/ufo.png";
 
@@ -20,14 +19,11 @@ function RocketLaunch() {
 
   // Countdown
   useEffect(() => {
-    console.log("Countdown started");
-
+  
     let current = 5;
 
     const timer = setInterval(() => {
       current--;
-
-      console.log("Countdown:", current);
 
       setCountdown(current);
 
@@ -50,10 +46,9 @@ function RocketLaunch() {
   useEffect(() => {
     if (!launchReady) return;
 
-    console.log("Launch sequence active");
+  
 
     const timer = setTimeout(() => {
-      console.log("FORCED REDIRECT TO /contact");
       navigate("/contact");
     }, 8000);
 
@@ -61,15 +56,12 @@ function RocketLaunch() {
   }, [launchReady, navigate]);
 
   const handleAnimationEnd = (e) => {
-    console.log("Animation ended");
-    console.log("Animation name:", e.animationName);
-    console.log("Navigating to /contact");
 
     navigate("/contact");
   };
 
   return (
-    <main className="launch-container">
+    <main className="launchc=-ontainer">
       <div className="starry-background"></div>
 
       <div className="planet"></div>

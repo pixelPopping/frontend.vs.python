@@ -2,10 +2,8 @@ import React from "react";
 import { useContext } from "react";
 import MissionForm from "../components/MissionForm";
 import MissionDetailCard from "../components/MissionDetailCard";
-
 import styles from "./CaptainDashBoard.module.css";
 import "../App.css";
-
 import { CaptainContext } from "../context/CaptainContext";
 
 function CaptainDashboard() {

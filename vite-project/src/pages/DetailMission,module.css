@@ -1,0 +1,44 @@
+/* ================================================= */
+/* DETAIL OUTER FORM */
+/* ================================================= */
+
+.detailOuterForm {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 100%;
+  justify-content: space-evenly;
+}
+
+/* ================================================= */
+/* OUTER FORM DETAIL */
+/* ================================================= */
+
+.outerFormDetail {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* ================================================= */
+/* DETAIL MISSION OUTER */
+/* ================================================= */
+
+.detailMissionOuter {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* ================================================= */
+/* INNER FORM MISSION DETAIL */
+/* ================================================= */
+
+.innerFormMissionDetail {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  flex-shrink: 0;
+  flex-basis: var(--container-md);
+  gap: var(--spacing-lg);
+}

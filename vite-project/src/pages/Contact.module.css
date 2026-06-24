@@ -1,11 +1,19 @@
-.outerContactContainer{
+/* ================================================= */
+/* OUTER CONTACT CONTAINER */
+/* ================================================= */
+
+.outerContactContainer {
   display: flex;
   flex-direction: column;
-  padding-bottom: 100px;
+  padding-bottom: var(--spacing-xl);
   width: 100%;
 }
 
-.innercontainer{
+/* ================================================= */
+/* INNER CONTAINER */
+/* ================================================= */
+
+.innercontainer {
   display: flex;
   justify-content: center;
 }

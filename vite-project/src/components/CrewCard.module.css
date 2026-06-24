@@ -1,13 +1,21 @@
+/* ================================================= */
+/* CREW CARD */
+/* ================================================= */
+
 .crewCard {
   display: flex;
   flex-direction: row;
-  border: solid black 4px;
+  border: var(--card-border);
   width: 100%;
-  max-width: 400px;
+  max-width: var(--card-width);
   flex-wrap: wrap;
   justify-content: space-around;
   height: fit-content;
 }
+
+/* ================================================= */
+/* CREW CARD DETAIL */
+/* ================================================= */
 
 .crewCardDetail {
   display: flex;
@@ -16,10 +24,18 @@
   padding: 30px;
 }
 
-.titelHeader{
+/* ================================================= */
+/* TITLE */
+/* ================================================= */
+
+.titelHeader {
   text-align: center;
-  padding: 40px;
+  padding: var(--spacing-lg);
 }
+
+/* ================================================= */
+/* TEXT */
+/* ================================================= */
 
 .crewtext {
   white-space: pre-line;
@@ -27,19 +43,59 @@
   padding: 15px;
 }
 
-.outerbutton{
+/* ================================================= */
+/* BUTTONS */
+/* ================================================= */
+
+.outerbutton {
   display: flex;
   flex-direction: row;
   width: 100%;
   justify-content: center;
 }
 
-.controlButton{
+.controlButton {
   width: 100%;
-  padding: 20px;
+  padding: var(--button-padding);
   margin-bottom: 15px;
 }
 
-.missionactive{
+.missionactive {
   margin-bottom: 15px;
+}
+
+/* ================================================= */
+/* SMARTPHONE */
+/* ================================================= */
+
+@media screen and (max-width: 768px) {
+
+  .crewCard {
+    max-width: 100%;
+  }
+
+  .crewCardDetail {
+    padding: 15px;
+  }
+
+  .titelHeader {
+    padding: var(--spacing-md);
+  }
+
+  .crewtext {
+    padding: var(--spacing-sm);
+  }
+
+  .outerbutton {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+
+  .controlButton {
+    padding: 15px;
+  }
+
+  .missionactive {
+    margin-bottom: 10px;
+  }
 }

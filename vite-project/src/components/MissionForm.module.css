@@ -4,33 +4,33 @@
 /* ================================================= */
 /* TITLE */
 /* ================================================= */
+
 .archivoBlackRegular {
-  font-family: "Archivo Black", sans-serif;
+  font-family: var(--font-subtitle);
   font-weight: 400;
   font-style: normal;
   font-size: clamp(1.5rem, 5vw, 400px);
 }
 
-
-
 .unboundedTitleMission {
-  font-family: "Unbounded", sans-serif;
-  font-weight: 700;
+  font-family: var(--font-title);
+  font-weight: var(--header-weight);
   font-size: clamp(2rem, 10vw, 120px);
-  color: red;
-  -webkit-text-stroke: 5px #0b3d91;
+  color: var(--color-secondary);
+  -webkit-text-stroke: var(--header-stroke);
   margin: 0;
-  padding: 20px;
+  padding: var(--spacing-md);
 }
 
 /* ================================================= */
 /* FORM */
 /* ================================================= */
+
 .innerFormMission {
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 800px;
+  max-width: var(--container-md);
   align-items: center;
   margin: 0 auto;
 }
@@ -42,7 +42,7 @@
 .missionFields {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: var(--spacing-md);
   width: 100%;
 }
 
@@ -53,7 +53,7 @@
 .missionFields label {
   text-align: start;
   font-size: clamp(1rem, 3vw, 20px);
-  font-family: "Unbounded", sans-serif;
+  font-family: var(--font-title);
 }
 
 /* ================================================= */
@@ -62,9 +62,9 @@
 
 .missionFields input {
   width: 100%;
-  padding: 20px;
-  border: solid black 4px;
-  border-radius: 10px;
+  padding: var(--input-padding);
+  border: var(--input-border);
+  border-radius: var(--input-radius);
   box-sizing: border-box;
 }
 
@@ -74,14 +74,14 @@
 
 .missionFields select {
   width: 100%;
-  padding: 20px;
-  border: solid black 4px;
-  border-radius: 10px;
+  padding: var(--input-padding);
+  border: var(--input-border);
+  border-radius: var(--input-radius);
   box-sizing: border-box;
 }
 
 .missionFields option {
-  padding: 20px;
+  padding: var(--input-padding);
 }
 
 /* ================================================= */
@@ -101,7 +101,7 @@
 .formInputOuter {
   display: flex;
   flex-direction: column;
-  padding: 40px;
+  padding: var(--spacing-lg);
   width: 100%;
 }
 
@@ -134,9 +134,9 @@
   display: flex;
   flex-direction: row;
   justify-content: center;
-  gap: 40px;
+  gap: var(--spacing-lg);
   width: 100%;
-  margin: 20px 0;
+  margin: var(--spacing-md) 0;
 }
 
 /* ================================================= */
@@ -147,15 +147,15 @@
   display: flex;
   justify-content: center;
   width: 350px;
-  margin: 20px 0;
+  margin: var(--spacing-md) 0;
 }
 
 .createbtn {
   width: 100%;
-  padding: 20px;
-  margin: 20px 0;
+  padding: var(--button-padding);
+  margin: var(--spacing-md) 0;
   border: none;
-  border-radius: 10px;
+  border-radius: var(--button-radius);
   cursor: pointer;
 }
 
@@ -164,6 +164,78 @@
 /* ================================================= */
 
 .missionFields h3 {
-  margin-top: 20px;
-  font-family: "Unbounded", sans-serif;
+  margin-top: var(--spacing-md);
+  font-family: var(--font-title);
+}
+
+/* SMARTPHONE */
+@media screen and (max-width: 768px) {
+
+  .archivoBlackRegular {
+    font-size: 2rem;
+    text-align: center;
+  }
+
+  .unboundedTitleMission {
+    font-size: 3rem;
+    -webkit-text-stroke: 2px #0b3d91;
+    text-align: center;
+  }
+
+  .formInputOuter {
+    padding: 20px;
+  }
+
+  .missionFields {
+    gap: 15px;
+  }
+
+  .missionFields input,
+  .missionFields select {
+    padding: 15px;
+  }
+
+  .outer {
+    flex-direction: column;
+  }
+
+  .buttonSection {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .createButtonContainer {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .createbtn {
+    padding: 15px;
+  }
+}
+
+/* DESKTOP */
+@media screen and (min-width: 1024px) {
+
+  .formInputOuter {
+    padding: 40px;
+  }
+
+  .outer {
+    flex-direction: row;
+  }
+
+  .buttonSection {
+    flex-direction: row;
+    gap: 40px;
+  }
+
+  .createButtonContainer {
+    width: 350px;
+  }
+
+  .createbtn {
+    padding: 20px;
+  }
 }

@@ -1,9 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useContext } from "react";
-
 import { AuthContext } from "../context/AuthContext";
-
 import styles from  "./MissionForm.module.css";
 
 function MissionForm({
@@ -70,50 +68,6 @@ function MissionForm({
 
     reset();
   }
-
-  console.log(
-  "MISSION FORM OPTIONS:"
-);
-
-console.log(options);
-
-console.log(
-  "ROCKETS:"
-);
-
-console.log(
-  options?.rockets
-);
-
-console.log(
-  "SHIPS:"
-);
-
-console.log(
-  options?.ships
-);
-
-console.log(
-  "LAUNCHPADS:"
-);
-
-console.log(
-  options?.launchpads
-);
-
-console.log(
-  "LANDPADS:"
-);
-
-console.log(
-  options?.landpads
-);
-
-console.log(
-  "USERS:"
-);
-
-console.log(users);
 
   return (
     <form

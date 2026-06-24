@@ -1,55 +1,108 @@
+/* ================================================= */
+/* MISSION CARD */
+/* ================================================= */
+
 .missionCard {
   display: flex;
-
   flex-direction: column;
-
-  border: solid black 4px;
-
+  border: var(--card-border);
   width: 100%;
-
-  max-width: 400px;
-
-  padding: 10px;
-
+  max-width: var(--card-width);
+  padding: var(--spacing-sm);
   height: fit-content;
 }
 
+/* ================================================= */
+/* CARD TEXT */
+/* ================================================= */
+
 .cardText {
   display: flex;
-
   flex-direction: column;
-
   padding: 15px;
 }
 
+/* ================================================= */
+/* BUTTON CONTAINER */
+/* ================================================= */
 
-.deletebuttoncontainer{
+.deletebuttoncontainer {
   display: flex;
   flex-direction: row;
   width: 100%;
   justify-content: center;
 }
 
-.innerbuttoncontainer{
+.innerbuttoncontainer {
   display: flex;
   flex-direction: row;
   width: 200px;
 }
 
-button{
+/* ================================================= */
+/* BUTTON */
+/* ================================================= */
+
+button {
   width: 100%;
-  padding: 20px;
+  padding: var(--button-padding);
   flex-shrink: 1;
   flex-grow: 0;
 }
 
-button:hover{
+button:hover {
   transform: translateY(-2px);
 
   background: rgba(173, 216, 230, 0.25);
 
   color: #87ceeb;
 
-  box-shadow:
-    0 0 15px rgba(173, 216, 230, 0.5);
+  box-shadow: var(--shadow-hover);
+}
+
+/* ================================================= */
+/* SMARTPHONE */
+/* ================================================= */
+
+@media screen and (max-width: 768px) {
+
+  .missionCard {
+    max-width: 100%;
+  }
+
+  .cardText {
+    padding: var(--spacing-sm);
+  }
+
+  .innerbuttoncontainer {
+    width: 100%;
+    max-width: 250px;
+  }
+
+  button {
+    padding: 15px;
+  }
+}
+
+/* ================================================= */
+/* DESKTOP */
+/* ================================================= */
+
+@media screen and (min-width: 1024px) {
+
+  .missionCard {
+    max-width: var(--card-width);
+  }
+
+  .cardText {
+    padding: 15px;
+  }
+
+  .innerbuttoncontainer {
+    width: 200px;
+  }
+
+  button {
+    padding: var(--button-padding);
+  }
 }

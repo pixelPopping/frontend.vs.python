@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import MissionDetailCard from "../components/MissionDetailCard";
-import "./Mission.css";
 
 const API = "http://localhost:5000";
 
@@ -30,10 +29,10 @@ export default function Mission() {
   }, []);
 
   return (
-    <main className="mission-page">
-      <h1 className="unbounded">Missions</h1>
+    <main className={styles.missionpage}>
+      <h1 className={styles.unbounded}>Missions</h1>
 
-      <section className="mission-list">
+      <section className={styles.missionlist}>
         {missions.map((m) => (
           <MissionDetailCard
             key={m._id}

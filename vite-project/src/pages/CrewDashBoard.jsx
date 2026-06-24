@@ -6,10 +6,8 @@ import { CrewContext } from "../context/CrewContext";
 import styles from "./CrewDashBoard.module.css";
 
 function CrewDashboard() {
-
      const { missions, loading, acceptMission} = useContext(CrewContext);
 
-    // ---------------- UI ----------------
     return (
         <div className={styles.crewdashboard}>
         <main>
@@ -27,8 +25,6 @@ function CrewDashboard() {
 
             )}
 
-            {/* ---------------- EMPTY ---------------- */}
-
             {!loading &&
                 missions.length === 0 && (
 
@@ -38,7 +34,6 @@ function CrewDashboard() {
 
             )}
 
-            {/* ---------------- MISSIONS ---------------- */}
 
             {!loading &&
                 missions.length > 0 && (

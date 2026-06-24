@@ -84,9 +84,6 @@ function CrewCard({ mission, onAccept }) {
     mission.returnDate
   );
 
-  // =================================================
-  // RENDER
-  // =================================================
   return (
     <section className={styles.crewCard}>
       <article className={styles.crewCardDetail}>
@@ -175,8 +172,7 @@ function CrewCard({ mission, onAccept }) {
           </div>
         )}
       </article>
-
-      {/* Buiten de kaart */}
+      
       <div className={styles.outerbutton}>
       <section className={styles.innerbutton}>
       {hasAccepted && (

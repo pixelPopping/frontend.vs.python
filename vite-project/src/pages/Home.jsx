@@ -5,15 +5,11 @@ import 'react-calendar/dist/Calendar.css';
 import styles from './Home.module.css';
 import '../App.css';
 
-
 function Home() {
  
-
   return (
     <>
       <div className={styles.backgroundimg} aria-hidden="true"></div>
-
-      {/* HEADER */}
       <div className={styles.headerContainer}>
         <div className={styles.novilogo}></div>
 
@@ -21,12 +17,10 @@ function Home() {
           <h1 className={styles.unboundedTitle}>Novi-Naut in Space</h1>
         </header>
       </div>
-
-      {/* MAIN */}
+      
       <div className={styles.outerLayout}>
         <main className={styles.mainOuterForm}>
           <div className={styles.innerForm}>
-
             
             <div className={styles.content}>
             <section className={styles.textContainer}>

@@ -1,114 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@200..900&display=swap');
 
-.backgroundimg {
-  position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100vh;
-  background-image: url('/src/assets/Images/193414-rick-sanchez-1920x1080.jpg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  z-index: -1;
-}
-
-
-.headerContainer{
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    justify-content: center;
-}
-
-header h1{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    margin-top: 100px;
-}
-
-header .unboundedTitle {
-  font-family: "Unbounded", sans-serif;
-  font-weight: 700;
-  font-size: 120px;
-  color: red;
-  -webkit-text-stroke: 5px #0B3D91;
-}
-
-.outerLayout{
-  display: flex;
-  flex-direction: row;
-  margin-top: 20px;
-  flex-basis: 100%;
-  padding: 70px;
-}
-
-.mainOuterForm{
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    justify-content: center;
-}
-
-.content{
-  display: flex;
-  width: 100%;
-  max-width: 800px;
-}
-
-.innerForm{
-    display: flex;
-    flex-direction: column;
-}
-
-.textContainer{
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    margin-top: 100px;
-}
-
-.headercolor{
-  font-size: 50px;
-  font-size: clamp(minimum, voorkeur, maximum);
-  color: greenyellow;
-  text-shadow:2px 2px 8px rgba(0, 0, 0, 0.4);
-  -webkit-text-stroke: 2px black;
-}
-
-.outerContent{
-   display: flex;
-   flex-direction: row;
-   width: 100%;
-   justify-content: center;
-}
-
-.innerContent{
-   display: grid;
-   grid-template-columns: 1fr;
-   place-items: center;
-   gap: 2rem;
-   width: 100%;
-}
-
-.contenWrapper {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    justify-content: center;
-}
-
-.inner-form,
-.header-container,
-footer {
-  position: relative;
-  z-index: 1;
-}
-
-
-@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@200..900&display=swap');
-
+/* ================================================= */
 /* BACKGROUND */
+/* ================================================= */
+
 .backgroundimg {
   position: fixed;
   inset: 0;
@@ -121,19 +16,25 @@ footer {
   z-index: -2;
 }
 
+/* ================================================= */
 /* HEADER */
+/* ================================================= */
+
 .headerContainer {
   position: relative;
   display: flex;
   justify-content: center;
   width: 100%;
-  margin-top: 100px;
+  margin-top: var(--spacing-xl);
 }
 
-/* LOGO ACHTER TITEL */
+/* ================================================= */
+/* LOGO */
+/* ================================================= */
+
 .novilogo {
   position: absolute;
-  top: 20px;
+  top: var(--spacing-md);
   left: 50%;
   transform: translateX(-50%);
 
@@ -147,28 +48,47 @@ footer {
 
   border-radius: 50%;
   z-index: 0;
-
   opacity: 0.75;
+
   filter: drop-shadow(0 0 40px rgba(11, 61, 145, 0.6));
 
-  /* floating + rotate */
-  animation: floatLogo 6s ease-in-out infinite,
-             rotateLogo 80s linear infinite;
+  animation:
+    floatLogo var(--animation-fast) ease-in-out infinite,
+    rotateLogo var(--animation-slow) linear infinite;
 }
 
+/* ================================================= */
 /* ANIMATIES */
+/* ================================================= */
+
 @keyframes floatLogo {
-  0% { transform: translate(-50%, 0px); }
-  50% { transform: translate(-50%, -15px); }
-  100% { transform: translate(-50%, 0px); }
+  0% {
+    transform: translate(-50%, 0px);
+  }
+
+  50% {
+    transform: translate(-50%, -15px);
+  }
+
+  100% {
+    transform: translate(-50%, 0px);
+  }
 }
 
 @keyframes rotateLogo {
-  from { transform: translateX(-50%) rotate(0deg); }
-  to { transform: translateX(-50%) rotate(360deg); }
+  from {
+    transform: translateX(-50%) rotate(0deg);
+  }
+
+  to {
+    transform: translateX(-50%) rotate(360deg);
+  }
 }
 
-/* HEADER TEXT */
+/* ================================================= */
+/* TITEL */
+/* ================================================= */
+
 header h1 {
   display: flex;
   justify-content: center;
@@ -177,107 +97,159 @@ header h1 {
   z-index: 1;
 }
 
-.unbounded-title {
-  font-family: "Unbounded", sans-serif;
-  font-weight: 700;
-  font-size: 120px;
-  color: red;
-  -webkit-text-stroke: 5px #0B3D91;
+.unboundedTitle {
+  font-family: var(--font-title);
+  font-weight: var(--header-weight);
+  font-size: var(--header-size);
+  color: var(--color-secondary);
+  -webkit-text-stroke: var(--header-stroke);
 }
 
+/* ================================================= */
 /* LAYOUT */
-.outer-layout {
+/* ================================================= */
+
+.outerLayout {
   display: flex;
-  margin-top: 40px;
+  flex-direction: row;
+  margin-top: var(--spacing-lg);
   padding: 70px;
 }
 
-.main-outer-form {
+.mainOuterForm {
   display: flex;
   width: 100%;
-  justify-content: flex-start;
+  justify-content: center;
 }
 
-.inner-form {
+.innerForm {
   display: flex;
   flex-direction: column;
+  align-items: center;
   width: 100%;
 }
 
-/* TEXT */
+.content {
+  display: flex;
+  width: 100%;
+  max-width: var(--container-md);
+}
+
+/* ================================================= */
+/* TEKST */
+/* ================================================= */
+
 .textContainer {
   display: flex;
   flex-direction: column;
   width: 100%;
-  margin: 100px 0;
+  margin: var(--spacing-xl) 0;
   color: white;
   text-align: center;
 }
 
-/* CALENDAR */
-.outer-calender {
-  display: flex;
-  justify-content: center;
-  width: 100%;
+.headercolor {
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  color: greenyellow;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.4);
+  -webkit-text-stroke: 2px black;
 }
 
-.inner-calendar {
+/* ================================================= */
+/* CONTENT */
+/* ================================================= */
+
+.outerContent {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: center;
+}
+
+.innerContent {
   display: grid;
+  grid-template-columns: 1fr;
   place-items: center;
   gap: 2rem;
   width: 100%;
 }
 
-.calendar-wrapper {
+.contenWrapper {
   display: flex;
-  justify-content: center;
+  flex-direction: row;
   width: 100%;
-}
-
-.react-calendar {
-  width: 600px;
-  padding: 20px;
-  border-radius: 20px;
-}
-
-/* CALENDAR STYLING */
-.react-calendar__tile {
-  width: 70px;
-  height: 70px;
-  font-size: 1.2rem;
-  display: flex;
-  align-items: center;
   justify-content: center;
 }
 
-.react-calendar__tile:hover {
-  background-color: #e6e6e6;
-  border-radius: 8px;
-}
-
-.react-calendar__tile--active,
-.react-calendar__tile--rangeStart,
-.react-calendar__tile--rangeEnd {
-  background: #007bff;
-  color: white;
-  border-radius: 8px;
-}
-
+/* ================================================= */
 /* BUTTON */
-.button-container {
+/* ================================================= */
+
+.buttonContainer {
   width: 200px;
 }
 
-.submit-next {
+.submitNext {
   width: 100%;
-  padding: 15px;
+  padding: var(--button-padding);
   font-size: 18px;
   cursor: pointer;
 }
 
+/* ================================================= */
 /* FOOTER */
+/* ================================================= */
+
 footer {
+  position: relative;
+  z-index: 1;
   margin-top: 50px;
   text-align: center;
   color: white;
+}
+
+/* ================================================= */
+/* SMARTPHONE */
+/* ================================================= */
+
+@media screen and (max-width: 768px) {
+
+  .headerContainer {
+    margin-top: var(--spacing-lg);
+  }
+
+  .unboundedTitle {
+    font-size: 60px;
+    -webkit-text-stroke: 3px var(--color-primary);
+    text-align: center;
+  }
+
+  .outerLayout {
+    flex-direction: column;
+    padding: var(--spacing-md);
+  }
+
+  .textContainer {
+    margin: var(--spacing-lg) 0;
+  }
+
+  .novilogo {
+    width: 180px;
+    height: 180px;
+  }
+}
+
+/* ================================================= */
+/* DESKTOP */
+/* ================================================= */
+
+@media screen and (min-width: 769px) {
+
+  .unboundedTitle {
+    font-size: var(--header-size);
+  }
+
+  .outerLayout {
+    padding: 70px;
+  }
 }

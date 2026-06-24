@@ -3,17 +3,17 @@
 /* ================================================= */
 /* DASHBOARD */
 /* ================================================= */
-.outerCardList{
+
+.outerCardList {
   display: flex;
   flex-direction: row;
   justify-content: center;
 }
 
-
 .outerMission {
   display: flex;
   flex-direction: column;
-   margin-bottom: 100px;
+  margin-bottom: var(--spacing-xl);
   width: 100%;
   flex-basis: auto;
 }
@@ -24,7 +24,7 @@
   align-items: center;
   width: 100%;
   height: fit-content;
-  background-color: lightblue;
+  background-color: var(--color-background);
 }
 
 /* ================================================= */
@@ -36,7 +36,7 @@
   display: flex;
   justify-content: center;
   width: 100%;
-  padding-bottom: 40px;
+  padding-bottom: var(--spacing-lg);
   margin-top: 70px;
 }
 
@@ -46,7 +46,7 @@
 
 .novilogo {
   position: absolute;
-  top: 20px;
+  top: var(--spacing-md);
   left: 50%;
   transform: translateX(-50%);
 
@@ -65,8 +65,8 @@
   filter: drop-shadow(0 0 40px rgba(11, 61, 145, 0.6));
 
   animation:
-    floatLogo 6s ease-in-out infinite,
-    rotateLogo 80s linear infinite;
+    floatLogo var(--animation-fast) ease-in-out infinite,
+    rotateLogo var(--animation-slow) linear infinite;
 }
 
 /* ================================================= */
@@ -74,27 +74,14 @@
 /* ================================================= */
 
 @keyframes floatLogo {
-  0% {
-    transform: translate(-50%, 0px);
-  }
-
-  50% {
-    transform: translate(-50%, -15px);
-  }
-
-  100% {
-    transform: translate(-50%, 0px);
-  }
+  0% { transform: translate(-50%, 0px); }
+  50% { transform: translate(-50%, -15px); }
+  100% { transform: translate(-50%, 0px); }
 }
 
 @keyframes rotateLogo {
-  from {
-    transform: translateX(-50%) rotate(0deg);
-  }
-
-  to {
-    transform: translateX(-50%) rotate(360deg);
-  }
+  from { transform: translateX(-50%) rotate(0deg); }
+  to { transform: translateX(-50%) rotate(360deg); }
 }
 
 /* ================================================= */
@@ -117,7 +104,11 @@
   -webkit-text-stroke: var(--header-stroke);
 }
 
-.cardlist{
+/* ================================================= */
+/* CARD LIST */
+/* ================================================= */
+
+.cardlist {
   width: 100%;
 }
 
@@ -126,15 +117,87 @@
   flex-direction: row;
   flex-wrap: wrap;
   width: 100%;
-  margin-top: 100px;
+  margin-top: var(--spacing-xl);
   justify-content: space-around;
   padding: 15px;
   gap: 15px;
 }
 
-.outerFooter{
+/* ================================================= */
+/* FOOTER */
+/* ================================================= */
+
+.outerFooter {
   display: flex;
   flex-direction: column;
   width: 100%;
 }
 
+/* ================================================= */
+/* SMARTPHONE */
+/* ================================================= */
+
+@media screen and (max-width: 768px) {
+
+  .outerCardList {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .headerContainer {
+    margin-top: var(--spacing-lg);
+    padding-bottom: var(--spacing-md);
+  }
+
+  .novilogo {
+    width: 180px;
+  }
+
+  .captainTitle {
+    margin-top: 80px;
+    text-align: center;
+  }
+
+  .missionList {
+    flex-direction: column;
+    align-items: center;
+    margin-top: var(--spacing-lg);
+    padding: var(--spacing-sm);
+  }
+
+  .outerMission {
+    margin-bottom: var(--spacing-lg);
+  }
+}
+
+/* ================================================= */
+/* DESKTOP */
+/* ================================================= */
+
+@media screen and (min-width: 1024px) {
+
+  .outerCardList {
+    flex-direction: row;
+  }
+
+  .headerContainer {
+    margin-top: 70px;
+    padding-bottom: var(--spacing-lg);
+  }
+
+  .captainTitle {
+    margin-top: 120px;
+  }
+
+  .missionList {
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: var(--spacing-xl);
+    padding: 15px;
+    gap: 15px;
+  }
+
+  .outerMission {
+    margin-bottom: var(--spacing-xl);
+  }
+}

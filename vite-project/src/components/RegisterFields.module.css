@@ -1,70 +1,101 @@
-.outerRegisterContainer{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 100px;
-    padding: 50px;
-    margin: auto;
+/* ================================================= */
+/* OUTER REGISTER CONTAINER */
+/* ================================================= */
+
+.outerRegisterContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: var(--spacing-xl);
+  padding: 50px;
+  margin: auto;
 }
 
-.innerRergisterContainer{
-    display: flex;
-    flex-direction: row;
+/* ================================================= */
+/* INNER REGISTER CONTAINER */
+/* ================================================= */
 
+.innerRergisterContainer {
+  display: flex;
+  flex-direction: row;
 }
 
-.formContainer{
-    display: flex;
-    flex-direction: column;
+/* ================================================= */
+/* FORM CONTAINER */
+/* ================================================= */
+
+.formContainer {
+  display: flex;
+  flex-direction: column;
 }
 
-.registerFields{
-    display: flex;
-    flex-direction: column;
-    width: 800px;
-    gap: 20px;
+/* ================================================= */
+/* REGISTER FIELDS */
+/* ================================================= */
+
+.registerFields {
+  display: flex;
+  flex-direction: column;
+  width: var(--container-md);
+  gap: var(--spacing-md);
 }
 
-.label{
-    display: flex;
-    flex-direction: row;
-    gap: 15px;
+/* ================================================= */
+/* LABEL */
+/* ================================================= */
+
+.label {
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
 }
 
-input{
-    width: 100%;
-    padding: 20px;
+/* ================================================= */
+/* INPUT */
+/* ================================================= */
+
+input {
+  width: 100%;
+  padding: var(--input-padding);
 }
 
-.outerButton{
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    margin-top: 100px;
-    justify-content: center;
+/* ================================================= */
+/* BUTTON OUTER */
+/* ================================================= */
+
+.outerButton {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  margin-top: var(--spacing-xl);
+  justify-content: center;
 }
 
-
-.outerbuttonContainer{
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    justify-content: center;
-    margin-top: 100px;
+.outerbuttonContainer {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: center;
+  margin-top: var(--spacing-xl);
 }
 
+/* ================================================= */
+/* BUTTON CONTAINER */
+/* ================================================= */
 
-.buttonContainer{
-    display: flex;
-    flex-direction: row;
-    width: 150px;
-    align-items: center;
+.buttonContainer {
+  display: flex;
+  flex-direction: row;
+  width: 150px;
+  align-items: center;
 }
 
-.registerButton{
-    width: 100%;
-    padding: 20px;
-    flex-shrink: 0;
+/* ================================================= */
+/* REGISTER BUTTON */
+/* ================================================= */
+
+.registerButton {
+  width: 100%;
+  padding: var(--button-padding);
+  flex-shrink: 0;
 }
-
-
