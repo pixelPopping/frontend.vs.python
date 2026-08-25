@@ -2,7 +2,7 @@ import React from "react";
 import { useState, useContext } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import LoginFields from "../components/LoginFields";
+import LoginFields from "../components/LoginFields.jsx";
 import { AuthContext } from "../context/AuthContext";
 import styles from "./SignIn.module.css";
 
