@@ -2,11 +2,9 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App";
-import AuthContextProvider, { AuthContext } from "./context/AuthContext";
-import CrewContextProvider, { CrewContext } from "./context/CrewContext";
-import CaptainContextProvider, {
-  CaptainContext,
-} from "./context/CaptainContext";
+import AuthContextProvider, {AuthContext} from "./context/AuthContext";
+import CrewContextProvider, {CrewContext}  from "./context/CrewContext";
+import CaptainContextProvider, {CaptainContext} from "./context/CaptainContext";
 import "./styles/variables.css";
 import "./index.css";
 
