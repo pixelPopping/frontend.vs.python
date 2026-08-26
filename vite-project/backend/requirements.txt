@@ -5,3 +5,4 @@ werkzeug
 PyJWT
 requests
 python-dotenv
+gunicorn
