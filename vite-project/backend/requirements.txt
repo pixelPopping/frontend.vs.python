@@ -4,4 +4,4 @@ pymongo
 werkzeug
 PyJWT
 requests
-gunicorn
+python-dotenv

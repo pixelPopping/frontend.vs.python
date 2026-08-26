@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import RegisterFields from "../components/RegisterFields";
 import styles from "./SignUp.module.css";
 
-const API = "http://localhost:5000";
+const API = "/api";
 
 function SignUp() {
   const navigate = useNavigate();
@@ -21,7 +21,10 @@ function SignUp() {
     console.log("🚀 SENDING DATA:", data);
 
     try {
-      const response = await axios.post(`${API}/api/register`, data);
+      const response = await axios.post(
+        `${API}/register`,
+        data
+      );
 
       console.log("✅ SUCCESS:", response.data);
 
@@ -43,24 +46,28 @@ function SignUp() {
 
   return (
     <>
-     <header className={styles.header}>
-       <h1 className={styles.archivoBlackRegular}>Register</h1>
-    </header>
-    <main className={styles.registerContainer}>
-      <section className={styles.innerRegisterContainer}>
-      <RegisterFields
-        onSubmit={handleSubmit}
-        loading={loading}
-        errorMessage={errorMessage}
-      />
-      </section>
-    </main>
-    <div className={styles.footerContainer}>
-    <footer className={styles.footer}>
-      <p>Pixelpopping@Productions</p>
-    </footer>
-    </div>
-   </>
+      <header className={styles.header}>
+        <h1 className={styles.archivoBlackRegular}>
+          Register
+        </h1>
+      </header>
+
+      <main className={styles.registerContainer}>
+        <section className={styles.innerRegisterContainer}>
+          <RegisterFields
+            onSubmit={handleSubmit}
+            loading={loading}
+            errorMessage={errorMessage}
+          />
+        </section>
+      </main>
+
+      <div className={styles.footerContainer}>
+        <footer className={styles.footer}>
+          <p>Pixelpopping@Productions</p>
+        </footer>
+      </div>
+    </>
   );
 }
 

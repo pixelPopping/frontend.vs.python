@@ -4,7 +4,7 @@ import axios from "axios";
 import MissionDetailCard from "../components/MissionDetailCard";
 import styles from "./DetailMission.module.css";
 
-const API = "http://localhost:5000";
+const API = "/api";
 
 function DetailMission() {
   const { id } = useParams();
@@ -14,14 +14,23 @@ function DetailMission() {
   const fetchMission = async () => {
     try {
       if (id) {
-        const response = await axios.get(`${API}/api/missions/${id}`);
+        const response = await axios.get(
+          `${API}/missions/${id}`
+        );
+
         setMissions([response.data]);
       } else {
-        const response = await axios.get(`${API}/api/missions`);
+        const response = await axios.get(
+          `${API}/missions`
+        );
+
         setMissions(response.data);
       }
     } catch (error) {
-      console.error(error);
+      console.error(
+        "Error fetching missions:",
+        error.response?.data || error
+      );
     }
   };
 
@@ -31,10 +40,16 @@ function DetailMission() {
 
   const handleDelete = async (missionId) => {
     try {
-      await axios.delete(`${API}/api/missions/${missionId}`);
+      await axios.delete(
+        `${API}/missions/${missionId}`
+      );
+
       fetchMission();
     } catch (error) {
-      console.error(error);
+      console.error(
+        "Error deleting mission:",
+        error.response?.data || error
+      );
     }
   };
 
@@ -64,7 +79,9 @@ function DetailMission() {
                   index={mission._id}
                   label="Mission#"
                   text={mission}
-                  onClick={() => handleDelete(mission._id)}
+                  onClick={() =>
+                    handleDelete(mission._id)
+                  }
                 />
               ))
             ) : (

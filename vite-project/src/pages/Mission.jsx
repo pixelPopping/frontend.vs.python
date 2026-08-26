@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import MissionDetailCard from "../components/MissionDetailCard";
 
-const API = "http://localhost:5000";
+const API = "/api";
 
 export default function Mission() {
   const [missions, setMissions] = useState([]);
@@ -13,16 +13,32 @@ export default function Mission() {
     const token = localStorage.getItem("token");
 
     axios
-      .get(`${API}/api/missions`, {
-        headers: { Authorization: `Bearer ${token}` },
+      .get(`${API}/missions`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
-      .then((res) => setMissions(res.data));
+      .then((res) => setMissions(res.data))
+      .catch((error) => {
+        console.error(
+          "Error fetching missions:",
+          error.response?.data || error
+        );
+      });
 
     axios
-      .get(`${API}/api/users`, {
-        headers: { Authorization: `Bearer ${token}` },
+      .get(`${API}/users`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
-      .then((res) => setUsers(res.data));
+      .then((res) => setUsers(res.data))
+      .catch((error) => {
+        console.error(
+          "Error fetching users:",
+          error.response?.data || error
+        );
+      });
 
     const role = localStorage.getItem("role");
     setIsCaptain(role === "captain");

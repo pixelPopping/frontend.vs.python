@@ -5,6 +5,8 @@ from flask import (
 )
 
 from flask_cors import CORS
+from dotenv import load_dotenv
+import os
 
 from pymongo import MongoClient
 
@@ -34,46 +36,36 @@ app = Flask(__name__)
 # =========================================================
 # CONFIG
 # =========================================================
-SECRET_KEY = "super_secret_key_123"
+load_dotenv()
 
-MONGO_URI = "mongodb://127.0.0.1:27017/"
+SECRET_KEY = os.getenv("SECRET_KEY")
+MONGO_URI = os.getenv("MONGO_URI")
+
+if not SECRET_KEY:
+    raise RuntimeError("SECRET_KEY is not configured")
+
+if not MONGO_URI:
+    raise RuntimeError("MONGO_URI is not configured")
 
 # =========================================================
 # CORS
 # =========================================================
-CORS(
-
-    app,
-
-    resources={
-
-        r"/api/*": {
-
-            "origins": [
-                "http://localhost:5173"
-            ]
-        }
-    },
-
-    supports_credentials=True
+FRONTEND_ORIGIN = os.getenv(
+    "FRONTEND_ORIGIN",
+    "http://localhost:5173"
 )
 
-@app.after_request
-def after_request(response):
-
-    response.headers[
-        "Access-Control-Allow-Origin"
-    ] = "http://localhost:5173"
-
-    response.headers[
-        "Access-Control-Allow-Headers"
-    ] = "Content-Type,Authorization"
-
-    response.headers[
-        "Access-Control-Allow-Methods"
-    ] = "GET,POST,PUT,DELETE,OPTIONS"
-
-    return response
+CORS(
+    app,
+    resources={
+        r"/api/*": {
+            "origins": FRONTEND_ORIGIN
+        }
+    },
+    supports_credentials=True,
+    allow_headers=["Content-Type", "Authorization"],
+    methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+)
 
 # =========================================================
 # MONGO

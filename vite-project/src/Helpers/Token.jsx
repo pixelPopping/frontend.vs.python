@@ -1,14 +1,18 @@
-const API = "http://localhost:5000/api";
+const API = "/api";
 
 export function fetchWithAuth(url, options = {}) {
-  const token = localStorage.getItem("token");
+const token = localStorage.getItem("token");
 
-  return fetch(`${API}${url}`, {
-    ...options,
-    headers: {
-      ...options.headers,
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-  });
+return fetch(`${API}${url}`, {
+...options,
+headers: {
+...options.headers,
+...(token
+? {
+Authorization: `Bearer ${token}`,
+}
+: {}),
+"Content-Type": "application/json",
+},
+});
 }

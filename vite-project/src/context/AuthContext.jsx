@@ -8,8 +8,7 @@ import axios from "axios";
 export const AuthContext =
   createContext();
 
-const API =
-  "http://localhost:5000";
+const API = "";
 
 export default function AuthContextProvider({
   children,
@@ -30,18 +29,11 @@ export default function AuthContextProvider({
     const token =
       localStorage.getItem("token");
 
-    console.log(
-      "TOKEN:",
-      token
-    );
+    console.log("TOKEN:", token);
 
     if (!token) {
-      console.log(
-        "NO TOKEN FOUND"
-      );
-
+      console.log("NO TOKEN FOUND");
       setLoading(false);
-
       return;
     }
 
@@ -52,46 +44,20 @@ export default function AuthContextProvider({
         },
       })
       .then((res) => {
-        console.log(
-          "AUTH SUCCESS:"
-        );
-
-        console.log(
-          res.data
-        );
-
-        console.log(
-          "FIRSTNAME:",
-          res.data.firstname
-        );
-
-        console.log(
-          "LASTNAME:",
-          res.data.lastname
-        );
-
-        console.log(
-          "ROLE:",
-          res.data.role
-        );
+        console.log("AUTH SUCCESS:");
+        console.log(res.data);
 
         setUser(res.data);
-
         setIsAuth(true);
       })
       .catch((err) => {
         console.error(
           "AUTH ERROR:",
-          err.response?.data ||
-            err
+          err.response?.data || err
         );
 
-        localStorage.removeItem(
-          "token"
-        );
-
+        localStorage.removeItem("token");
         setUser(null);
-
         setIsAuth(false);
       })
       .finally(() => {
@@ -102,32 +68,14 @@ export default function AuthContextProvider({
   // =================================================
   // LOGIN
   // =================================================
-  function login(
-    userData,
-    token
-  ) {
-    console.log(
-      "LOGIN CALLED"
-    );
+  function login(userData, token) {
+    console.log("LOGIN CALLED");
+    console.log("LOGIN USER DATA:", userData);
+    console.log("LOGIN TOKEN:", token);
 
-    console.log(
-      "LOGIN USER DATA:"
-    );
-
-    console.log(userData);
-
-    console.log(
-      "LOGIN TOKEN:",
-      token
-    );
-
-    localStorage.setItem(
-      "token",
-      token
-    );
+    localStorage.setItem("token", token);
 
     setUser(userData);
-
     setIsAuth(true);
   }
 
@@ -137,31 +85,17 @@ export default function AuthContextProvider({
   function logout() {
     console.log("LOGOUT");
 
-    localStorage.removeItem(
-      "token"
-    );
+    localStorage.removeItem("token");
 
     setUser(null);
-
     setIsAuth(false);
   }
-
-  // =================================================
-  // GLOBAL DEBUG
-  // =================================================
-  console.log(
-    "AUTH CONTEXT USER:"
-  );
-
-  console.log(user);
 
   // =================================================
   // LOADING
   // =================================================
   if (loading) {
-    return (
-      <div>Loading...</div>
-    );
+    return <div>Loading...</div>;
   }
 
   // =================================================
