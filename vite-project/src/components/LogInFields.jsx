@@ -2,7 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 
 
-function LoginFields({
+function LogInFields({
   onSubmit,
   loading,
   errorMessage,
@@ -14,13 +14,12 @@ function LoginFields({
   } = useForm();
 
   return (
-    <section className={styles.formOuter}>
-      <article className={styles.signin}>
+    <section>
+      <article>
         <form
-          className={styles.form}
           onSubmit={handleSubmit(onSubmit)}
         >
-          <label className={styles.label}>
+          <label>
             <span>Username</span>
             <input
               type="text"
@@ -34,7 +33,7 @@ function LoginFields({
             <p>{errors.username.message}</p>
           )}
 
-          <label className={styles.label}>
+          <label>
             <span>Password</span>
             <input
               type="password"
@@ -48,7 +47,7 @@ function LoginFields({
             <p>{errors.password.message}</p>
           )}
 
-          <label className={styles.label}>
+          <label>
             <span>Invite Code</span>
             <input
               type="text"
@@ -65,9 +64,9 @@ function LoginFields({
           {errorMessage && (
             <p>{errorMessage}</p>
           )}
-          <div className={styles.outerLogin}>
-          <section className={styles.innerLogin}>
-          <button className={styles.loginButton}
+          <div>
+          <section>
+          <button 
             type="submit"
             disabled={loading}
           >
@@ -81,4 +80,4 @@ function LoginFields({
   );
 }
 
-export default LoginFields;
+export default LogInFields;
