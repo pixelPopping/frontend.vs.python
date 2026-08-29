@@ -2,6 +2,7 @@ from flask import (
     Flask,
     jsonify,
     request,
+    send_from_directory,
 )
 
 from flask_cors import CORS
@@ -31,6 +32,9 @@ import requests
 # =========================================================
 # APP
 # =========================================================
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+FRONTEND_DIST = os.path.abspath(os.path.join(BASE_DIR, "..", "dist"))
+
 app = Flask(__name__)
 
 # =========================================================
@@ -127,6 +131,32 @@ def token_required(f):
         return f(*args, **kwargs)
 
     return wrapper
+
+# =========================================================
+# REACT FRONTEND
+# =========================================================
+@app.route("/", defaults={"path": ""})
+@app.route("/<path:path>")
+def serve_react(path):
+    if path.startswith("api/"):
+        return jsonify({"error": "API route not found", "path": f"/{path}"}), 404
+
+    requested_file = os.path.join(FRONTEND_DIST, path)
+
+    if path and os.path.isfile(requested_file):
+        return send_from_directory(FRONTEND_DIST, path)
+
+    index_file = os.path.join(FRONTEND_DIST, "index.html")
+
+    if os.path.isfile(index_file):
+        return send_from_directory(FRONTEND_DIST, "index.html")
+
+    return jsonify({
+        "error": "Frontend build not found",
+        "expected": FRONTEND_DIST,
+        "message": "Run npm run build before starting Flask.",
+    }), 500
+
 
 # =========================================================
 # TEST
@@ -909,12 +939,10 @@ def delete_mission(id):
 # START SERVER
 # =========================================================
 if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
 
     app.run(
-
-        debug=True,
-
-        host="127.0.0.1",
-
-        port=5000,
+        debug=False,
+        host="0.0.0.0",
+        port=port,
     )
