@@ -1,92 +1,205 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
+
 import MissionDetailCard from "../components/MissionDetailCard";
 import styles from "./DetailMission.module.css";
 
-const API = "/api";
+import {
+  getMissions,
+  deleteMission,
+} from "../api/missions";
 
 function DetailMission() {
   const { id } = useParams();
-  const [missions, setMissions] = useState([]);
   const navigate = useNavigate();
 
-  const fetchMission = async () => {
+  const [missions, setMissions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  // =================================================
+  // FETCH MISSIONS
+  // =================================================
+  async function fetchMission() {
     try {
+      setLoading(true);
+      setErrorMessage("");
+
+      const data = await getMissions();
+
+      const missionList = Array.isArray(data)
+        ? data
+        : Array.isArray(data?.missions)
+          ? data.missions
+          : [];
+
       if (id) {
-        const response = await axios.get(
-          `${API}/missions/${id}`
+        const selectedMission = missionList.find(
+          (mission) =>
+            String(
+              mission?._id || mission?.id,
+            ) === String(id),
         );
 
-        setMissions([response.data]);
+        setMissions(
+          selectedMission
+            ? [selectedMission]
+            : [],
+        );
       } else {
-        const response = await axios.get(
-          `${API}/missions`
-        );
-
-        setMissions(response.data);
+        setMissions(missionList);
       }
     } catch (error) {
       console.error(
         "Error fetching missions:",
-        error.response?.data || error
+        error,
       );
-    }
-  };
 
+      setMissions([]);
+      setErrorMessage(
+        "Could not load missions.",
+      );
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  // =================================================
+  // LOAD ON PAGE OPEN
+  // =================================================
   useEffect(() => {
     fetchMission();
   }, [id]);
 
-  const handleDelete = async (missionId) => {
-    try {
-      await axios.delete(
-        `${API}/missions/${missionId}`
-      );
+  // =================================================
+  // DELETE MISSION
+  // =================================================
+  async function handleDelete(missionId) {
+    if (!missionId) {
+      return;
+    }
 
-      fetchMission();
+    try {
+      setErrorMessage("");
+
+      await deleteMission(missionId);
+
+      await fetchMission();
     } catch (error) {
       console.error(
         "Error deleting mission:",
-        error.response?.data || error
+        error,
+      );
+
+      setErrorMessage(
+        "Could not delete mission.",
       );
     }
-  };
+  }
 
+  // =================================================
+  // RENDER
+  // =================================================
   return (
-    <main className={styles["detail-outer-form"]}>
-      <div className={styles["outer-form-detail"]}>
-        <div className={styles.textcontainer}>
+    <main
+      className={
+        styles["detail-outer-form"]
+      }
+    >
+      <div
+        className={
+          styles["outer-form-detail"]
+        }
+      >
+        <div
+          className={
+            styles.textcontainer
+          }
+        >
           <header>
-            <h1>Mission Details</h1>
+            <h1>
+              Mission Details
+            </h1>
           </header>
 
-          <button onClick={() => navigate("/mission")}>
+          <button
+            type="button"
+            onClick={() =>
+              navigate("/mission")
+            }
+          >
             Terug
           </button>
 
-          <button onClick={() => navigate("/savedmissions")}>
+          <button
+            type="button"
+            onClick={() =>
+              navigate("/savedmissions")
+            }
+          >
             Saved Missions
           </button>
         </div>
 
-        <section className={styles["detail-mission-outer"]}>
-          <div className={styles["inner-form-mission-detail"]}>
-            {missions.length > 0 ? (
-              missions.map((mission) => (
-                <MissionDetailCard
-                  key={mission._id}
-                  index={mission._id}
-                  label="Mission#"
-                  text={mission}
-                  onClick={() =>
-                    handleDelete(mission._id)
-                  }
-                />
-              ))
-            ) : (
-              <p>No mission found</p>
+        <section
+          className={
+            styles[
+              "detail-mission-outer"
+            ]
+          }
+        >
+          <div
+            className={
+              styles[
+                "inner-form-mission-detail"
+              ]
+            }
+          >
+            {loading && (
+              <p>
+                Loading mission...
+              </p>
             )}
+
+            {!loading &&
+              errorMessage && (
+                <p>
+                  {errorMessage}
+                </p>
+              )}
+
+            {!loading &&
+              !errorMessage &&
+              missions.length === 0 && (
+                <p>
+                  No mission found
+                </p>
+              )}
+
+            {!loading &&
+              missions.length > 0 &&
+              missions.map(
+                (mission, index) => {
+                  const missionId =
+                    mission?._id ||
+                    mission?.id ||
+                    `mission-${index}`;
+
+                  return (
+                    <MissionDetailCard
+                      key={missionId}
+                      index={missionId}
+                      label="Mission#"
+                      text={mission}
+                      onClick={() =>
+                        handleDelete(
+                          missionId,
+                        )
+                      }
+                    />
+                  );
+                },
+              )}
           </div>
         </section>
       </div>

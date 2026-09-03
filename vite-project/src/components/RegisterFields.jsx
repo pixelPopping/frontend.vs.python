@@ -14,16 +14,22 @@ function RegisterFields({
   } = useForm();
 
   return (
-    <section className={styles.outerRegisterContainer}>
+    <section
+      className={styles.outerRegisterContainer}
+    >
       <article className={styles.formContainer}>
         <form
           className={styles.registerFields}
           onSubmit={handleSubmit(onSubmit)}
         >
+          {/* Username */}
           <label className={styles.label}>
             <span>Username</span>
+
             <input
               type="text"
+              placeholder="Choose a username"
+              autoComplete="username"
               {...register("username", {
                 required: "Username required",
               })}
@@ -34,15 +40,20 @@ function RegisterFields({
             <p>{errors.username.message}</p>
           )}
 
+          {/* Password */}
           <label className={styles.label}>
             <span>Password</span>
+
             <input
               type="password"
+              placeholder="Choose a password (minimum 8 characters)"
+              autoComplete="new-password"
               {...register("password", {
                 required: "Password required",
                 minLength: {
                   value: 8,
-                  message: "Minimum 8 characters",
+                  message:
+                    "Minimum 8 characters",
                 },
               })}
             />
@@ -52,33 +63,44 @@ function RegisterFields({
             <p>{errors.password.message}</p>
           )}
 
+          {/* Invite Code */}
           <label className={styles.label}>
             <span>Invite Code</span>
+
             <input
               type="text"
-              {...register("inviteCode", {
-                required: "Invite code required",
-              })}
+              placeholder="Enter invite code (optional)"
+              {...register("inviteCode")}
             />
           </label>
-
-          {errors.inviteCode && (
-            <p>{errors.inviteCode.message}</p>
-          )}
 
           {errorMessage && (
             <p>{errorMessage}</p>
           )}
-          <div className={styles.outerbuttonContainer}>
-          <section className={styles.buttonContainer}>
-          <button
-            className={styles.registerButton}
-            type="submit"
-            disabled={loading}
+
+          {/* Register button */}
+          <div
+            className={
+              styles.outerbuttonContainer
+            }
           >
-            {loading ? "Loading..." : "Register"}
-          </button>
-          </section>
+            <section
+              className={
+                styles.buttonContainer
+              }
+            >
+              <button
+                className={
+                  styles.registerButton
+                }
+                type="submit"
+                disabled={loading}
+              >
+                {loading
+                  ? "Loading..."
+                  : "Register"}
+              </button>
+            </section>
           </div>
         </form>
       </article>

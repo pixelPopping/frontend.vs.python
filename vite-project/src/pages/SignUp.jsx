@@ -1,19 +1,22 @@
 import { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+
 import RegisterFields from "../components/RegisterFields";
 import styles from "./SignUp.module.css";
 
-const API = "/api";
+import client from "../api/client";
 
 function SignUp() {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] =
+    useState("");
 
   async function handleSubmit(data) {
-    if (!data) return;
+    if (!data) {
+      return;
+    }
 
     setLoading(true);
     setErrorMessage("");
@@ -21,24 +24,88 @@ function SignUp() {
     console.log("🚀 SENDING DATA:", data);
 
     try {
-      const response = await axios.post(
-        `${API}/register`,
-        data
+      // =============================================
+      // ECHTE BACKEND
+      // =============================================
+      const response = await client.post(
+        "/register",
+        data,
       );
 
-      console.log("✅ SUCCESS:", response.data);
+      console.log(
+        "✅ REGISTRATION SUCCESS:",
+        response.data,
+      );
 
-      // Na registratie → naar SignIn
+      // Na registratie naar Sign In
       navigate("/signin");
     } catch (error) {
-      console.log("❌ FULL ERROR:", error.response);
+      console.warn(
+        "⚠️ Backend registration unavailable.",
+      );
 
-      const msg =
-        error?.response?.data?.error ||
-        error?.response?.data?.message ||
-        "Registration failed";
+      // =============================================
+      // OFFLINE DEMO
+      // =============================================
+      try {
+        const existingUsers = JSON.parse(
+          localStorage.getItem(
+            "novinaut_demo_registered_users",
+          ) || "[]",
+        );
 
-      setErrorMessage(msg);
+        const username =
+          data.username?.trim();
+
+        const email =
+          data.email?.trim();
+
+        // Controleer of gebruiker al bestaat
+        const alreadyExists =
+          existingUsers.some(
+            (user) =>
+              user.username === username ||
+              user.email === email,
+          );
+
+        if (alreadyExists) {
+          setErrorMessage(
+            "Username or email already registered.",
+          );
+
+          return;
+        }
+
+        const demoUser = {
+          ...data,
+          id: `demo-user-${Date.now()}`,
+          role: "user",
+        };
+
+        existingUsers.push(demoUser);
+
+        localStorage.setItem(
+          "novinaut_demo_registered_users",
+          JSON.stringify(existingUsers),
+        );
+
+        console.log(
+          "✅ DEMO USER REGISTERED:",
+          demoUser,
+        );
+
+        // Na demo-registratie naar Sign In
+        navigate("/signin");
+      } catch (storageError) {
+        console.error(
+          "❌ DEMO REGISTRATION ERROR:",
+          storageError,
+        );
+
+        setErrorMessage(
+          "Registration failed.",
+        );
+      }
     } finally {
       setLoading(false);
     }
@@ -47,13 +114,25 @@ function SignUp() {
   return (
     <>
       <header className={styles.header}>
-        <h1 className={styles.archivoBlackRegular}>
+        <h1
+          className={
+            styles.archivoBlackRegular
+          }
+        >
           Register
         </h1>
       </header>
 
-      <main className={styles.registerContainer}>
-        <section className={styles.innerRegisterContainer}>
+      <main
+        className={
+          styles.registerContainer
+        }
+      >
+        <section
+          className={
+            styles.innerRegisterContainer
+          }
+        >
           <RegisterFields
             onSubmit={handleSubmit}
             loading={loading}
@@ -62,9 +141,17 @@ function SignUp() {
         </section>
       </main>
 
-      <div className={styles.footerContainer}>
-        <footer className={styles.footer}>
-          <p>Pixelpopping@Productions</p>
+      <div
+        className={
+          styles.footerContainer
+        }
+      >
+        <footer
+          className={styles.footer}
+        >
+          <p>
+            Pixelpopping@Productions
+          </p>
         </footer>
       </div>
     </>

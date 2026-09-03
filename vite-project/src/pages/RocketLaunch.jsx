@@ -1,6 +1,13 @@
-import React, { useState, useEffect, useContext, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useContext,
+} from "react";
+import { useNavigate, useParams } from "react-router-dom";
+
 import "./RocketLaunch.css";
+
 import { AuthContext } from "../context/AuthContext";
 
 import rocketImg from "../assets/Images/rocket.png";
@@ -8,38 +15,63 @@ import ufoImg from "../assets/Images/ufo.png";
 
 function RocketLaunch() {
   const navigate = useNavigate();
+  const { id } = useParams();
   const { user } = useContext(AuthContext);
 
   const [countdown, setCountdown] = useState(5);
   const [launchReady, setLaunchReady] = useState(false);
 
-  // Sterren
+  // =================================================
+  // MISSION ID
+  // =================================================
+  useEffect(() => {
+    if (id) {
+      localStorage.setItem(
+        "activeMissionId",
+        String(id),
+      );
+    }
+  }, [id]);
+
+  // =================================================
+  // STARS
+  // =================================================
   const stars = useMemo(() => {
-    return Array.from({ length: 150 }, (_, i) => ({
-      id: i,
-      left: Math.random() * 100,
-      top: Math.random() * 100,
-      delay: Math.random() * 2,
-      size: Math.random() * 3 + 1,
-    }));
+    return Array.from(
+      { length: 150 },
+      (_, i) => ({
+        id: i,
+        left: Math.random() * 100,
+        top: Math.random() * 100,
+        delay: Math.random() * 2,
+        size: Math.random() * 3 + 1,
+      }),
+    );
   }, []);
 
-  // Meteoren
+  // =================================================
+  // METEORS
+  // =================================================
   const meteors = useMemo(() => {
-    return Array.from({ length: 8 }, (_, i) => ({
-      id: i,
-      top: Math.random() * 50,
-      left: Math.random() * 100,
-      delay: Math.random() * 5,
-    }));
+    return Array.from(
+      { length: 8 },
+      (_, i) => ({
+        id: i,
+        top: Math.random() * 50,
+        left: Math.random() * 100,
+        delay: Math.random() * 5,
+      }),
+    );
   }, []);
 
-  // Countdown
+  // =================================================
+  // COUNTDOWN
+  // =================================================
   useEffect(() => {
     let current = 5;
 
     const timer = setInterval(() => {
-      current--;
+      current -= 1;
 
       setCountdown(current);
 
@@ -49,27 +81,42 @@ function RocketLaunch() {
       }
     }, 1000);
 
-    return () => clearInterval(timer);
+    return () => {
+      clearInterval(timer);
+    };
   }, []);
 
-  // Fallback redirect
+  // =================================================
+  // REDIRECT AFTER LAUNCH
+  // =================================================
   useEffect(() => {
-    if (!launchReady) return;
+    if (!launchReady) {
+      return;
+    }
 
     const timer = setTimeout(() => {
       navigate("/contact");
     }, 8000);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+    };
   }, [launchReady, navigate]);
 
-  const handleTransitionEnd = () => {
-    navigate("/contact");
-  };
+  // =================================================
+  // ROCKET ANIMATION COMPLETE
+  // =================================================
+  function handleTransitionEnd() {
+    if (launchReady) {
+      navigate("/contact");
+    }
+  }
 
+  // =================================================
+  // RENDER
+  // =================================================
   return (
     <main className="launch-container">
-
       {/* Achtergrond */}
       <div className="starry-background">
         {stars.map((star) => (
@@ -107,9 +154,23 @@ function RocketLaunch() {
       ))}
 
       {/* UFO's */}
-      <img src={ufoImg} className="ufo ufo1" alt="UFO" />
-      <img src={ufoImg} className="ufo ufo2" alt="UFO" />
-      <img src={ufoImg} className="ufo ufo3" alt="UFO" />
+      <img
+        src={ufoImg}
+        className="ufo ufo1"
+        alt="UFO"
+      />
+
+      <img
+        src={ufoImg}
+        className="ufo ufo2"
+        alt="UFO"
+      />
+
+      <img
+        src={ufoImg}
+        className="ufo ufo3"
+        alt="UFO"
+      />
 
       {/* Laser */}
       <div className="laser"></div>
@@ -129,22 +190,23 @@ function RocketLaunch() {
 
       {/* Launch Scene */}
       <div className="launch-scene">
-
         <div className="launch-tower"></div>
 
         <img
           src={rocketImg}
           alt="Rocket"
-          className={`rocket-img ${launchReady ? "launch" : ""}`}
-          onTransitionEnd={handleTransitionEnd}
+          className={`rocket-img ${
+            launchReady ? "launch" : ""
+          }`}
+          onTransitionEnd={
+            handleTransitionEnd
+          }
         />
 
         <div className="smoke"></div>
 
         <div className="platform"></div>
-
       </div>
-
     </main>
   );
 }

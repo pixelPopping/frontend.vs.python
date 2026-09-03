@@ -1,8 +1,13 @@
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./ContactForm.module.css";
 
-const ContactForm = () => {
+function ContactForm() {
   const navigate = useNavigate();
+
+  function handleBackToDashboard() {
+    navigate("/crew-dashboard");
+  }
 
   return (
     <div className={styles.outercontainer}>
@@ -32,9 +37,7 @@ const ContactForm = () => {
             <button
               className={styles.crewDashboard}
               type="button"
-              onClick={() =>
-                navigate("/crew-dashboard")
-              }
+              onClick={handleBackToDashboard}
             >
               ← Back to Dashboard
             </button>
@@ -43,6 +46,6 @@ const ContactForm = () => {
       </main>
     </div>
   );
-};
+}
 
 export default ContactForm;

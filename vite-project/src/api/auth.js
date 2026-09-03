@@ -1,42 +1,35 @@
-import axios from "axios";
+import client from "./client";
 
-const client = axios.create({
-  baseURL: "/api",
+// =================================================
+// LOGIN
+// =================================================
+export async function loginUser(data) {
+  const response = await client.post("/login", {
+    username: data.username,
+    password: data.password,
+    inviteCode: data.inviteCode,
+  });
 
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
+  return response.data;
+}
 
-// ---------------- REQUEST INTERCEPTOR ----------------
-client.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("token");
+// =================================================
+// REGISTER
+// =================================================
+export async function registerUser(data) {
+  const response = await client.post(
+    "/register",
+    data,
+  );
 
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
+  return response.data;
+}
 
-    return config;
-  },
+// =================================================
+// CURRENT USER
+// =================================================
+export async function getMe() {
+  const response = await client.get("/me");
 
-  (error) => {
-    return Promise.reject(error);
-  },
-);
-
-// ---------------- RESPONSE INTERCEPTOR ----------------
-client.interceptors.response.use(
-  (response) => response,
-
-  (error) => {
-    if (error.response?.status === 401) {
-      console.error("401 UNAUTHORIZED");
-      localStorage.removeItem("token");
-    }
-
-    return Promise.reject(error);
-  },
-);
-
-export default client;
+  return response.data;
+}

@@ -1,4 +1,9 @@
-import { createContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useEffect,
+  useState,
+} from "react";
+
 import {
   getMissions,
   createMission,
@@ -33,76 +38,193 @@ function CaptainContextProvider({
   const [error, setError] =
     useState(null);
 
+  const [demoMode, setDemoMode] =
+    useState(false);
+
+  // ==========================================
+  // INITIALIZE
+  // ==========================================
+
   useEffect(() => {
     initializeDashboard();
   }, []);
 
   async function initializeDashboard() {
+    setLoading(true);
+    setError(null);
+
     try {
-      setLoading(true);
-
-      setError(null);
-
       console.log(
         "================================"
       );
 
       console.log(
-        "LOADING DASHBOARD"
+        "LOADING CAPTAIN DASHBOARD"
       );
 
-      const [
-        missionsData,
-        usersData,
-        optionsData,
-      ] = await Promise.all([
-        getMissions(),
-        getUsers(),
-        getMissionOptions(),
-      ]);
+      // ------------------------------------------
+      // MISSIONS
+      // ------------------------------------------
 
-      console.log(
-        "MISSIONS DATA:"
-      );
+      let missionsData = [];
 
-      console.log(
-        missionsData
-      );
+      try {
+        missionsData =
+          await getMissions();
 
-      console.log(
-        "USERS DATA:"
-      );
+        console.log(
+          "✅ Missions loaded"
+        );
+      } catch (error) {
+        console.warn(
+          "⚠️ Missions API unavailable",
+          error
+        );
+      }
 
-      console.log(
-        usersData
-      );
+      // ------------------------------------------
+      // USERS
+      // ------------------------------------------
 
-      console.log(
-        "MISSION OPTIONS DATA:"
-      );
+      let usersData = [];
 
-      console.log(
-        optionsData
-      );
+      try {
+        const response =
+          await getUsers();
+
+        usersData =
+          Array.isArray(response)
+            ? response
+            : Array.isArray(
+                response?.users
+              )
+            ? response.users
+            : [];
+
+        console.log(
+          "✅ Users loaded"
+        );
+      } catch (error) {
+        console.warn(
+          "⚠️ Users API unavailable"
+        );
+
+        /*
+         * Demo users.
+         *
+         * Deze worden alleen gebruikt
+         * wanneer de Python backend offline is.
+         */
+
+        usersData = [
+          {
+            id: "demo-crew-1",
+            username: "Demo Crew 1",
+            role: "crew",
+          },
+          {
+            id: "demo-crew-2",
+            username: "Demo Crew 2",
+            role: "crew",
+          },
+        ];
+      }
+
+      // ------------------------------------------
+      // MISSION OPTIONS
+      // ------------------------------------------
+
+      let optionsData = {};
+
+      try {
+        optionsData =
+          await getMissionOptions();
+
+        console.log(
+          "✅ Mission options loaded"
+        );
+      } catch (error) {
+        console.warn(
+          "⚠️ Mission options unavailable"
+        );
+      }
+
+      // ------------------------------------------
+      // SAFE DATA
+      // ------------------------------------------
+
+      const safeMissions =
+        Array.isArray(
+          missionsData
+        )
+          ? missionsData
+          : [];
+
+      const safeUsers =
+        Array.isArray(
+          usersData
+        )
+          ? usersData
+          : [];
+
+      const safeOptions =
+        optionsData &&
+        typeof optionsData ===
+          "object"
+          ? optionsData
+          : {};
 
       setMissions(
-        missionsData || []
+        safeMissions
       );
 
       setUsers(
-        usersData || []
+        safeUsers
       );
 
       setOptions(
-        optionsData || {}
+        safeOptions
+      );
+
+      /*
+       * We bepalen demo mode op basis
+       * van de beschikbare data.
+       */
+
+      const hasDemoMission =
+        safeMissions.some(
+          (mission) =>
+            String(
+              mission?._id ??
+                mission?.id ??
+                ""
+            ).startsWith(
+              "demo-"
+            )
+        );
+
+      setDemoMode(
+        hasDemoMission
       );
 
       console.log(
-        "OPTIONS SAVED"
+        "MISSIONS:",
+        safeMissions
       );
 
       console.log(
-        optionsData
+        "USERS:",
+        safeUsers
+      );
+
+      console.log(
+        "OPTIONS:",
+        safeOptions
+      );
+
+      console.log(
+        "DEMO MODE:",
+        hasDemoMission
       );
 
       console.log(
@@ -110,78 +232,115 @@ function CaptainContextProvider({
       );
     } catch (error) {
       console.error(
-        "DASHBOARD ERROR:"
-      );
-
-      console.error(error);
-
-      console.error(
-        error?.response?.data
+        "CAPTAIN DASHBOARD ERROR:",
+        error
       );
 
       setError(
-        error.message
+        "Dashboard kon niet worden geladen."
       );
     } finally {
       setLoading(false);
     }
   }
 
+  // ==========================================
+  // CREATE MISSION
+  // ==========================================
+
   async function handleCreateMission(
     missionData
   ) {
+    setLoading(true);
+    setError(null);
+    setIsSuccess(false);
+
     try {
-      setLoading(true);
-
-      setError(null);
-
-      setIsSuccess(false);
-
       console.log(
-        "MISSION PAYLOAD:"
-      );
-
-      console.log(
+        "MISSION PAYLOAD:",
         missionData
       );
 
-      await createMission(
-        missionData
+      const createdMission =
+        await createMission(
+          missionData
+        );
+
+      /*
+       * createMission() gebruikt automatisch
+       * backend óf localStorage.
+       */
+
+      console.log(
+        "MISSION CREATED:",
+        createdMission
       );
 
       const updatedMissions =
         await getMissions();
 
+      const safeMissions =
+        Array.isArray(
+          updatedMissions
+        )
+          ? updatedMissions
+          : [];
+
       setMissions(
-        updatedMissions
+        safeMissions
+      );
+
+      const isDemo =
+        safeMissions.some(
+          (mission) =>
+            String(
+              mission?._id ??
+                mission?.id ??
+                ""
+            ).startsWith(
+              "demo-"
+            )
+        );
+
+      setDemoMode(
+        isDemo
       );
 
       setIsSuccess(true);
+
+      /*
+       * Success message weer verwijderen
+       * na korte tijd.
+       */
+
+      setTimeout(() => {
+        setIsSuccess(false);
+      }, 3000);
     } catch (error) {
       console.error(
-        "CREATE ERROR:"
-      );
-
-      console.error(error);
-
-      console.error(
-        error?.response?.data
+        "CREATE ERROR:",
+        error
       );
 
       setError(
-        error.message
+        "Mission kon niet worden aangemaakt."
       );
     } finally {
       setLoading(false);
     }
   }
 
+  // ==========================================
+  // DELETE MISSION
+  // ==========================================
+
   async function handleDeleteMission(
     id
   ) {
-    try {
-      setLoading(true);
+    setLoading(true);
+    setError(null);
 
+    try {
       console.log(
         "DELETE ID:",
         id
@@ -189,30 +348,62 @@ function CaptainContextProvider({
 
       await deleteMission(id);
 
+      /*
+       * Haal opnieuw op.
+       *
+       * Backend online:
+       *     MongoDB
+       *
+       * Backend offline:
+       *     localStorage
+       */
+
       const updatedMissions =
         await getMissions();
 
+      const safeMissions =
+        Array.isArray(
+          updatedMissions
+        )
+          ? updatedMissions
+          : [];
+
       setMissions(
-        updatedMissions
+        safeMissions
+      );
+
+      const isDemo =
+        safeMissions.some(
+          (mission) =>
+            String(
+              mission?._id ??
+                mission?.id ??
+                ""
+            ).startsWith(
+              "demo-"
+            )
+        );
+
+      setDemoMode(
+        isDemo
       );
     } catch (error) {
       console.error(
-        "DELETE ERROR:"
-      );
-
-      console.error(error);
-
-      console.error(
-        error?.response?.data
+        "DELETE ERROR:",
+        error
       );
 
       setError(
-        error.message
+        "Mission kon niet worden verwijderd."
       );
     } finally {
       setLoading(false);
     }
   }
+
+  // ==========================================
+  // CONTEXT
+  // ==========================================
 
   return (
     <CaptainContext.Provider
@@ -220,11 +411,20 @@ function CaptainContextProvider({
         missions,
         users,
         options,
+
         loading,
+
         error,
+
         isSuccess,
+
+        demoMode,
+
         handleCreateMission,
+
         handleDeleteMission,
+
+        initializeDashboard,
       }}
     >
       {children}

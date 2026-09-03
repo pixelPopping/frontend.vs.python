@@ -1,63 +1,151 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
-import MissionDetailCard from "../components/MissionDetailCard";
+import React, {
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
-const API = "/api";
+import MissionDetailCard from "../components/MissionDetailCard";
+import { AuthContext } from "../context/AuthContext";
+import {
+  getMissions,
+} from "../api/missions";
+import {
+  getUsers,
+} from "../api/users";
+
 
 export default function Mission() {
-  const [missions, setMissions] = useState([]);
-  const [users, setUsers] = useState([]);
-  const [isCaptain, setIsCaptain] = useState(false);
+  const {
+    user,
+  } = useContext(AuthContext);
 
+  const [missions, setMissions] =
+    useState([]);
+
+  const [users, setUsers] =
+    useState([]);
+
+  const [loading, setLoading] =
+    useState(true);
+
+  const [errorMessage, setErrorMessage] =
+    useState("");
+
+  // =================================================
+  // LOAD MISSIONS + USERS
+  // =================================================
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    async function loadData() {
+      setLoading(true);
+      setErrorMessage("");
 
-    axios
-      .get(`${API}/missions`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((res) => setMissions(res.data))
-      .catch((error) => {
-        console.error(
-          "Error fetching missions:",
-          error.response?.data || error
+      try {
+        const [
+          missionData,
+          userData,
+        ] = await Promise.all([
+          getMissions(),
+          getUsers(),
+        ]);
+
+        setMissions(
+          Array.isArray(missionData)
+            ? missionData
+            : Array.isArray(
+                missionData?.missions,
+              )
+              ? missionData.missions
+              : [],
         );
-      });
 
-    axios
-      .get(`${API}/users`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((res) => setUsers(res.data))
-      .catch((error) => {
-        console.error(
-          "Error fetching users:",
-          error.response?.data || error
+        setUsers(
+          Array.isArray(userData)
+            ? userData
+            : Array.isArray(
+                userData?.users,
+              )
+              ? userData.users
+              : [],
         );
-      });
+      } catch (error) {
+        console.error(
+          "Error loading mission data:",
+          error,
+        );
 
-    const role = localStorage.getItem("role");
-    setIsCaptain(role === "captain");
+        setErrorMessage(
+          "Could not load missions.",
+        );
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadData();
   }, []);
 
-  return (
-    <main className={styles.missionpage}>
-      <h1 className={styles.unbounded}>Missions</h1>
+  // =================================================
+  // ROLE
+  // =================================================
+  const isCaptain =
+    user?.role === "captain";
 
-      <section className={styles.missionlist}>
-        {missions.map((m) => (
-          <MissionDetailCard
-            key={m._id}
-            mission={m}
-            users={users}
-            isCaptain={isCaptain}
-          />
-        ))}
-      </section>
+  // =================================================
+  // RENDER
+  // =================================================
+  return (
+    <main
+      className={styles.missionpage}
+    >
+      <h1
+        className={styles.unbounded}
+      >
+        Missions
+      </h1>
+
+      {loading && (
+        <p>
+          Loading missions...
+        </p>
+      )}
+
+      {errorMessage && (
+        <p>
+          {errorMessage}
+        </p>
+      )}
+
+      {!loading &&
+        !errorMessage &&
+        missions.length === 0 && (
+          <p>
+            No missions available 🚀
+          </p>
+        )}
+
+      {!loading &&
+        missions.length > 0 && (
+          <section
+            className={
+              styles.missionlist
+            }
+          >
+            {missions.map(
+              (mission, index) => (
+                <MissionDetailCard
+                  key={
+                    mission?._id ||
+                    mission?.id ||
+                    `mission-${index}`
+                  }
+                  mission={mission}
+                  users={users}
+                  isCaptain={isCaptain}
+                />
+              ),
+            )}
+          </section>
+        )}
     </main>
   );
 }
